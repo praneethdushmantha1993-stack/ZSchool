@@ -45,3 +45,33 @@ firebase deploy
 ```
 
 Deploy වෙලා ඉවර වුණාම Firebase ඔබට hosting URL එක දෙයි (උදා: `https://your-project.web.app`).
+
+## 3. GitHub Push කළ විට Auto Deploy
+
+`main` branch එකට push කළ විට ස්වයංක්‍රීයව Firebase Hosting එකට deploy වේ.
+
+### පළමු වතාවට සැකසීම:
+
+1. **Terminal එකේ project folder එකෙන් run කරන්න:**
+   ```bash
+   firebase init hosting:github
+   ```
+
+2. **CLI එක ඔබව මඟ පෙන්වයි:**
+   - GitHub repo එක connect කරන්න
+   - Firebase service account එක ස්වයංක්‍රීයව `FIREBASE_SERVICE_ACCOUNT` secret ලෙස add වේ
+
+3. **හෝ අතින් සැකසීම:**
+   - [Firebase Console](https://console.firebase.google.com) → Project Settings → Service accounts
+   - "Generate new private key" ක්ලික් කරන්න
+   - [GitHub](https://github.com/YOUR_USERNAME/ZSchool/settings/secrets/actions) → Settings → Secrets and variables → Actions
+   - "New repository secret" → Name: `FIREBASE_SERVICE_ACCOUNT`, Value: downloaded JSON file එකේ content එක paste කරන්න
+
+4. **Workflow එක push කරන්න:**
+   ```bash
+   git add .github/workflows/firebase-deploy.yml
+   git commit -m "Add GitHub Actions for auto deploy"
+   git push origin main
+   ```
+
+ඊට පස්සේ `main` එකට push කළ සෑම විටම Firebase Hosting එකට ස්වයංක්‍රීයව deploy වේ.

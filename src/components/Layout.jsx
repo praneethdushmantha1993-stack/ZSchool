@@ -70,11 +70,11 @@ export default function Layout() {
       <header className="sticky top-0 z-50 glass border-b border-ink-200/60 dark:border-ink-700/60 shadow-sm shadow-ink-900/5 dark:shadow-black/20">
         <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center gap-3 group">
-              <img src="/favicon.png" alt="ZShool" className="w-10 h-10 group-hover:scale-105 transition-transform object-contain" />
-              <div>
+            <Link to="/" className="flex items-center gap-2 sm:gap-3 group">
+              <img src="/favicon.png" alt="ZShool" className="w-9 h-9 sm:w-10 sm:h-10 group-hover:scale-105 transition-transform object-contain" />
+              <div className="hidden sm:block">
                 <span className="text-xl font-bold text-gradient block">ZShool</span>
-                <span className="text-xs text-ink-500 dark:text-ink-400 hidden sm:block">ගණිත ඉගෙනුම්</span>
+                <span className="text-xs text-ink-500 dark:text-ink-400">ගණිත ඉගෙනුම්</span>
               </div>
             </Link>
             <div className="flex items-center gap-3 ml-auto">
@@ -98,7 +98,7 @@ export default function Layout() {
                 <div className="relative" ref={profileRef}>
                   <button
                     onClick={() => setProfileOpen((o) => !o)}
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-ink-100 dark:hover:bg-ink-800 transition-colors"
+                    className="flex items-center gap-2 p-2 sm:px-3 sm:py-2 rounded-xl hover:bg-ink-100 dark:hover:bg-ink-800 transition-colors"
                     aria-expanded={profileOpen}
                     aria-haspopup="true"
                   >
@@ -106,11 +106,11 @@ export default function Layout() {
                       <img
                         src={photoURL}
                         alt={displayName || user.email}
-                        className="w-9 h-9 rounded-full object-cover shadow-md ring-2 ring-white dark:ring-ink-800"
+                        className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover shadow-md ring-2 ring-white dark:ring-ink-800"
                         referrerPolicy="no-referrer"
                       />
                     ) : (
-                      <span className="w-9 h-9 rounded-full bg-gradient-to-br from-sipyaya-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm shadow-md">
+                      <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-sipyaya-500 to-emerald-500 flex items-center justify-center text-white font-semibold text-sm shadow-md">
                         {displayName?.[0] || user.email?.[0]?.toUpperCase() || '?'}
                       </span>
                     )}
@@ -118,7 +118,7 @@ export default function Layout() {
                       {displayName || user.email}
                     </span>
                     <svg
-                      className={`w-4 h-4 text-ink-400 dark:text-ink-500 transition-transform ${profileOpen ? 'rotate-180' : ''}`}
+                      className={`hidden sm:block w-4 h-4 text-ink-400 dark:text-ink-500 transition-transform ${profileOpen ? 'rotate-180' : ''}`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -158,40 +158,53 @@ export default function Layout() {
               ) : (
                 <Link
                   to="/login"
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  className={`p-2 sm:px-4 sm:py-2 rounded-lg text-sm font-medium transition-all ${
                     location.pathname === '/login'
                       ? 'bg-sipyaya-100 dark:bg-sipyaya-900/50 text-sipyaya-700 dark:text-sipyaya-300'
                       : 'text-ink-600 dark:text-ink-400 hover:bg-ink-100 dark:hover:bg-ink-800 hover:text-sipyaya-600 dark:hover:text-sipyaya-400'
                   }`}
+                  title="පිවිසෙන්න"
                 >
-                  පිවිසෙන්න
+                  <svg className="w-5 h-5 sm:w-4 sm:h-4 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <span className="hidden sm:inline">පිවිසෙන්න</span>
                 </Link>
               )}
               <div className="flex gap-1">
               <Link
                 to="/"
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  location.pathname === '/' 
+                className={`p-2 sm:px-4 sm:py-2 rounded-lg text-sm font-medium transition-all ${
+                  location.pathname === '/'
                     ? 'bg-sipyaya-100 dark:bg-sipyaya-900/50 text-sipyaya-700 dark:text-sipyaya-300' 
                     : 'text-ink-600 dark:text-ink-400 hover:bg-ink-100 dark:hover:bg-ink-800 hover:text-sipyaya-600 dark:hover:text-sipyaya-400'
                 }`}
+                title="මුල් පිටුව"
               >
-                මුල් පිටුව
+                <svg className="w-5 h-5 sm:w-4 sm:h-4 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span className="hidden sm:inline">මුල් පිටුව</span>
               </Link>
               <Link
                 to="/chapters"
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`p-2 sm:px-4 sm:py-2 rounded-lg text-sm font-medium transition-all ${
                   location.pathname.startsWith('/chapters') || location.pathname.startsWith('/chapter/') 
                     ? 'bg-sipyaya-100 dark:bg-sipyaya-900/50 text-sipyaya-700 dark:text-sipyaya-300' 
                     : 'text-ink-600 dark:text-ink-400 hover:bg-ink-100 dark:hover:bg-ink-800 hover:text-sipyaya-600 dark:hover:text-sipyaya-400'
                 }`}
+                title="පාඩම්"
               >
-                පාඩම්
+                <svg className="w-5 h-5 sm:w-4 sm:h-4 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <span className="hidden sm:inline">පාඩම්</span>
               </Link>
               </div>
               {user && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sipyaya-100 dark:bg-sipyaya-900/50 text-sipyaya-700 dark:text-sipyaya-300 text-sm font-medium">
-                  <span>🏆</span> {totalScore ?? '...'}
+                <span className="inline-flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-lg bg-sipyaya-100 dark:bg-sipyaya-900/50 text-sipyaya-700 dark:text-sipyaya-300 text-sm font-medium" title="ලකුණු">
+                  <span>🏆</span>
+                  <span className="hidden sm:inline">{totalScore ?? '...'}</span>
                 </span>
               )}
             </div>
