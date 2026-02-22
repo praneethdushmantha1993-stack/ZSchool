@@ -19,7 +19,7 @@ function BadgeIconCompact({ color, iconIndex, earned, size = 36 }) {
   return (
     <div
       className={`flex-shrink-0 transition-all duration-300 hover:scale-110 hover:drop-shadow-lg ${
-        earned ? 'drop-shadow-[0_2px_8px_rgba(0,0,0,0.2)]' : 'opacity-50 grayscale'
+        earned ? 'drop-shadow-[0_2px_8px_rgba(0,0,0,0.2)]' : 'opacity-75'
       }`}
       style={{ width: size, height: size * 1.15 }}
     >

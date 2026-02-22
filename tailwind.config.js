@@ -82,6 +82,14 @@ export default {
           '0%, 100%': { transform: 'translateY(0)', filter: 'drop-shadow(0 0 5px rgba(255,255,255,0.2))' },
           '50%': { transform: 'translateY(-8px)', filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.6))' },
         },
+        'badge-glow': {
+          '0%, 100%': { transform: 'scale(1)', filter: 'saturate(1.8) brightness(1.1)' },
+          '50%': { transform: 'scale(1.03)', filter: 'saturate(1.8) brightness(1.25)' },
+        },
+        'badge-float': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-4px)' },
+        },
       },
       animation: {
         'fade-in': 'fadeIn 0.6s ease-out forwards',
@@ -93,6 +101,8 @@ export default {
         'formula-border-draw': 'formula-border-draw 0.7s ease-out forwards',
         'formula-border-draw-lg': 'formula-border-draw-lg 0.7s ease-out forwards',
         'icon-float': 'icon-float 3.5s ease-in-out infinite',
+        'badge-glow': 'badge-glow 2.5s ease-in-out infinite',
+        'badge-float': 'badge-float 3s ease-in-out infinite',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

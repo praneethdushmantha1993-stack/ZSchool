@@ -104,11 +104,11 @@ export default function Achievements() {
       )}
 
       <div
-        className={
+        className={`rounded-2xl p-6 sm:p-8 bg-slate-900 dark:bg-slate-950 ${
           viewMode === 'card'
             ? 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-10 gap-6 items-start justify-items-center'
             : 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-y-20 gap-x-6 items-center justify-items-center'
-        }
+        }`}
       >
         {BADGE_DEFINITIONS.map((def, i) => {
           const threshold = getBadgeThreshold(i)
@@ -124,6 +124,8 @@ export default function Achievements() {
                 iconIndex={i}
                 earned={earned}
                 size={56}
+                darkBg
+                animationDelay={i * 80}
               />
             )
           }
@@ -138,6 +140,8 @@ export default function Achievements() {
                 earned={earned}
                 showPoints
                 pointsLabel={`${formatPoints(min)} - ${formatPoints(max)}`}
+                darkBg
+                animationDelay={i * 80}
               />
             </div>
           )

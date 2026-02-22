@@ -15,24 +15,25 @@ function isLightColor(hex) {
  * Compact badge card - circular design with number, name, color, and icon
  * Matches the style: number | name | color | SVG icon
  */
-export default function BadgeCard({ index, name, color, iconIndex, earned = true, size = 64 }) {
+export default function BadgeCard({ index, name, color, iconIndex, earned = true, size = 64, darkBg = false, animationDelay = 0 }) {
   const IconComponent = BADGE_ICONS[iconIndex] ?? (() => null)
   const num = index + 1
 
   return (
     <div
       className={`flex flex-col items-center gap-2 transition-all duration-300 ${
-        earned ? 'opacity-100' : 'opacity-50 grayscale'
+        earned ? 'opacity-100' : 'opacity-75'
       }`}
     >
       <div
-        className="relative rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
+        className="relative rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300 animate-badge-glow"
         style={{
           width: size,
           height: size,
           backgroundColor: color,
-          boxShadow: earned ? `0 4px 14px ${color}40` : undefined,
+          boxShadow: earned ? `0 6px 20px ${color}60, 0 0 30px ${color}30` : undefined,
           border: color === '#ffffff' ? '2px solid #e2e8f0' : undefined,
+          animationDelay: `${animationDelay}ms`,
         }}
       >
         <svg
@@ -49,9 +50,9 @@ export default function BadgeCard({ index, name, color, iconIndex, earned = true
           {num}
         </span>
       </div>
-      <div className="text-center">
-        <p className="text-sm font-semibold text-ink-800 dark:text-ink-200">{name}</p>
-        <p className="text-[10px] text-ink-500 dark:text-ink-400 font-mono">{color}</p>
+      <div className={`text-center ${darkBg ? 'text-slate-200' : 'text-ink-800 dark:text-ink-200'}`}>
+        <p className="text-sm font-semibold">{name}</p>
+        <p className={`text-[10px] font-mono ${darkBg ? 'text-slate-400' : 'text-ink-500 dark:text-ink-400'}`}>{color}</p>
       </div>
     </div>
   )
