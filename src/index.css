@@ -25,4 +25,7 @@
   .glass {
     @apply bg-white/80 backdrop-blur-xl dark:bg-ink-900/80;
   }
+  .dropdown-menu {
+    @apply bg-white dark:bg-ink-900 border border-ink-200 dark:border-ink-700;
+  }
 }

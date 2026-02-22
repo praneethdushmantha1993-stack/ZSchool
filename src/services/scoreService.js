@@ -3,7 +3,7 @@ import { db } from '../firebase/config'
 
 /**
  * Save exercise score to Firestore and update user's total score
- * Scoring: +10 per correct, -2 per wrong, +5 bonus for quick completion
+ * Scoring: +10 per correct, -2 per wrong, +time bonus (max 500) based on completion speed
  * @param {string} userId - Firebase Auth user ID
  * @param {string} chapterNum - Chapter number
  * @param {string} exerciseId - Exercise ID

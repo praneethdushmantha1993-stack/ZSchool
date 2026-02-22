@@ -163,15 +163,17 @@ export default function ExercisePage() {
     })
     setChecked(newChecked)
 
-    if (user) {
-      const correctCount = Object.values(newChecked).filter(Boolean).length
-      const wrongCount = questions.length - correctCount
-      const totalCount = questions.length
-      const elapsedSec = (Date.now() - startTimeRef.current) / 1000
-      const quickThreshold = totalCount * 30
-      const bonusPoints = elapsedSec <= quickThreshold ? 5 : 0
-      const points = correctCount * 10 - wrongCount * 2 + bonusPoints
+    const correctCount = Object.values(newChecked).filter(Boolean).length
+    const wrongCount = questions.length - correctCount
+    const totalCount = questions.length
+    const elapsedSec = (Date.now() - startTimeRef.current) / 1000
+    const maxBonusTime = totalCount * 45
+    const bonusPoints = Math.round(500 * Math.max(0, 1 - elapsedSec / maxBonusTime))
+    const points = correctCount * 10 - wrongCount * 2 + bonusPoints
 
+    setLastScoreBreakdown({ correctCount, wrongCount, bonusPoints, points, elapsedSec })
+
+    if (user) {
       setSavingScore(true)
       try {
         await saveExerciseScore(user.uid, chapterNum, exerciseId, {
@@ -182,7 +184,6 @@ export default function ExercisePage() {
           points,
         })
         setScoreSaved(true)
-        setLastScoreBreakdown({ correctCount, wrongCount, bonusPoints, points })
         window.dispatchEvent(new CustomEvent('score-updated'))
       } catch (err) {
         console.error('ලකුණු සුරැකීමට අපොහොසත් විය:', err)
@@ -191,6 +192,8 @@ export default function ExercisePage() {
       }
     }
   }
+
+  const showResultsList = questions.length > 0 && questions.every((_, i) => checked[i] === true || checked[i] === false)
 
   return (
     <div className="max-w-2xl mx-auto animate-fade-in-up">
@@ -275,16 +278,47 @@ export default function ExercisePage() {
                 </Link>
               )}
             </div>
-            {scoreSaved && lastScoreBreakdown && (
+            {lastScoreBreakdown && (
               <div className="text-emerald-700 dark:text-emerald-400 font-medium space-y-1">
-                <p className="flex items-center gap-2">
-                  <span className="text-xl">✓</span> ඔබේ ලකුණු සාර්ථකව සුරකින ලදී!
-                </p>
+                {scoreSaved && (
+                  <p className="flex items-center gap-2">
+                    <span className="text-xl">✓</span> ඔබේ ලකුණු සාර්ථකව සුරකින ලදී!
+                  </p>
+                )}
                 <p className="text-sm text-ink-600 dark:text-ink-400">
                   නිවැරදි {lastScoreBreakdown.correctCount} × 10 = {lastScoreBreakdown.correctCount * 10} | වැරදි {lastScoreBreakdown.wrongCount} × 2 = -{lastScoreBreakdown.wrongCount * 2}
-                  {lastScoreBreakdown.bonusPoints > 0 && ` | ඉක්මන් පිළිතුරු bonus +${lastScoreBreakdown.bonusPoints}`}
+                  {lastScoreBreakdown.bonusPoints > 0 && ` | කාල bonus +${lastScoreBreakdown.bonusPoints}`}
                   {' '}→ මුළු {lastScoreBreakdown.points} ලකුණු
                 </p>
+              </div>
+            )}
+            {showResultsList && (
+              <div className="mt-4 p-4 rounded-xl bg-ink-50 dark:bg-ink-900/50 border border-ink-200 dark:border-ink-700 animate-fade-in">
+                <h3 className="font-semibold text-ink-800 dark:text-ink-200 mb-3">උත්තර සාරාංශය</h3>
+                <ul className="space-y-2">
+                  {questions.map((q, idx) => (
+                    <li
+                      key={idx}
+                      className={`flex items-center gap-3 py-2 px-3 rounded-lg ${
+                        checked[idx] ? 'bg-emerald-50 dark:bg-emerald-900/20' : 'bg-amber-50 dark:bg-amber-900/20'
+                      }`}
+                    >
+                      <span className={`text-lg font-bold ${checked[idx] ? 'text-emerald-600' : 'text-amber-600'}`}>
+                        {checked[idx] ? '✓' : '✗'}
+                      </span>
+                      <span className="flex-1 text-ink-700 dark:text-ink-300">
+                        {idx + 1}. {q.prompt}
+                      </span>
+                      {checked[idx] ? (
+                        <span className="text-emerald-700 dark:text-emerald-400 font-medium">හරි</span>
+                      ) : (
+                        <span className="text-amber-700 dark:text-amber-400">
+                          වැරදි — ඔබේ උත්තර: {answers[idx] || '—'}, නිවැරදි: {q.answer}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>

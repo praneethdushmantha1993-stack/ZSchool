@@ -100,7 +100,7 @@ export default function BadgeHeaderButton() {
       </button>
 
       {dropdownOpen && (
-        <div className="absolute right-0 mt-2 w-56 py-2 rounded-xl glass border border-ink-200/60 dark:border-ink-700/60 shadow-xl shadow-ink-900/10 dark:shadow-black/30 animate-scale-in origin-top-right z-50 max-h-[70vh] overflow-y-auto">
+        <div className="fixed sm:absolute left-4 sm:left-auto sm:right-0 top-16 sm:top-auto sm:mt-2 w-[calc(100vw-2rem)] sm:w-56 max-w-72 py-2 rounded-xl dropdown-menu shadow-xl shadow-ink-900/10 dark:shadow-black/30 animate-scale-in origin-top-left sm:origin-top-right z-50 max-h-[70vh] overflow-y-auto">
           <div className="px-3 py-2 border-b border-ink-100 dark:border-ink-700">
             <p className="text-xs font-medium text-ink-600 dark:text-ink-400">බැජ්</p>
             <p className="text-sm text-ink-900 dark:text-ink-100">
