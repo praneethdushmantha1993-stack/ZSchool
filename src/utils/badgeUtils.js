@@ -1,4 +1,4 @@
-import { BADGE_DEFINITIONS, BADGE_THRESHOLD_START, BADGE_THRESHOLD_STEP } from '../data/badgeData'
+import { BADGE_DEFINITIONS, getBadgeThreshold } from '../data/badgeData'
 
 /**
  * Get badges earned based on current score.
@@ -7,11 +7,11 @@ import { BADGE_DEFINITIONS, BADGE_THRESHOLD_START, BADGE_THRESHOLD_STEP } from '
  * @returns {Array<{index: number, threshold: number, ...badge}>} Earned badges
  */
 export function getEarnedBadges(score) {
-  if (score == null || score < BADGE_THRESHOLD_START) return []
+  if (score == null || score < 0) return []
 
   const earned = []
   for (let i = 0; i < BADGE_DEFINITIONS.length; i++) {
-    const threshold = BADGE_THRESHOLD_START + i * BADGE_THRESHOLD_STEP
+    const threshold = getBadgeThreshold(i)
     if (score >= threshold) {
       earned.push({
         index: i,
@@ -46,7 +46,7 @@ export function getFirstDisplayBadge(score) {
 export function getNextBadge(score) {
   if (score == null) return null
   for (let i = 0; i < BADGE_DEFINITIONS.length; i++) {
-    const threshold = BADGE_THRESHOLD_START + i * BADGE_THRESHOLD_STEP
+    const threshold = getBadgeThreshold(i)
     if (score < threshold) {
       return { index: i, threshold, ...BADGE_DEFINITIONS[i] }
     }

@@ -6,7 +6,7 @@ import { formatPoints } from '../utils/formatPoints'
  * Single badge shield - zSchool Elite Shield design (HTML SVG codes)
  * @param {{ color: string, glow: string, iconIndex: number, threshold?: number, size?: 'sm'|'md'|'lg', earned?: boolean, showPoints?: boolean }} props
  */
-export default function BadgeShield({ color, glow, iconIndex, threshold, size = 'md', earned = true, showPoints = false }) {
+export default function BadgeShield({ color, glow, iconIndex, threshold, size = 'md', earned = true, showPoints = false, pointsLabel }) {
   const sizeMap = {
     sm: { container: 'w-12 h-14' },
     md: { container: 'w-[78px] h-[90px]' },
@@ -41,9 +41,9 @@ export default function BadgeShield({ color, glow, iconIndex, threshold, size = 
           <path d="M12 25 Q50 15 88 25 V35 Q50 25 12 35 Z" fill="url(#glossGrad)" opacity="0.25" />
         </svg>
       </div>
-      {showPoints && threshold != null && (
+      {showPoints && (pointsLabel != null || threshold != null) && (
         <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-semibold text-ink-600 dark:text-ink-400">
-          {formatPoints(threshold)}
+          {pointsLabel ?? formatPoints(threshold)}
         </span>
       )}
     </div>

@@ -1,10 +1,20 @@
 /**
  * zSchool Achievement Badges
- * ලකුණු 2000, 3000, 4000... යනාදී වශයෙන් වැඩිවන විට බැජ් ලබා දෙයි.
+ * රටාව: 1වන බැජ් 0-1000, 2වන 1000-3000, 3වන 3000-6000, 4වන 6000-10000...
  * ලකුණු අඩුවේ නම් බැජ් පහත හෙලනු ලැබේ.
  */
-export const BADGE_THRESHOLD_START = 2000
-export const BADGE_THRESHOLD_STEP = 1000
+
+/** Get threshold for badge index i: 1000, 3000, 6000, 10000, 15000... */
+export function getBadgeThreshold(i) {
+  return 1000 * ((i + 1) * (i + 2)) / 2
+}
+
+/** Get range for badge i: { min, max } e.g. { min: 0, max: 1000 } */
+export function getBadgeRange(i) {
+  const max = getBadgeThreshold(i)
+  const min = i === 0 ? 0 : getBadgeThreshold(i - 1)
+  return { min, max }
+}
 
 /** Shield base path for SVG */
 export const SHIELD_BASE_PATH = 'M50 5 L92 22 V60 C92 82 50 96 50 96 C50 96 8 82 8 60 V22 L50 5 Z'

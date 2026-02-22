@@ -78,7 +78,6 @@ export default function Layout() {
               </div>
             </Link>
             <div className="flex items-center gap-3 ml-auto">
-              <BadgeHeaderButton />
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-lg text-ink-500 hover:text-ink-700 hover:bg-ink-100 dark:text-ink-400 dark:hover:text-ink-200 dark:hover:bg-ink-800 transition-colors"
@@ -202,10 +201,16 @@ export default function Layout() {
               </Link>
               </div>
               {user && (
-                <span className="inline-flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-lg bg-sipyaya-100 dark:bg-sipyaya-900/50 text-sipyaya-700 dark:text-sipyaya-300 text-sm font-medium" title="ලකුණු">
-                  <span>🏆</span>
-                  <span className="hidden sm:inline">{totalScore ?? '...'}</span>
-                </span>
+                <div className="inline-flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-lg bg-sipyaya-100 dark:bg-sipyaya-900/50 text-sipyaya-700 dark:text-sipyaya-300 text-sm font-medium" title="ලකුණු">
+                    <span className="sm:hidden">
+                      <img src="/favicon.png" alt="ZShool" className="w-6 h-6 object-contain" />
+                    </span>
+                    <span className="hidden sm:inline">🏆</span>
+                    <span className="hidden sm:inline">{totalScore ?? '...'}</span>
+                  </span>
+                  <BadgeHeaderButton />
+                </div>
               )}
             </div>
           </div>

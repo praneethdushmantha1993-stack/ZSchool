@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { getUserTotalScore } from '../services/scoreService'
 import { getFirstDisplayBadge, getEarnedBadges } from '../utils/badgeUtils'
-import { BADGE_DEFINITIONS, BADGE_THRESHOLD_START, BADGE_THRESHOLD_STEP } from '../data/badgeData'
+import { BADGE_DEFINITIONS, getBadgeThreshold, getBadgeRange } from '../data/badgeData'
 import { BADGE_ICONS } from './BadgeIcons'
 import { formatPoints } from '../utils/formatPoints'
 import { Link } from 'react-router-dom'
@@ -94,7 +94,7 @@ export default function BadgeHeaderButton() {
           </div>
           <div className="py-1">
             {BADGE_DEFINITIONS.map((def, i) => {
-              const threshold = BADGE_THRESHOLD_START + i * BADGE_THRESHOLD_STEP
+              const { min, max } = getBadgeRange(i)
               const earned = earnedSet.has(i)
               return (
                 <div
@@ -105,7 +105,7 @@ export default function BadgeHeaderButton() {
                 >
                   <BadgeIconCompact color={def.color} iconIndex={i} earned={earned} size={24} />
                   <span className="flex-1">
-                    {earned ? '✓' : '○'} {formatPoints(threshold)} ලකුණු
+                    {earned ? '✓' : '○'} {formatPoints(min)} - {formatPoints(max)} ලකුණු
                   </span>
                 </div>
               )

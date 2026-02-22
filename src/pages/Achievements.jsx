@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { getUserTotalScore } from '../services/scoreService'
 import BadgeShield from '../components/BadgeShield'
 import { getEarnedBadges, getNextBadge } from '../utils/badgeUtils'
-import { BADGE_DEFINITIONS, BADGE_THRESHOLD_START, BADGE_THRESHOLD_STEP } from '../data/badgeData'
+import { BADGE_DEFINITIONS, getBadgeThreshold, getBadgeRange } from '../data/badgeData'
 import { formatPoints } from '../utils/formatPoints'
 
 export default function Achievements() {
@@ -70,14 +70,17 @@ export default function Achievements() {
               size="sm"
               earned={false}
             />
-            <span className="text-sm text-ink-500 dark:text-ink-400">{formatPoints(nextBadge.threshold)} ලකුණු</span>
+            <span className="text-sm text-ink-500 dark:text-ink-400">
+              {formatPoints(getBadgeRange(nextBadge.index).min)} - {formatPoints(getBadgeRange(nextBadge.index).max)} ලකුණු
+            </span>
           </div>
         </div>
       )}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-y-20 gap-x-6 items-center justify-items-center">
         {BADGE_DEFINITIONS.map((def, i) => {
-          const threshold = BADGE_THRESHOLD_START + i * BADGE_THRESHOLD_STEP
+          const threshold = getBadgeThreshold(i)
+          const { min, max } = getBadgeRange(i)
           const earned = earnedSet.has(i)
           return (
             <div key={i} className="flex flex-col items-center">
@@ -89,6 +92,7 @@ export default function Achievements() {
                 size="md"
                 earned={earned}
                 showPoints
+                pointsLabel={`${formatPoints(min)} - ${formatPoints(max)}`}
               />
             </div>
           )
