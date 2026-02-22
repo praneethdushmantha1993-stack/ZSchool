@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Noto Sans Sinhala', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-sipyaya-600 via-sipyaya-500 to-emerald-500;
+  }
+  .glass {
+    @apply bg-white/80 backdrop-blur-xl;
+  }
+}
