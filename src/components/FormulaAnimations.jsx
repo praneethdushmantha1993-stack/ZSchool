@@ -869,6 +869,373 @@ function StepControls({ step, totalSteps, setStep }) {
   )
 }
 
+/** සංයුක්ත තල රූපවල පරිමිතිය — L හැඩය, කොටුවකින් කැපූ රූප ආදිය */
+export function LShapeDiagram({ dims }) {
+  const { topW, leftH, rightH, bottomW, innerW, innerH } = dims
+  const scale = 16
+  const ox = 35
+  const oy = 25
+  const path = `M ${ox} ${oy} h ${topW * scale} v ${rightH * scale} h ${-innerW * scale} v ${innerH * scale} h ${-bottomW * scale} v ${-(leftH) * scale} Z`
+  return (
+    <svg viewBox="0 0 220 160" className="w-full drop-shadow-lg">
+      <path d={path} fill="white" stroke="#0d9488" strokeWidth="2" strokeLinejoin="round" />
+      <text x={ox + (topW * scale) / 2} y={oy - 6} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{topW}cm</text>
+      <text x={ox - 10} y={oy + (leftH * scale) / 2} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{leftH}cm</text>
+      <text x={ox + (topW - innerW) * scale + (innerW * scale) / 2} y={oy + rightH * scale + 12} textAnchor="middle" className="fill-ink-600 text-xs font-medium">{innerW}cm</text>
+      <text x={ox + (topW - innerW) * scale + innerW * scale + 12} y={oy + rightH * scale + (innerH * scale) / 2} textAnchor="middle" className="fill-ink-600 text-xs font-medium">{innerH}cm</text>
+      <text x={ox + (bottomW * scale) / 2} y={oy + leftH * scale + 14} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{bottomW}cm</text>
+      <text x={ox + topW * scale + 12} y={oy + (rightH * scale) / 2} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{rightH}cm</text>
+    </svg>
+  )
+}
+
+/** L හැඩය — පියවර අනුව දාර එකින් එක highlight (0=කිසිදු, 1=පළමු පාදය, 2=පළමු දෙක, ... 6=සියල්ල) */
+function LShapeDiagramAnimated({ dims, highlightedEdgeCount = 0 }) {
+  const { topW, leftH, rightH, bottomW, innerW, innerH } = dims
+  const scale = 14
+  const ox = 40
+  const oy = 30
+  const s = scale
+  const hl = (edgeIdx) => highlightedEdgeCount > edgeIdx
+  const edges = [
+    { d: `M ${ox} ${oy} h ${topW * s}`, idx: 0 },
+    { d: `M ${ox + topW * s} ${oy} v ${rightH * s}`, idx: 1 },
+    { d: `M ${ox + topW * s - innerW * s} ${oy + rightH * s} h ${innerW * s}`, idx: 2 },
+    { d: `M ${ox + topW * s - innerW * s} ${oy + rightH * s} v ${innerH * s}`, idx: 3 },
+    { d: `M ${ox + topW * s - innerW * s - bottomW * s} ${oy + leftH * s} h ${bottomW * s}`, idx: 4 },
+    { d: `M ${ox} ${oy + leftH * s} v ${-leftH * s}`, idx: 5 },
+  ]
+  return (
+    <svg viewBox="0 0 240 180" className="w-full drop-shadow-lg">
+      <defs>
+        <linearGradient id="lShapeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#22c55e" /><stop offset="100%" stopColor="#0d9488" />
+        </linearGradient>
+      </defs>
+      <path d={`M ${ox} ${oy} h ${topW * s} v ${rightH * s} h ${-innerW * s} v ${innerH * s} h ${-bottomW * s} v ${-leftH * s} Z`} fill="white" stroke="#e2e8f0" strokeWidth="2" strokeLinejoin="round" />
+      {edges.map(({ d, idx }) => (
+        <path key={idx} d={d} fill="none" stroke={hl(idx) ? 'url(#lShapeGrad)' : '#94a3b8'} strokeWidth={hl(idx) ? 5 : 2} strokeLinecap="round" className="transition-all duration-400" />
+      ))}
+      <text x={ox + (topW * s) / 2} y={oy - 8} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">{topW}cm</text>
+      <text x={ox - 12} y={oy + (leftH * s) / 2} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">{leftH}cm</text>
+      <text x={ox + topW * s - innerW * s / 2} y={oy + rightH * s + 14} textAnchor="middle" className="fill-ink-600 text-xs font-medium">{innerW}cm</text>
+      <text x={ox + topW * s - innerW * s + 14} y={oy + rightH * s + (innerH * s) / 2} textAnchor="middle" className="fill-ink-600 text-xs font-medium">{innerH}cm</text>
+      <text x={ox + (bottomW * s) / 2} y={oy + leftH * s + 16} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">{bottomW}cm</text>
+      <text x={ox + topW * s + 14} y={oy + (rightH * s) / 2} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">{rightH}cm</text>
+    </svg>
+  )
+}
+
+/** T හැඩය — ඉහළ තිරස් තීරුව, මැදින් පහළට කඳ, සෑම පාදයකටම අගය (cm) */
+export function TShapeDiagramAnimated({ dims, highlightedEdgeCount = 0 }) {
+  const { topW, stemW, sideH } = dims
+  const s = 14
+  const ox = 35
+  const oy = 30
+  const leftPart = (topW - stemW) / 2
+  const hl = (i) => highlightedEdgeCount > i
+  const edgeVals = [topW, sideH, leftPart, sideH, stemW, sideH, leftPart, sideH]
+  const edges = [
+    { d: `M ${ox} ${oy} h ${topW * s}`, idx: 0 },
+    { d: `M ${ox + topW * s} ${oy} v ${sideH * s}`, idx: 1 },
+    { d: `M ${ox + topW * s} ${oy + sideH * s} h ${-leftPart * s}`, idx: 2 },
+    { d: `M ${ox + leftPart * s + stemW * s} ${oy + sideH * s} v ${sideH * s}`, idx: 3 },
+    { d: `M ${ox + leftPart * s + stemW * s} ${oy + 2 * sideH * s} h ${-stemW * s}`, idx: 4 },
+    { d: `M ${ox + leftPart * s} ${oy + 2 * sideH * s} v ${-sideH * s}`, idx: 5 },
+    { d: `M ${ox + leftPart * s} ${oy + sideH * s} h ${-leftPart * s}`, idx: 6 },
+    { d: `M ${ox} ${oy + sideH * s} v ${-sideH * s}`, idx: 7 },
+  ]
+  const fullPath = `M ${ox} ${oy} h ${topW * s} v ${sideH * s} h ${-leftPart * s} v ${sideH * s} h ${-stemW * s} v ${-sideH * s} h ${-leftPart * s} v ${-sideH * s} Z`
+  const labels = [
+    { x: ox + (topW * s) / 2, y: oy - 8, anchor: 'middle' },
+    { x: ox + topW * s + 12, y: oy + (sideH * s) / 2, anchor: 'start' },
+    { x: ox + topW * s - (leftPart * s) / 2, y: oy + sideH * s + 12, anchor: 'middle' },
+    { x: ox + leftPart * s + stemW * s + 12, y: oy + sideH * s + (sideH * s) / 2, anchor: 'start' },
+    { x: ox + leftPart * s + (stemW * s) / 2, y: oy + 2 * sideH * s + 12, anchor: 'middle' },
+    { x: ox + leftPart * s - 10, y: oy + sideH * s + (sideH * s) / 2, anchor: 'end' },
+    { x: ox + (leftPart * s) / 2, y: oy + sideH * s + 12, anchor: 'middle' },
+    { x: ox - 10, y: oy + (sideH * s) / 2, anchor: 'end' },
+  ]
+  return (
+    <svg viewBox="0 0 240 240" className="w-full drop-shadow-lg">
+      <defs>
+        <linearGradient id="tShapeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#22c55e" /><stop offset="100%" stopColor="#0d9488" />
+        </linearGradient>
+      </defs>
+      <path d={fullPath} fill="white" stroke="#e2e8f0" strokeWidth="2" strokeLinejoin="round" />
+      {edges.map(({ d, idx }) => (
+        <path key={idx} d={d} fill="none" stroke={hl(idx) ? 'url(#tShapeGrad)' : '#94a3b8'} strokeWidth={hl(idx) ? 5 : 2} strokeLinecap="round" className="transition-all duration-400" />
+      ))}
+      {edgeVals.map((val, i) => (
+        <text key={i} x={labels[i].x} y={labels[i].y} textAnchor={labels[i].anchor} className="fill-ink-700 text-[10px] font-medium">{val}cm</text>
+      ))}
+    </svg>
+  )
+}
+
+/** U හැඩය — පහළ තිරස්, ඉහළ මැද කැපුම (U අකුර වගේ), සෑම පාදයකටම අගය */
+export function UShapeDiagramAnimated({ dims, highlightedEdgeCount = 0 }) {
+  const { topW, cutW, cutH, sideH, leftPart } = dims
+  const s = 14
+  const ox = 35
+  const oy = 30
+  const lp = leftPart ?? (topW - cutW) / 2
+  const hl = (i) => highlightedEdgeCount > i
+  const edges = [
+    { d: `M ${ox} ${oy + sideH * s} h ${topW * s}`, idx: 0, val: topW },
+    { d: `M ${ox + topW * s} ${oy + sideH * s} v ${-sideH * s}`, idx: 1, val: sideH },
+    { d: `M ${ox + topW * s} ${oy} h ${-lp * s}`, idx: 2, val: lp },
+    { d: `M ${ox + lp * s + cutW * s} ${oy} v ${cutH * s}`, idx: 3, val: cutH },
+    { d: `M ${ox + lp * s + cutW * s} ${oy + cutH * s} h ${-cutW * s}`, idx: 4, val: cutW },
+    { d: `M ${ox + lp * s} ${oy + cutH * s} v ${-cutH * s}`, idx: 5, val: cutH },
+    { d: `M ${ox + lp * s} ${oy} h ${-lp * s}`, idx: 6, val: lp },
+    { d: `M ${ox} ${oy} v ${sideH * s}`, idx: 7, val: sideH },
+  ]
+  const fullPath = `M ${ox} ${oy + sideH * s} h ${topW * s} v ${-sideH * s} h ${-lp * s} v ${cutH * s} h ${-cutW * s} v ${-cutH * s} h ${-lp * s} v ${sideH * s} Z`
+  const labels = [
+    { x: ox + (topW * s) / 2, y: oy + sideH * s + 12, anchor: 'middle' },
+    { x: ox + topW * s + 12, y: oy + (sideH * s) / 2, anchor: 'start' },
+    { x: ox + topW * s - (lp * s) / 2, y: oy - 8, anchor: 'middle' },
+    { x: ox + lp * s + cutW * s + 12, y: oy + (cutH * s) / 2, anchor: 'start' },
+    { x: ox + lp * s + (cutW * s) / 2, y: oy + cutH * s + 12, anchor: 'middle' },
+    { x: ox + lp * s - 10, y: oy + (cutH * s) / 2, anchor: 'end' },
+    { x: ox + (lp * s) / 2, y: oy - 8, anchor: 'middle' },
+    { x: ox - 10, y: oy + (sideH * s) / 2, anchor: 'end' },
+  ]
+  return (
+    <svg viewBox="0 0 240 230" className="w-full drop-shadow-lg">
+      <defs>
+        <linearGradient id="uShapeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#22c55e" /><stop offset="100%" stopColor="#0d9488" />
+        </linearGradient>
+      </defs>
+      <path d={fullPath} fill="white" stroke="#e2e8f0" strokeWidth="2" strokeLinejoin="round" />
+      {edges.map(({ d, idx }) => (
+        <path key={idx} d={d} fill="none" stroke={hl(idx) ? 'url(#uShapeGrad)' : '#94a3b8'} strokeWidth={hl(idx) ? 5 : 2} strokeLinecap="round" className="transition-all duration-400" />
+      ))}
+      {edges.map((e, i) => (
+        <text key={i} x={labels[i].x} y={labels[i].y} textAnchor={labels[i].anchor} className="fill-ink-700 text-[10px] font-medium">{e.val}cm</text>
+      ))}
+    </svg>
+  )
+}
+
+function FrameDiagram({ dims }) {
+  const { outerL, outerW, innerL, innerW } = dims
+  const scale = 12
+  const ox = 30
+  const oy = 25
+  const ix = ox + (outerL - innerL) / 2 * scale
+  const iy = oy + (outerW - innerW) / 2 * scale
+  return (
+    <svg viewBox="0 0 220 140" className="w-full drop-shadow-lg">
+      <rect x={ox} y={oy} width={outerL * scale} height={outerW * scale} fill="white" stroke="#0d9488" strokeWidth="2" />
+      <rect x={ix} y={iy} width={innerL * scale} height={innerW * scale} fill="white" stroke="#0d9488" strokeWidth="2" strokeDasharray="4" />
+      <text x={ox + (outerL * scale) / 2} y={oy - 6} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{outerL}×{outerW}cm</text>
+      <text x={ix + (innerL * scale) / 2} y={iy + (innerW * scale) / 2 + 4} textAnchor="middle" className="fill-ink-600 text-xs font-medium">{innerL}×{innerW}</text>
+    </svg>
+  )
+}
+
+/** ත්‍රිකෝණ කොටසකින් කැපූ සංයුක්ත රූපය — A→B(4)→C(6)→D(3)→E(3)→F(3)→A(කර්ණය 5) */
+function DiagonalShapeDiagram({ dims }) {
+  const { bottomLeft, bottomRight, rightH, topW } = dims
+  const scale = 12
+  const ox = 40
+  const oy = 25
+  const path = `M ${ox} ${oy + rightH * scale} h ${bottomLeft * scale} h ${bottomRight * scale} v ${-rightH * scale} h ${-topW * scale} h ${-topW * scale} L ${ox} ${oy + rightH * scale} Z`
+  return (
+    <svg viewBox="0 0 220 110" className="w-full drop-shadow-lg">
+      <path d={path} fill="white" stroke="#0d9488" strokeWidth="2" strokeLinejoin="round" />
+      <text x={ox + (bottomLeft * scale) / 2} y={oy + rightH * scale + 14} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{bottomLeft}cm</text>
+      <text x={ox + bottomLeft * scale + (bottomRight * scale) / 2} y={oy + rightH * scale + 14} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{bottomRight}cm</text>
+      <text x={ox + (bottomLeft + bottomRight) * scale + 10} y={oy + (rightH * scale) / 2} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{rightH}cm</text>
+      <text x={ox + bottomLeft * scale - (topW * scale)} y={oy - 6} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{topW}cm</text>
+      <line x1={ox} y1={oy + rightH * scale} x2={ox + bottomLeft * scale} y2={oy} stroke="#0d9488" strokeWidth="2" strokeDasharray="4" />
+      <text x={ox + (bottomLeft * scale) / 2 - 8} y={oy + (rightH * scale) / 2 + 8} textAnchor="middle" className="fill-ink-600 text-xs font-medium">5cm</text>
+    </svg>
+  )
+}
+
+/** Diagonal shape — highlightedEdgeCount: 0=කිසිදු, 1-6=පාද එකින් එක (bottomL, bottomR, right, top1, top2, කර්ණය) */
+function DiagonalShapeDiagramAnimated({ dims, highlightedEdgeCount = 0 }) {
+  const { bottomLeft, bottomRight, rightH, topW } = dims
+  const scale = 12
+  const ox = 40
+  const oy = 28
+  const s = scale
+  const hl = (edgeIdx) => highlightedEdgeCount > edgeIdx
+  return (
+    <svg viewBox="0 0 220 120" className="w-full drop-shadow-lg">
+      <defs>
+        <linearGradient id="diagGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#22c55e" /><stop offset="100%" stopColor="#0d9488" />
+        </linearGradient>
+      </defs>
+      <path d={`M ${ox} ${oy + rightH * s} h ${bottomLeft * s} h ${bottomRight * s} v ${-rightH * s} h ${-topW * s} h ${-topW * s} L ${ox} ${oy + rightH * s} Z`} fill="white" stroke="#e2e8f0" strokeWidth="2" strokeLinejoin="round" />
+      <path d={`M ${ox} ${oy + rightH * s} h ${bottomLeft * s}`} fill="none" stroke={hl(0) ? 'url(#diagGrad)' : '#94a3b8'} strokeWidth={hl(0) ? 5 : 2} strokeLinecap="round" className="transition-all duration-400" />
+      <path d={`M ${ox + bottomLeft * s} ${oy + rightH * s} h ${bottomRight * s}`} fill="none" stroke={hl(1) ? 'url(#diagGrad)' : '#94a3b8'} strokeWidth={hl(1) ? 5 : 2} strokeLinecap="round" className="transition-all duration-400" />
+      <path d={`M ${ox + (bottomLeft + bottomRight) * s} ${oy + rightH * s} v ${-rightH * s}`} fill="none" stroke={hl(2) ? 'url(#diagGrad)' : '#94a3b8'} strokeWidth={hl(2) ? 5 : 2} strokeLinecap="round" className="transition-all duration-400" />
+      <path d={`M ${ox + bottomLeft * s} ${oy} h ${-topW * s}`} fill="none" stroke={hl(3) ? 'url(#diagGrad)' : '#94a3b8'} strokeWidth={hl(3) ? 5 : 2} strokeLinecap="round" className="transition-all duration-400" />
+      <path d={`M ${ox + bottomLeft * s - topW * s} ${oy} h ${-topW * s}`} fill="none" stroke={hl(4) ? 'url(#diagGrad)' : '#94a3b8'} strokeWidth={hl(4) ? 5 : 2} strokeLinecap="round" className="transition-all duration-400" />
+      <line x1={ox} y1={oy + rightH * s} x2={ox + bottomLeft * s} y2={oy} stroke={hl(5) ? 'url(#diagGrad)' : '#94a3b8'} strokeWidth={hl(5) ? 5 : 2} strokeDasharray="4" className="transition-all duration-400" />
+      <text x={ox + (bottomLeft * s) / 2} y={oy + rightH * s + 14} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{bottomLeft}cm</text>
+      <text x={ox + bottomLeft * s + (bottomRight * s) / 2} y={oy + rightH * s + 14} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{bottomRight}cm</text>
+      <text x={ox + (bottomLeft + bottomRight) * s + 12} y={oy + (rightH * s) / 2} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{rightH}cm</text>
+      <text x={ox + bottomLeft * s - topW * s} y={oy - 8} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{topW}cm</text>
+      <text x={ox + (bottomLeft * s) / 2 - 10} y={oy + (rightH * s) / 2 + 10} textAnchor="middle" className="fill-ink-600 text-xs font-medium">5cm</text>
+    </svg>
+  )
+}
+
+/** සංයුක්ත රූප උදාහරණ — පාදය highlight වන විට පරිමිතිය = ... + දාලා ගොඩනැගීම */
+function CompositeExampleAnimation({ example, exampleId }) {
+  const edgeValues = example.edgeValues || []
+  const useEdgeByEdge = edgeValues.length > 0 && ['l-shape', 'diagonal', 't-shape', 'u-shape'].includes(example.shape)
+
+  const [step, setStep] = useState(0)
+  const totalSteps = useEdgeByEdge ? edgeValues.length + 2 : (example.steps?.length || 0) + 1
+  const goNext = () => setStep((s) => Math.min(s + 1, totalSteps - 1))
+  const goPrev = () => setStep((s) => Math.max(s - 1, 0))
+
+  const highlightedEdgeCount = useEdgeByEdge ? step : 0
+  const renderDiagram = () => {
+    if (example.shape === 'l-shape') return <LShapeDiagramAnimated dims={example.dims} highlightedEdgeCount={highlightedEdgeCount} />
+    if (example.shape === 'diagonal') return <DiagonalShapeDiagramAnimated dims={example.dims} highlightedEdgeCount={highlightedEdgeCount} />
+    if (example.shape === 't-shape') return <TShapeDiagramAnimated dims={example.dims} highlightedEdgeCount={highlightedEdgeCount} />
+    if (example.shape === 'u-shape') return <UShapeDiagramAnimated dims={example.dims} highlightedEdgeCount={highlightedEdgeCount} />
+    if (example.shape === 'frame') return <FrameDiagram dims={example.dims} />
+    return <LShapeDiagram dims={example.dims} />
+  }
+
+  const getFormulaDisplay = () => {
+    if (!useEdgeByEdge || step === 0) return 'පරිමිතිය = '
+    if (step <= edgeValues.length) {
+      const parts = edgeValues.slice(0, step)
+      return `පරිමිතිය = ${parts.join(' + ')}`
+    }
+    return `පරිමිතිය = ${edgeValues.join(' + ')} = ${example.perimeter} cm`
+  }
+
+  return (
+    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 shadow-xl shadow-sipyaya-900/5">
+      <div className="h-1.5 bg-gradient-to-r from-sipyaya-400 via-sipyaya-500 to-emerald-500" />
+      <div className="px-4 py-2 bg-sipyaya-50/50 border-b border-sipyaya-200/60">
+        <p className="text-center text-sm font-medium text-sipyaya-700">උදාහරණය {exampleId}</p>
+      </div>
+      <div className="p-6 md:p-8">
+        <div className="flex flex-col gap-8 w-full max-w-2xl mx-auto">
+          <p className="text-ink-600 font-medium text-center">{example.label}</p>
+          {example.explanation && (
+            <div className="rounded-xl border border-amber-200/80 bg-amber-50/60 px-4 py-3 text-sm text-ink-700">
+              <span className="font-semibold text-amber-800">පැහැදිළි කිරීම: </span>
+              {example.explanation}
+            </div>
+          )}
+          <div className={`flex justify-center mx-auto ${['t-shape', 'u-shape'].includes(example.shape) ? 'max-w-[560px]' : 'max-w-[320px]'}`}>{renderDiagram()}</div>
+          {useEdgeByEdge && (
+            <div className="rounded-2xl border border-sipyaya-200/80 bg-white/90 p-5 shadow-sm">
+              <p className="text-ink-500 text-sm mb-3 px-4 py-2 rounded-xl bg-sipyaya-50/50">
+                {step === 0 ? 'පාදය highlight වන විට පරිමිතිය = කියලා පටන්ගන්න. ඊළඟ පාදය highlight වන වට + දාලා දාන්න.' : step <= edgeValues.length ? `පාදය ${step} එකතු කළා` : 'පිළිතුර'}
+              </p>
+              <p className="px-4 py-3 rounded-xl bg-sipyaya-100 text-sipyaya-800 font-semibold text-lg">
+                {getFormulaDisplay()}
+              </p>
+            </div>
+          )}
+          {useEdgeByEdge && step > edgeValues.length && (
+            <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/30 p-5 shadow-sm animate-fade-in">
+              <p className="px-4 py-3 rounded-xl bg-sipyaya-100 text-sipyaya-800 font-semibold text-lg">
+                පිළිතුර: පරිමිතිය = {example.perimeter} cm
+              </p>
+            </div>
+          )}
+          {!useEdgeByEdge && example.steps && (
+            <>
+              <div className="rounded-2xl border border-sipyaya-200/80 bg-white/90 p-5 shadow-sm">
+                <h3 className="text-sm font-bold text-sipyaya-700 uppercase tracking-wider mb-4">පියවර</h3>
+                {step === 0 && (
+                  <p className="text-ink-500 text-sm mb-4 px-4 py-2 rounded-xl bg-sipyaya-50/50">පියවර අනුගමනය කිරීමට ඊළඟ බොත්තම ඔබන්න</p>
+                )}
+                <ol className="space-y-3">
+                  {example.steps.map((s, i) => (
+                    <li key={i} className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 ${
+                      step === i + 1 ? 'bg-sipyaya-100 border-2 border-sipyaya-400' : step > i + 1 ? 'bg-emerald-50/60 text-ink-600' : 'bg-ink-50/50 text-ink-400'
+                    }`}>
+                      <span className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold ${
+                        step === i + 1 ? 'bg-sipyaya-500 text-white' : step > i + 1 ? 'bg-emerald-500 text-white' : 'bg-ink-200 text-ink-500'
+                      }`}>
+                        {step > i + 1 ? '✓' : i + 1}
+                      </span>
+                      <span className="font-medium">{s}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              {step >= example.steps.length && (
+                <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/30 p-5 shadow-sm animate-fade-in">
+                  <p className="px-4 py-3 rounded-xl bg-sipyaya-100 text-sipyaya-800 font-semibold text-lg">
+                    පිළිතුර: පරිමිතිය = {example.perimeter} cm
+                  </p>
+                </div>
+              )}
+            </>
+          )}
+          <div className="flex items-center gap-4 w-full justify-center">
+            <button type="button" onClick={() => setStep(0)} className="p-2.5 rounded-xl bg-ink-100 text-ink-500 hover:bg-sipyaya-100 hover:text-sipyaya-600 transition-all duration-200" aria-label="මුලට">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+            </button>
+            <button type="button" onClick={goPrev} disabled={step === 0} className="p-2.5 rounded-xl bg-ink-100 text-ink-500 hover:bg-sipyaya-100 hover:text-sipyaya-600 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed" aria-label="පෙර">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+            </button>
+            <div className="flex gap-2">
+              {[...Array(totalSteps)].map((_, i) => (
+                <button key={i} type="button" onClick={() => setStep(i)} className={`h-2.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-gradient-to-r from-sipyaya-500 to-emerald-500' : 'w-2.5 bg-ink-200 hover:bg-ink-300 hover:w-3'}`} aria-label={`පියවර ${i + 1}`} />
+              ))}
+            </div>
+            <button type="button" onClick={goNext} disabled={step === totalSteps - 1} className="p-2.5 rounded-xl bg-ink-100 text-ink-500 hover:bg-sipyaya-100 hover:text-sipyaya-600 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed" aria-label="ඊළඟ">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function CompositePerimeterSection({ examples }) {
+  const [expanded, setExpanded] = useState(false)
+  return (
+    <div className="my-8 space-y-10">
+      <CompositeExampleAnimation example={examples[0]} exampleId="01" />
+      {examples.length > 1 && (
+        <>
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setExpanded(!expanded)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sipyaya-100 hover:bg-sipyaya-200/80 text-sipyaya-700 font-medium transition-colors"
+            >
+              {expanded ? 'උදාහරණ හැකුලුම් කරන්න' : `තවත් උදාහරණ ${examples.length - 1} බලන්න`}
+              <svg className={`w-5 h-5 transition-transform ${expanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+          {expanded && (
+            <div className="space-y-10 animate-fade-in pt-4 border-t border-sipyaya-200/60">
+              {examples.slice(1).map((ex, i) => (
+                <CompositeExampleAnimation key={i} example={ex} exampleId={`${String(i + 2).padStart(2, '0')}`} />
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  )
+}
+
 /** තල රූපයකට උදාහරණ 5 — කැමති නම් බලන්න, නැත්නම් මගහැර යන්න */
 export function PerimeterExamplesSection({ shape, examples, shapeLabel }) {
   const [expanded, setExpanded] = useState(false)

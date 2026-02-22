@@ -25,21 +25,21 @@ export default function Home() {
   return (
     <div className="space-y-24">
       <section className="grid md:grid-cols-2 gap-8">
-        <div className="p-8 md:p-10 glass rounded-3xl border border-ink-200/60 shadow-lg shadow-ink-900/5 bg-gradient-to-br from-sipyaya-50/50 to-transparent">
+        <div className="p-8 md:p-10 glass rounded-3xl border border-ink-200/60 dark:border-ink-700/60 shadow-lg shadow-ink-900/5 dark:shadow-black/20 bg-gradient-to-br from-sipyaya-50/50 to-transparent dark:from-sipyaya-900/20 dark:to-transparent">
           <div className="flex items-center gap-3 mb-4">
             <span className="text-3xl">👁️</span>
-            <h2 className="text-2xl font-bold text-ink-900">දැක්ම</h2>
+            <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100">දැක්ම</h2>
           </div>
-          <p className="text-ink-700 leading-relaxed text-lg">
+          <p className="text-ink-700 dark:text-ink-300 leading-relaxed text-lg">
             සෑම දරුවෙකුටම ගණිතය රසවත් සහ පහසුවෙන් ඉගෙන ගැනීමට හැකියාව ලැබෙන ලොවක් ගොඩනැගීම. ගණිතය බියකරු නොව රසවත් විෂයක් ලෙස දැකීමට සැමට හැකි වීම.
           </p>
         </div>
-        <div className="p-8 md:p-10 glass rounded-3xl border border-ink-200/60 shadow-lg shadow-ink-900/5 bg-gradient-to-br from-emerald-50/50 to-transparent">
+        <div className="p-8 md:p-10 glass rounded-3xl border border-ink-200/60 dark:border-ink-700/60 shadow-lg shadow-ink-900/5 dark:shadow-black/20 bg-gradient-to-br from-emerald-50/50 to-transparent dark:from-emerald-900/20 dark:to-transparent">
           <div className="flex items-center gap-3 mb-4">
             <span className="text-3xl">🎯</span>
-            <h2 className="text-2xl font-bold text-ink-900">මෙහෙවර</h2>
+            <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100">මෙහෙවර</h2>
           </div>
-          <p className="text-ink-700 leading-relaxed text-lg">
+          <p className="text-ink-700 dark:text-ink-300 leading-relaxed text-lg">
             සිංහල භාෂාවෙන් පැහැදිලි සහ පියවරෙන් පියවර ගණිත පාඩම් සපයා, සියලු දෙනාට නොමිලේ ගණිත ඉගෙනුම පහසු කිරීම. සරල සිට දුෂ්කර දක්වා සියලු මට්ටම්වලට අදාළ පාඩම් ලබා දීම.
           </p>
         </div>
@@ -47,16 +47,16 @@ export default function Home() {
 
       <section className="relative text-center py-16 md:py-24 overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <img src="/favicon.png" alt="" className="w-48 md:w-64 h-48 md:h-64 opacity-20 select-none -z-10 animate-float object-contain" />
+          <img src="/favicon.png" alt="" className="w-48 md:w-64 h-48 md:h-64 opacity-20 dark:opacity-10 select-none -z-10 animate-float object-contain" />
         </div>
         <div className="relative animate-fade-in-up">
           <h1 className="text-5xl md:text-7xl font-display font-bold text-gradient mb-4 drop-shadow-sm">
             ZShool
           </h1>
-          <p className="text-xl md:text-2xl text-ink-600 mb-3 font-medium">
+          <p className="text-xl md:text-2xl text-ink-600 dark:text-ink-400 mb-3 font-medium">
             ගණිතය පහසුවෙන් ඉගෙන ගන්න
           </p>
-          <p className="text-ink-500 max-w-xl mx-auto mb-12 text-lg">
+          <p className="text-ink-500 dark:text-ink-400 max-w-xl mx-auto mb-12 text-lg">
             පියවරෙන් පියවර ගණිතය ඉගෙන ගැනීමට සරල සහ රසවත් පාඩම්
           </p>
           <Link
@@ -75,14 +75,14 @@ export default function Home() {
         {features.map((item, i) => (
           <div
             key={item.title}
-            className="group p-8 glass rounded-3xl border border-ink-200/60 shadow-lg shadow-ink-900/5 hover:shadow-xl hover:shadow-sipyaya-500/10 hover:border-sipyaya-200/80 transition-all duration-300 hover:-translate-y-1 animate-fade-in-up"
+            className="group p-8 glass rounded-3xl border border-ink-200/60 dark:border-ink-700/60 shadow-lg shadow-ink-900/5 dark:shadow-black/20 hover:shadow-xl dark:hover:shadow-sipyaya-500/10 hover:border-sipyaya-200/80 dark:hover:border-sipyaya-700/50 transition-all duration-300 hover:-translate-y-1 animate-fade-in-up"
             style={{ animationDelay: `${i * 150}ms` }}
           >
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sipyaya-100 to-sipyaya-50 flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition-transform duration-300">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sipyaya-100 to-sipyaya-50 dark:from-sipyaya-900/50 dark:to-sipyaya-800/50 flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition-transform duration-300">
               {item.icon}
             </div>
-            <h3 className="font-bold text-ink-900 mb-2 text-lg">{item.title}</h3>
-            <p className="text-ink-600 text-sm leading-relaxed">{item.desc}</p>
+            <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-2 text-lg">{item.title}</h3>
+            <p className="text-ink-600 dark:text-ink-400 text-sm leading-relaxed">{item.desc}</p>
           </div>
         ))}
       </section>

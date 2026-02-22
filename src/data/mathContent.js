@@ -10,7 +10,7 @@ export const textbookChapters = [
         title: 'පරිමිතිය',
         subtopics: [
           {
-            title: 'තල රූපවල පරිමිතිය',
+            title: '01. තල රූපවල පරිමිතිය',
             content: [
               { type: 'text', value: 'ඔබ පෙර ශ්‍රේණිවලදී ඍජුකෝණාස්‍රය, සමචතුරස්‍රය, ත්‍රිකෝණය සහ වෘත්තය වැනි තල රූපවල පරිමිතිය සොයා ගැනීම ඉගෙන ගෙන ඇත. ඒ සම්බන්ධයෙන් පහත ආකාරයට සාරාංශගත කළ හැකිය.' },
               { type: 'text', value: 'ඍජුකෝණාස්‍රය (දිග සහ පළල ඇති රූපය):' },
@@ -65,12 +65,74 @@ export const textbookChapters = [
                 { radiusVal: 3.5 },
                 { radiusVal: 10.5 },
               ]},
+            ],
+          },
+          {
+            title: 'අභ්‍යාස 01.01',
+            content: [
               { type: 'exercise', title: 'අභ්‍යාස 01.01', exerciseId: '01-01', questions: [
                 { shape: 'rectangle', lengthVal: 8, widthVal: 5, answer: '26', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
                 { shape: 'square', sideVal: 6, answer: '24', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
                 { shape: 'triangle', a: 3, b: 4, c: 5, answer: '12', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
                 { shape: 'circle', radiusVal: 7, answer: '44', unit: 'cm', prompt: 'පරිමිතිය (π = 22/7) සොයන්න.' },
                 { shape: 'rectangle', lengthVal: 10, widthVal: 4, answer: '28', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
+                { shape: 'square', sideVal: 9, answer: '36', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
+                { shape: 'triangle', a: 5, b: 5, c: 8, answer: '18', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
+                { shape: 'circle', radiusVal: 14, answer: '88', unit: 'cm', prompt: 'පරිමිතිය (π = 22/7) සොයන්න.' },
+                { shape: 'rectangle', lengthVal: 12, widthVal: 7, answer: '38', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
+                { shape: 'triangle', a: 6, b: 8, c: 10, answer: '24', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
+              ] },
+            ],
+          },
+          {
+            title: '02. සංයුක්ත තල රූපවල පරිමිතිය',
+            content: [
+              { type: 'text', value: 'සංයුක්ත තල රූප යනු ඍජුකෝණාස්‍ර, සමචතුරස්‍ර, ත්‍රිකෝණ වැනි මූලික රූප කිහිපයක් එකට යා කර ගත් රූපයි. L හැඩය, T හැඩය, හෝ කොනකින් කැපූ රූප වැනි දේවල් සංයුක්ත රූප වේ.' },
+              { type: 'text', value: 'සංයුක්ත රූපයක පරිමිතිය සොයා ගැනීමට රූපයේ පිටත මායිම (බාහිර දාර) පමණක් එකතු කරන්න. ඇතුළත යා කර ගත් දාර (බෙදා ගත් දාර) පරිමිතියට ඇතුළත් නොකරන්න.' },
+              { type: 'math', value: '\\text{සංයුක්ත රූපයක පරිමිතිය} = \\text{බාහිර දාරවල දිගවල එකතුව}' },
+              { type: 'callout', value: 'උපක්‍රමය: රූපය වටා යන මාර්ගය එක් වරක් අනුගමනය කර එම දාරවල දිග එකතු කරන්න.', variant: 'important' },
+              { type: 'text', value: 'උදාහරණ:' },
+              { type: 'compositeExamples', examples: [
+                {
+                  label: 'උදාහරණ 1 (1.(iv)): L හැඩය — ඉහළ 12 cm, වම 8 cm, ඇතුළත පියවර 3 cm × 3 cm',
+                  shape: 'l-shape',
+                  dims: { topW: 12, leftH: 8, rightH: 5, bottomW: 9, innerW: 3, innerH: 3 },
+                  perimeter: 40,
+                  edgeValues: [12, 5, 3, 3, 9, 8],
+                },
+                {
+                  label: 'උදාහරණ 2: T හැඩය — ඉහළ 10 cm, පැති 6 cm, මැද කඳ 4 cm',
+                  shape: 't-shape',
+                  dims: { topW: 10, stemW: 4, sideH: 6 },
+                  perimeter: 50,
+                  edgeValues: [10, 6, 3, 6, 4, 6, 3, 6],
+                  explanation: 'T හැඩය: ඉහළ තීරුව 10 cm, පැති 6 cm, මැද කඳ 4 cm. මැද කැපුමෙන් පැති 3 cm බැගින්.',
+                },
+                {
+                  label: 'උදාහරණ 3: U හැඩය — සෑම පාදයකටම දිග දී ඇත',
+                  shape: 'u-shape',
+                  dims: { topW: 10, sideH: 6, leftPart: 3, cutH: 3, cutW: 4 },
+                  perimeter: 38,
+                  edgeValues: [10, 6, 3, 3, 4, 3, 3, 6],
+                  explanation: 'U හැඩය: ඉහළ 10 cm, පැති 6 cm, පහළ පැති 3 cm, කැපුම 4×3 cm.',
+                },
+              ]},
+            ],
+          },
+          {
+            title: 'අභ්‍යාස 01.02',
+            content: [
+              { type: 'exercise', title: 'අභ්‍යාස 01.02', exerciseId: '01-02', questions: [
+                { shape: 'l-shape', dims: { topW: 12, leftH: 8, rightH: 5, bottomW: 9, innerW: 3, innerH: 3 }, answer: '40', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
+                { shape: 't-shape', dims: { topW: 10, stemW: 4, sideH: 6 }, answer: '44', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
+                { shape: 'u-shape', dims: { topW: 10, sideH: 6, leftPart: 3, cutH: 3, cutW: 4 }, answer: '38', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
+                { shape: 'l-shape', dims: { topW: 10, leftH: 6, rightH: 4, bottomW: 6, innerW: 2, innerH: 2 }, answer: '30', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
+                { shape: 't-shape', dims: { topW: 12, stemW: 4, sideH: 5 }, answer: '44', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
+                { shape: 'u-shape', dims: { topW: 8, sideH: 5, leftPart: 2, cutH: 2, cutW: 4 }, answer: '30', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
+                { shape: 'l-shape', dims: { topW: 14, leftH: 10, rightH: 6, bottomW: 10, innerW: 4, innerH: 4 }, answer: '48', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
+                { shape: 't-shape', dims: { topW: 8, stemW: 2, sideH: 4 }, answer: '32', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
+                { shape: 'u-shape', dims: { topW: 12, sideH: 7, leftPart: 4, cutH: 4, cutW: 4 }, answer: '46', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
+                { shape: 'l-shape', dims: { topW: 8, leftH: 5, rightH: 3, bottomW: 5, innerW: 2, innerH: 2 }, answer: '25', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
               ] },
             ],
           },

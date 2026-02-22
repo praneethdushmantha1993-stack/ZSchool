@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { useParams, Link } from 'react-router-dom'
 import { getChapterByNum } from '../data/mathContent'
 import MathBlock from '../components/MathBlock'
-import FormulaAnimation, { PerimeterExamplesSection } from '../components/FormulaAnimations'
+import FormulaAnimation, { PerimeterExamplesSection, CompositePerimeterSection } from '../components/FormulaAnimations'
 
 function scrollToSubtopic(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -40,25 +40,46 @@ export default function ChapterLesson() {
     })
   })
 
+  const isExerciseOnlySubtopic = (st) => {
+    const blocks = st.content || []
+    return blocks.length === 1 && blocks[0].type === 'exercise' && blocks[0].exerciseId
+  }
+
   const SubtopicNav = ({ onNavigate, className = '' }) => (
     <nav className={className}>
       <h3 className="text-sm font-bold text-ink-500 uppercase tracking-wider mb-3">අනුමාතෘකා</h3>
       <ul className="space-y-1">
-        {subtopics.map((subtopic, idx) => (
-          <li key={idx}>
-            <button
-              type="button"
-              onClick={() => {
-                scrollToSubtopic(`subtopic-${idx}`)
-                onNavigate?.()
-              }}
-              className="block w-full text-left px-3 py-2 rounded-lg text-sm text-ink-600 hover:bg-sipyaya-50 hover:text-sipyaya-700 transition-colors"
-            >
-              {subtopic.title}
-            </button>
-          </li>
-        ))}
-        {exercises.map((ex, idx) => (
+        {subtopics.map((subtopic, idx) => {
+          const exerciseBlock = subtopic.content?.find((b) => b.type === 'exercise' && b.exerciseId)
+          if (isExerciseOnlySubtopic(subtopic) && exerciseBlock) {
+            return (
+              <li key={idx}>
+                <Link
+                  to={`/chapter/${chapterNum}/exercise/${exerciseBlock.exerciseId}`}
+                  onClick={() => onNavigate?.()}
+                  className="block w-full text-left px-3 py-2 rounded-lg text-sm text-sipyaya-600 hover:bg-sipyaya-50 hover:text-sipyaya-700 transition-colors font-medium"
+                >
+                  {subtopic.title}
+                </Link>
+              </li>
+            )
+          }
+          return (
+            <li key={idx}>
+              <button
+                type="button"
+                onClick={() => {
+                  scrollToSubtopic(`subtopic-${idx}`)
+                  onNavigate?.()
+                }}
+                className="block w-full text-left px-3 py-2 rounded-lg text-sm text-ink-600 hover:bg-sipyaya-50 hover:text-sipyaya-700 transition-colors"
+              >
+                {subtopic.title}
+              </button>
+            </li>
+          )
+        })}
+        {exercises.filter((ex) => !subtopics.some((st) => isExerciseOnlySubtopic(st) && st.content?.[0]?.exerciseId === ex.exerciseId)).map((ex, idx) => (
           <li key={`ex-${idx}`}>
             <Link
               to={`/chapter/${chapterNum}/exercise/${ex.exerciseId}`}
@@ -111,6 +132,9 @@ export default function ChapterLesson() {
                         {block.type === 'animation' && <FormulaAnimation id={block.id} exampleId={block.exampleId} />}
                         {block.type === 'examples' && (
                           <PerimeterExamplesSection shape={block.shape} shapeLabel={block.shapeLabel} examples={block.examples} />
+                        )}
+                        {block.type === 'compositeExamples' && (
+                          <CompositePerimeterSection examples={block.examples} />
                         )}
                         {block.type === 'callout' && (
                           <div className={`rounded-2xl border-l-4 px-5 py-4 ${block.variant === 'important' ? 'bg-amber-50/80 border-amber-500 text-amber-900' : 'bg-sipyaya-50/80 border-sipyaya-500 text-sipyaya-900'}`}>

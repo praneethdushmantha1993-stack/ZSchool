@@ -9,20 +9,27 @@
 ### Remote add කරලා push කරන්න:
 
 ```bash
-# ඔබේ GitHub repo URL එක දාන්න (උදාහරණයක්)
+# 1. GitHub එකේ නව repo එකක් create කරන්න (https://github.com/new)
+# 2. ඔබේ repo URL එක දාන්න:
 git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
 
-# Push කරන්න
+# 3. Push කරන්න
 git push -u origin main
 ```
 
-## 2. Firebase Hosting
+## 2. Firebase Hosting + Auth + Firestore
 
 ### පළමු වතාවට:
 1. [Firebase Console](https://console.firebase.google.com) එකට ගිහින් project එකක් create කරන්න
 2. Firebase CLI install කරන්න: `npm install -g firebase-tools`
 3. Login: `firebase login`
-4. `.firebaserc` එකේ `YOUR_FIREBASE_PROJECT_ID` තැන ඔබේ project ID එක දාන්න
+4. `.firebaserc` එකේ ඔබේ project ID එක දාන්න
+
+### Login සහ ලකුණු සුරැකීම සඳහා:
+1. Firebase Console එකේ **Authentication** > **Sign-in method** > **Email/Password** enable කරන්න
+2. **Firestore Database** create කරන්න (production mode)
+3. Project Settings > General > Your apps > Web app එකේ config අගයන් copy කරන්න
+4. `.env.example` එක copy කරලා `.env` එකක් සාදා, අගයන් පුරවන්න
 
 ### Deploy කරන්න:
 
