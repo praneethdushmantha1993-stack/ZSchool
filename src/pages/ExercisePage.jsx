@@ -233,9 +233,11 @@ export default function ExercisePage() {
               }`}
             >
               <div className="flex flex-col sm:flex-row gap-6 items-start">
-                <div className="flex-shrink-0 w-full sm:w-48 flex justify-center">
-                  <ExerciseDiagram question={q} />
-                </div>
+                {!q.hideDiagram && (
+                  <div className="flex-shrink-0 w-full sm:w-48 flex justify-center">
+                    <ExerciseDiagram question={q} />
+                  </div>
+                )}
                 <div className="flex-1 min-w-0 space-y-4">
                   <p className="font-medium text-ink-700 dark:text-ink-300">
                     {idx + 1}. {q.prompt}
