@@ -7,20 +7,35 @@ import { BADGE_ICONS } from './BadgeIcons'
 import { formatPoints } from '../utils/formatPoints'
 import { Link } from 'react-router-dom'
 
+/** Mini shield path for compact badge */
+const MINI_SHIELD = 'M50 5 L92 22 V60 C92 82 50 96 50 96 C50 96 8 82 8 60 V22 L50 5 Z'
+
 /**
- * Compact badge icon for header - small circle with badge icon
+ * Compact badge - mini shield design matching full badge
  */
-function BadgeIconCompact({ color, iconIndex, earned, size = 32 }) {
+function BadgeIconCompact({ color, iconIndex, earned, size = 36 }) {
   const IconComponent = BADGE_ICONS[iconIndex] ?? (() => null)
+  const uid = `badge-${iconIndex}-${size}`
   return (
     <div
-      className={`rounded-full flex items-center justify-center flex-shrink-0 transition-transform hover:scale-110 ${
-        earned ? 'ring-2 ring-white dark:ring-ink-700 shadow-md' : 'opacity-50 grayscale'
+      className={`flex-shrink-0 transition-all duration-300 hover:scale-110 hover:drop-shadow-lg ${
+        earned ? 'drop-shadow-[0_2px_8px_rgba(0,0,0,0.2)]' : 'opacity-50 grayscale'
       }`}
-      style={{ width: size, height: size, backgroundColor: color }}
+      style={{ width: size, height: size * 1.15 }}
     >
-      <svg viewBox="0 0 100 100" className="w-[60%] h-[60%]" preserveAspectRatio="xMidYMid meet">
-        <IconComponent />
+      <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id={`gloss-${uid}`} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="white" stopOpacity="0.6" />
+            <stop offset="50%" stopColor="white" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path d={MINI_SHIELD} fill="#0f172a" stroke={color} strokeWidth="2.5" />
+        <path d={MINI_SHIELD} fill={color} fillOpacity="0.25" />
+        <g transform="translate(0, 0)">
+          <IconComponent />
+        </g>
+        <path d="M12 25 Q50 15 88 25 V35 Q50 25 12 35 Z" fill={`url(#gloss-${uid})`} opacity="0.3" />
       </svg>
     </div>
   )

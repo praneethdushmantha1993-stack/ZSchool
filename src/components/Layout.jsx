@@ -203,11 +203,8 @@ export default function Layout() {
               {user && (
                 <div className="inline-flex items-center gap-2">
                   <span className="inline-flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-lg bg-sipyaya-100 dark:bg-sipyaya-900/50 text-sipyaya-700 dark:text-sipyaya-300 text-sm font-medium" title="ලකුණු">
-                    <span className="sm:hidden">
-                      <img src="/favicon.png" alt="ZShool" className="w-6 h-6 object-contain" />
-                    </span>
                     <span className="hidden sm:inline">🏆</span>
-                    <span className="hidden sm:inline">{totalScore ?? '...'}</span>
+                    <span>{totalScore ?? '...'}</span>
                   </span>
                   <BadgeHeaderButton />
                 </div>

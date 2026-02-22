@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { getUserTotalScore } from '../services/scoreService'
 import BadgeShield from '../components/BadgeShield'
+import BadgeCard from '../components/BadgeCard'
 import { getEarnedBadges, getNextBadge } from '../utils/badgeUtils'
 import { BADGE_DEFINITIONS, getBadgeThreshold, getBadgeRange } from '../data/badgeData'
 import { formatPoints } from '../utils/formatPoints'
@@ -31,6 +32,7 @@ export default function Achievements() {
   const earned = getEarnedBadges(totalScore ?? 0)
   const nextBadge = getNextBadge(totalScore ?? 0)
   const earnedSet = new Set(earned.map((b) => b.index))
+  const [viewMode, setViewMode] = useState('card') // 'card' | 'shield'
 
   if (!user) {
     return (
@@ -53,6 +55,30 @@ export default function Achievements() {
           <span className="text-2xl">🏆</span>
           <span className="text-xl font-bold">{formatPoints(totalScore ?? 0)}</span>
           <span className="text-sm">ලකුණු</span>
+        </div>
+        <div className="mt-3 flex gap-2 justify-center">
+          <button
+            type="button"
+            onClick={() => setViewMode('card')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              viewMode === 'card'
+                ? 'bg-sipyaya-600 text-white'
+                : 'bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400 hover:bg-ink-200 dark:hover:bg-ink-700'
+            }`}
+          >
+            කාඩ්
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode('shield')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              viewMode === 'shield'
+                ? 'bg-sipyaya-600 text-white'
+                : 'bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400 hover:bg-ink-200 dark:hover:bg-ink-700'
+            }`}
+          >
+            ෂීල්ඩ්
+          </button>
         </div>
       </header>
 
@@ -77,11 +103,30 @@ export default function Achievements() {
         </div>
       )}
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-y-20 gap-x-6 items-center justify-items-center">
+      <div
+        className={
+          viewMode === 'card'
+            ? 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-10 gap-6 items-start justify-items-center'
+            : 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-y-20 gap-x-6 items-center justify-items-center'
+        }
+      >
         {BADGE_DEFINITIONS.map((def, i) => {
           const threshold = getBadgeThreshold(i)
           const { min, max } = getBadgeRange(i)
           const earned = earnedSet.has(i)
+          if (viewMode === 'card') {
+            return (
+              <BadgeCard
+                key={i}
+                index={i}
+                name={def.name}
+                color={def.color}
+                iconIndex={i}
+                earned={earned}
+                size={56}
+              />
+            )
+          }
           return (
             <div key={i} className="flex flex-col items-center">
               <BadgeShield
