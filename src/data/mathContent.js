@@ -70,6 +70,11 @@ export const textbookChapters = [
           {
             title: 'අභ්‍යාස 01.01',
             content: [
+              { type: 'text', value: 'උදාහරණ: දිග පළල පිළිවෙලින් 11cm ක් සහ 8cm වන ඍජුකෝණාස්‍රයක පරිමිතිය සොයන්න.' },
+              { type: 'text', value: 'උදාහරණ: පැත්තක දිග 7cm වන සමචතුරස්‍රයක පරිමිතිය සොයන්න.' },
+              { type: 'text', value: 'උදාහරණ: පැති දිග 4cm, 5cm සහ 6cm වන ත්‍රිකෝණයක පරිමිතිය සොයන්න.' },
+              { type: 'text', value: 'උදාහරණ: අරය 10cm වන වෘත්තයක පරිමිතිය සොයන්න (π = 22/7).' },
+              { type: 'text', value: 'උදාහරණ: දිග 15cm සහ පළල 9cm වන ඍජුකෝණාස්‍රයක පරිමිතිය සොයන්න.' },
               { type: 'exercise', title: 'අභ්‍යාස 01.01', exerciseId: '01-01', questions: [
                 { shape: 'rectangle', lengthVal: 8, widthVal: 5, answer: '26', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
                 { shape: 'square', sideVal: 6, answer: '24', unit: 'cm', prompt: 'පරිමිතිය සොයන්න.' },
