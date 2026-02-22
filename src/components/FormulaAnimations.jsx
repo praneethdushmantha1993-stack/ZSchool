@@ -180,7 +180,7 @@ export function RectanglePerimeterAnimation() {
           </div>
 
           {/* Step description */}
-          <div className="w-full max-w-md rounded-2xl bg-white/80 px-5 py-4 shadow-sm border border-ink-100 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl bg-white/80 dark:bg-ink-900/80 px-5 py-4 shadow-sm border border-ink-100 dark:border-ink-700 backdrop-blur-sm max-md:backdrop-blur-none max-md:bg-white/95 max-md:dark:bg-ink-900/95">
             <p className="text-center text-ink-700 font-medium">{stepLabels[step]}</p>
           </div>
 
