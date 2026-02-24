@@ -330,9 +330,13 @@ export default function ExercisePage() {
       <div className="mt-8 flex justify-between items-center">
         <Link
           to={`/chapter/${chapterNum}`}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sipyaya-600 dark:text-sipyaya-400 hover:bg-sipyaya-50 dark:hover:bg-ink-800 font-medium transition-colors"
+          className="inline-flex items-center gap-2 p-2.5 md:px-4 md:py-2.5 rounded-xl text-sipyaya-600 dark:text-sipyaya-400 hover:bg-sipyaya-50 dark:hover:bg-ink-800 font-medium transition-colors"
+          aria-label="පාඩමට ආපසු"
         >
-          ← පාඩමට ආපසු
+          <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span className="hidden md:inline">පාඩමට ආපසු</span>
         </Link>
       </div>
     </div>

@@ -123,21 +123,22 @@ export default function ChapterLesson() {
       <div
         ref={fullScreenRef}
         className={`relative flex flex-col items-center w-full bg-gradient-to-br from-sipyaya-50/80 via-white to-emerald-50/50 dark:from-ink-900 dark:via-ink-800 dark:to-ink-900 ${
-          isFullScreen ? 'h-screen overflow-hidden' : 'min-h-[calc(100vh-12rem)]'
+          isFullScreen ? 'h-screen overflow-y-auto md:overflow-hidden' : 'min-h-[calc(100vh-12rem)]'
         }`}
       >
         <Link
           to="/chapters"
-          className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors z-50 self-start ${
+          className={`inline-flex items-center gap-2 p-2.5 md:px-4 md:py-2.5 rounded-xl font-medium transition-colors z-50 self-start ${
             isFullScreen
               ? 'fixed top-4 left-4 bg-ink-900/90 dark:bg-ink-100/90 text-white dark:text-ink-900 hover:bg-ink-900 dark:hover:bg-ink-100 shadow-lg'
               : 'text-sipyaya-600 hover:bg-sipyaya-50 mt-4 ml-4'
           }`}
+          aria-label="පාඩම් වෙත ආපසු"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          පාඩම් වෙත ආපසු
+          <span className="hidden md:inline">පාඩම් වෙත ආපසු</span>
         </Link>
 
         {/* Top center: Subtopic dropdown */}
@@ -188,7 +189,7 @@ export default function ChapterLesson() {
           </div>
 
           {/* Slide content - white box with border */}
-          <div className="flex-1 w-full max-w-5xl mx-4 mt-4 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-xl shadow-lg overflow-hidden min-h-0 flex flex-col">
+          <div className="flex-1 w-full max-w-5xl mx-4 mt-4 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-xl shadow-lg overflow-y-auto md:overflow-hidden min-h-0 flex flex-col">
             {activeSubtopic?.content?.length > 0 ? (
               <div className="flex-1 flex flex-col min-h-0 w-full overflow-hidden">
                 {activeSubtopic.content.map((block, i) => (
@@ -220,16 +221,17 @@ export default function ChapterLesson() {
       {/* Back button - fixed when in full screen */}
       <Link
         to="/chapters"
-        className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors z-50 ${
+        className={`inline-flex items-center gap-2 p-2.5 md:px-4 md:py-2.5 rounded-xl font-medium transition-colors z-50 ${
           isFullScreen
             ? 'fixed top-4 left-4 bg-ink-900/90 dark:bg-ink-100/90 text-white dark:text-ink-900 hover:bg-ink-900 dark:hover:bg-ink-100 shadow-lg'
             : 'text-sipyaya-600 hover:bg-sipyaya-50'
         }`}
+        aria-label="පාඩම් වෙත ආපසු"
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
-        පාඩම් වෙත ආපසු
+        <span className="hidden md:inline">පාඩම් වෙත ආපසු</span>
       </Link>
 
       {/* Main content */}
@@ -315,12 +317,13 @@ export default function ChapterLesson() {
         <div className="mt-8">
           <Link
             to="/chapters"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sipyaya-600 hover:bg-sipyaya-50 font-medium transition-colors"
+            className="inline-flex items-center gap-2 p-2.5 md:px-4 md:py-2.5 rounded-xl text-sipyaya-600 hover:bg-sipyaya-50 font-medium transition-colors"
+            aria-label="පාඩම් වෙත ආපසු"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            පාඩම් වෙත ආපසු
+            <span className="hidden md:inline">පාඩම් වෙත ආපසු</span>
           </Link>
         </div>
         )}

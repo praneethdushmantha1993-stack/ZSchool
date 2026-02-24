@@ -43,16 +43,17 @@ export default function Lesson() {
       {/* Back button - fixed when in full screen */}
       <Link
         to="/chapters"
-        className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors z-50 ${
+        className={`inline-flex items-center gap-2 p-2.5 md:px-4 md:py-2.5 rounded-xl font-medium transition-colors z-50 ${
           isFullScreen
             ? 'fixed top-4 left-4 bg-ink-900/90 dark:bg-ink-100/90 text-white dark:text-ink-900 hover:bg-ink-900 dark:hover:bg-ink-100 shadow-lg'
             : 'text-sipyaya-600 hover:bg-sipyaya-50'
         }`}
+        aria-label="පාඩම් වෙත ආපසු"
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
-        පාඩම් වෙත ආපසු
+        <span className="hidden md:inline">පාඩම් වෙත ආපසු</span>
       </Link>
 
       <div className={`px-6 py-8 ${isFullScreen ? 'pt-16' : ''}`}>
@@ -86,12 +87,13 @@ export default function Lesson() {
       <div className="mt-8">
         <Link
           to="/chapters"
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sipyaya-600 hover:bg-sipyaya-50 font-medium transition-colors"
+          className="inline-flex items-center gap-2 p-2.5 md:px-4 md:py-2.5 rounded-xl text-sipyaya-600 hover:bg-sipyaya-50 font-medium transition-colors"
+          aria-label="පාඩම් වෙත ආපසු"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          පාඩම් වෙත ආපසු
+          <span className="hidden md:inline">පාඩම් වෙත ආපසු</span>
         </Link>
       </div>
       )}

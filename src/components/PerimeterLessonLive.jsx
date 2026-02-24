@@ -226,9 +226,13 @@ export default function PerimeterLessonLive() {
             <button
               type="button"
               onClick={() => { setSelectedShape(null); clearTimeouts(); }}
-              className="text-sm text-sipyaya-600 hover:text-sipyaya-700 dark:text-sipyaya-400 dark:hover:text-sipyaya-300 font-medium"
+              className="inline-flex items-center gap-2 p-2 md:p-0 md:py-0.5 text-sm text-sipyaya-600 hover:text-sipyaya-700 dark:text-sipyaya-400 dark:hover:text-sipyaya-300 font-medium"
+              aria-label="රූප තෝරන්න"
             >
-              ← රූප තෝරන්න
+              <svg className="w-5 h-5 shrink-0 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              <span className="hidden md:inline">රූප තෝරන්න</span>
             </button>
           </div>
 
