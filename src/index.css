@@ -36,4 +36,75 @@
   .dropdown-menu {
     @apply bg-white dark:bg-ink-900 border border-ink-200 dark:border-ink-700;
   }
+
+  /* Shape side draw animation (පරිමිතිය - සජීවී) — dasharray/dashoffset inline එකෙන් */
+  .shape-side-draw {
+    fill: none;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear;
+  }
+
+  /* PerimeterLessonLive — HTML reference වගේ */
+  .shape-side {
+    fill: none;
+    stroke: #e2e8f0;
+    stroke-width: 4;
+    stroke-linecap: round;
+  }
+  .active-side-draw {
+    stroke: #2563eb !important;
+    stroke-width: 6 !important;
+    stroke-dasharray: 600 !important;
+    stroke-dashoffset: 600;
+    animation: drawSide 1s linear forwards;
+  }
+  .circle-side.active-side-draw {
+    stroke-dasharray: 100 !important;
+    stroke-dashoffset: 100;
+  }
+  .circle-side.active-side-draw {
+    animation: drawSide 1.2s linear forwards;
+  }
+  @keyframes drawSide {
+    to { stroke-dashoffset: 0; }
+  }
+  .label-text {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    fill: #1e40af;
+    font-weight: bold;
+  }
+  .label-visible { opacity: 1; }
+  .formula-part {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s ease-out;
+    margin: 0 2px;
+  }
+  .formula-part.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .shape-side-draw.drawn {
+    stroke-dashoffset: 0;
+  }
+  .formula-part-enter {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+  .formula-part-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  /* පාද border ඇඳෙන අවසානයෙන් පසු ලේබල් පෙන්වන්න */
+  .shape-label-after-draw {
+    opacity: 0;
+    animation: label-appear-after-draw 0.4s ease 1s forwards;
+  }
+  @keyframes label-appear-after-draw {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
 }

@@ -1,4 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
+import { useRef, useState, useEffect } from 'react'
 import { getTopic, getLesson } from '../data/mathContent'
 import MathBlock from '../components/MathBlock'
 
@@ -6,6 +7,21 @@ export default function Lesson() {
   const { topicId, lessonId } = useParams()
   const topic = getTopic(topicId)
   const lesson = getLesson(topicId, lessonId)
+  const fullScreenRef = useRef(null)
+  const [isFullScreen, setIsFullScreen] = useState(false)
+
+  useEffect(() => {
+    const handler = () => setIsFullScreen(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', handler)
+    return () => document.removeEventListener('fullscreenchange', handler)
+  }, [])
+
+  // Auto full screen when lesson loads
+  useEffect(() => {
+    if (!topic || !lesson) return
+    const timer = setTimeout(() => fullScreenRef.current?.requestFullscreen?.(), 150)
+    return () => clearTimeout(timer)
+  }, [topicId, lessonId])
 
   if (!topic || !lesson) {
     return (
@@ -20,7 +36,26 @@ export default function Lesson() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto animate-fade-in-up">
+    <div
+      ref={fullScreenRef}
+      className={`relative w-full max-w-3xl mx-auto animate-fade-in-up min-h-[calc(100vh-12rem)] bg-gradient-to-br from-sipyaya-50/80 via-white to-emerald-50/50 dark:from-ink-900 dark:via-ink-800 dark:to-ink-900 ${isFullScreen ? 'overflow-auto' : ''}`}
+    >
+      {/* Back button - fixed when in full screen */}
+      <Link
+        to="/chapters"
+        className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors z-50 ${
+          isFullScreen
+            ? 'fixed top-4 left-4 bg-ink-900/90 dark:bg-ink-100/90 text-white dark:text-ink-900 hover:bg-ink-900 dark:hover:bg-ink-100 shadow-lg'
+            : 'text-sipyaya-600 hover:bg-sipyaya-50'
+        }`}
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        පාඩම් වෙත ආපසු
+      </Link>
+
+      <div className={`px-6 py-8 ${isFullScreen ? 'pt-16' : ''}`}>
       <nav className="mb-6 flex items-center gap-2 text-sm text-ink-500 flex-wrap">
         <Link to="/chapters" className="hover:text-sipyaya-600 transition-colors">පාඩම්</Link>
         <span className="text-ink-300">/</span>
@@ -47,19 +82,19 @@ export default function Lesson() {
         </div>
       </article>
 
-      <div className="mt-8 flex justify-between items-center">
+      {!isFullScreen && (
+      <div className="mt-8">
         <Link
           to="/chapters"
           className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sipyaya-600 hover:bg-sipyaya-50 font-medium transition-colors"
         >
-          ← පාඩම් වෙත ආපසු
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          පාඩම් වෙත ආපසු
         </Link>
-        <Link
-          to="/chapters"
-          className="px-6 py-2.5 bg-gradient-to-r from-sipyaya-600 to-sipyaya-500 text-white rounded-xl font-medium shadow-lg shadow-sipyaya-500/25 hover:shadow-sipyaya-500/40 transition-all hover:-translate-y-0.5"
-        >
-          ඊළඟ පාඩම
-        </Link>
+      </div>
+      )}
       </div>
     </div>
   )

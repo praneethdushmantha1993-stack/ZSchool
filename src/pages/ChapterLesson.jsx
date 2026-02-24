@@ -1,9 +1,13 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useParams, Link } from 'react-router-dom'
 import { getChapterByNum } from '../data/mathContent'
 import MathBlock from '../components/MathBlock'
-import FormulaAnimation, { PerimeterExamplesSection, CompositePerimeterSection } from '../components/FormulaAnimations'
+import FormulaAnimation, {
+  PerimeterExamplesSection,
+  CompositePerimeterSection,
+} from '../components/FormulaAnimations'
+import PerimeterLessonLive from '../components/PerimeterLessonLive'
 
 function scrollToSubtopic(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -12,7 +16,22 @@ function scrollToSubtopic(id) {
 export default function ChapterLesson() {
   const { chapterNum } = useParams()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const fullScreenRef = useRef(null)
+  const [isFullScreen, setIsFullScreen] = useState(false)
   const result = getChapterByNum(chapterNum)
+
+  useEffect(() => {
+    const handler = () => setIsFullScreen(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', handler)
+    return () => document.removeEventListener('fullscreenchange', handler)
+  }, [])
+
+  // Auto full screen when lesson loads
+  useEffect(() => {
+    if (!result) return
+    const timer = setTimeout(() => fullScreenRef.current?.requestFullscreen?.(), 150)
+    return () => clearTimeout(timer)
+  }, [chapterNum])
 
   if (!result) {
     return (
@@ -29,6 +48,9 @@ export default function ChapterLesson() {
   const { lesson, section } = result
   const hasContent = lesson.subtopics && lesson.subtopics.length > 0
   const subtopics = lesson.subtopics || []
+  const isSlideMode = lesson.slideMode === true
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
 
   // Extract exercises from subtopic content for sidebar nav
   const exercises = []
@@ -94,10 +116,124 @@ export default function ChapterLesson() {
     </nav>
   )
 
+  // Slide mode layout (පරිමිතිය lesson)
+  if (isSlideMode && subtopics.length > 0) {
+    const activeSubtopic = subtopics[activeSlideIndex]
+    return (
+      <div
+        ref={fullScreenRef}
+        className={`relative flex flex-col items-center w-full bg-gradient-to-br from-sipyaya-50/80 via-white to-emerald-50/50 dark:from-ink-900 dark:via-ink-800 dark:to-ink-900 ${
+          isFullScreen ? 'h-screen overflow-hidden' : 'min-h-[calc(100vh-12rem)]'
+        }`}
+      >
+        <Link
+          to="/chapters"
+          className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors z-50 self-start ${
+            isFullScreen
+              ? 'fixed top-4 left-4 bg-ink-900/90 dark:bg-ink-100/90 text-white dark:text-ink-900 hover:bg-ink-900 dark:hover:bg-ink-100 shadow-lg'
+              : 'text-sipyaya-600 hover:bg-sipyaya-50 mt-4 ml-4'
+          }`}
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          පාඩම් වෙත ආපසු
+        </Link>
+
+        {/* Top center: Subtopic dropdown */}
+        <div className={`flex-1 flex flex-col items-center w-full min-h-0 ${isFullScreen ? 'pt-14 pb-2' : 'pt-8'}`}>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setDropdownOpen((o) => !o)}
+              className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-lg shadow-sm hover:border-sipyaya-400 transition-colors min-w-[280px] justify-between"
+            >
+              <span className="font-medium text-ink-900 dark:text-ink-100">{activeSubtopic?.title}</span>
+              <svg
+                className={`w-5 h-5 text-ink-500 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {dropdownOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setDropdownOpen(false)}
+                  aria-hidden="true"
+                />
+                <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-lg shadow-xl overflow-hidden min-w-[280px]">
+                  {subtopics.map((st, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        setActiveSlideIndex(idx)
+                        setDropdownOpen(false)
+                      }}
+                      className={`block w-full text-left px-6 py-3 hover:bg-sipyaya-50 dark:hover:bg-sipyaya-900/30 transition-colors ${
+                        idx === activeSlideIndex ? 'bg-sipyaya-100 dark:bg-sipyaya-900/50 text-sipyaya-700 dark:text-sipyaya-300 font-medium' : 'text-ink-700 dark:text-ink-300'
+                      }`}
+                    >
+                      {st.title}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Slide content - white box with border */}
+          <div className="flex-1 w-full max-w-5xl mx-4 mt-4 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-xl shadow-lg overflow-hidden min-h-0 flex flex-col">
+            {activeSubtopic?.content?.length > 0 ? (
+              <div className="flex-1 flex flex-col min-h-0 w-full overflow-hidden">
+                {activeSubtopic.content.map((block, i) => (
+                  <div key={i}>
+                    {block.type === 'slideShapes' && block.shapes && (
+                      <div className="flex-1 flex flex-col min-h-0 w-full overflow-hidden">
+                        <PerimeterLessonLive />
+                      </div>
+                    )}
+                    {block.type === 'text' && <p className="text-ink-700 dark:text-ink-300 leading-loose text-lg text-center">{block.value}</p>}
+                    {block.type === 'math' && <div className="flex justify-center"><MathBlock value={block.value} /></div>}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-ink-500 dark:text-ink-400 text-lg">මෙම අනුමාතෘකාවේ අන්තර්ගතය ඉක්මනින් එකතු කරනු ලැබේ.</p>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="flex gap-8 animate-fade-in-up">
+    <div
+      ref={fullScreenRef}
+      className={`relative flex gap-8 animate-fade-in-up w-full min-h-[calc(100vh-12rem)] bg-gradient-to-br from-sipyaya-50/80 via-white to-emerald-50/50 dark:from-ink-900 dark:via-ink-800 dark:to-ink-900 ${isFullScreen ? 'overflow-auto' : ''}`}
+    >
+      {/* Back button - fixed when in full screen */}
+      <Link
+        to="/chapters"
+        className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors z-50 ${
+          isFullScreen
+            ? 'fixed top-4 left-4 bg-ink-900/90 dark:bg-ink-100/90 text-white dark:text-ink-900 hover:bg-ink-900 dark:hover:bg-ink-100 shadow-lg'
+            : 'text-sipyaya-600 hover:bg-sipyaya-50'
+        }`}
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        පාඩම් වෙත ආපසු
+      </Link>
+
       {/* Main content */}
-      <div className="min-w-0 flex-1 max-w-3xl">
+      <div className={`min-w-0 flex-1 max-w-3xl ${isFullScreen ? 'pt-16' : 'pt-10'}`}>
         <nav className="mb-6 flex items-center gap-2 text-sm text-ink-500 flex-wrap">
           <Link to="/chapters" className="hover:text-sipyaya-600 transition-colors">පාඩම්</Link>
           <span className="text-ink-300">/</span>
@@ -175,22 +311,19 @@ export default function ChapterLesson() {
           </div>
         </article>
 
-        <div className="mt-8 flex justify-between items-center">
+        {!isFullScreen && (
+        <div className="mt-8">
           <Link
             to="/chapters"
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sipyaya-600 hover:bg-sipyaya-50 font-medium transition-colors"
           >
-            ← පාඩම් වෙත ආපසු
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            පාඩම් වෙත ආපසු
           </Link>
-          {chapterNum < 32 && (
-            <Link
-              to={`/chapter/${parseInt(chapterNum, 10) + 1}`}
-              className="px-6 py-2.5 bg-gradient-to-r from-sipyaya-600 to-sipyaya-500 text-white rounded-xl font-medium shadow-lg shadow-sipyaya-500/25 hover:shadow-sipyaya-500/40 transition-all hover:-translate-y-0.5"
-            >
-              ඊළඟ පාඩම
-            </Link>
-          )}
         </div>
+        )}
       </div>
 
       {/* Desktop: Right sidebar - subtopics */}

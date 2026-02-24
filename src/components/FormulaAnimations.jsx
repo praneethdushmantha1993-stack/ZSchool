@@ -1,236 +1,109 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { InlineMath } from 'react-katex'
 import 'katex/dist/katex.min.css'
 
-/** ඍජුකෝණාස්‍රයේ පරිමිතිය - සූත්‍රය පියවරෙන් පියවර නිර්මාණය */
+/** ඍජුකෝණාස්‍රයේ පරිමිතිය - සූත්‍රය පියවරෙන් පියවර - සජීවී draw animation */
 export function RectanglePerimeterAnimation() {
   const [step, setStep] = useState(0)
-  const totalSteps = 5
-
-  const goNext = () => setStep((s) => Math.min(s + 1, totalSteps - 1))
-  const goPrev = () => setStep((s) => Math.max(s - 1, 0))
+  const totalSteps = 6
+  const autoPlayRef = useRef(null)
 
   const l = 140
   const w = 90
   const cx = 140
   const cy = 95
 
-  // Step 0: පරිමිතිය = only
-  // Step 1: highlight top (දිග), formula shows දිග
-  // Step 2: highlight left (පළල), formula shows දිග + පළල
-  // Step 3: highlight bottom+right (2nd set), formula shows 2 × (දිග + පළල)
-  // Step 4: වීජීය සංකේත P = 2(l + w)
-  const highlightLength = step >= 1
-  const highlightWidth = step >= 2
-  const highlightSecondSet = step >= 3
+  const pts = [[cx - l/2, cy - w/2], [cx + l/2, cy - w/2], [cx + l/2, cy + w/2], [cx - l/2, cy + w/2]]
+  const paths = pts.map((p, i) => `M ${p[0]} ${p[1]} L ${pts[(i+1)%4][0]} ${pts[(i+1)%4][1]}`)
+  const sideColors = ['#2563eb', '#0d9488', '#2563eb', '#0d9488']
 
   const stepLabels = [
     'පරිමිතිය සොයා ගැනීම ආරම්භ කරමු',
-    'දිග highlight කරයි — සූත්‍රයට දිග එකතු වේ',
-    'පළල highlight කරයි — දිගට + පළල එකතු වේ',
-    'තව දිගක් සහ පළලක් තියෙනවා — වරහන දා 2න් ගුණ කරයි',
-    'වීජීය සංකේත: P = 2(l + w) — l = දිග, w = පළල',
+    'පළමු දිග (a) මනිමු.',
+    'පළල (b) එකතු කරමු.',
+    'දෙවන දිග (a) එකතු කරමු.',
+    'දෙවන පළල (b) එකතු කරමු.',
+    'දිගු (a) දෙකක් සහ පළලවල් (b) දෙකක් බැවින් = 2 × (a + b)',
   ]
-
-  // Formula builds progressively
   const getFormulaDisplay = () => {
     if (step === 0) return { left: 'පරිමිතිය = ', right: '' }
-    if (step === 1) return { left: 'පරිමිතිය = ', right: 'දිග' }
-    if (step === 2) return { left: 'පරිමිතිය = ', right: 'දිග + පළල' }
-    if (step === 3) return { left: 'පරිමිතිය = ', right: '2 × (දිග + පළල)' }
-    if (step >= 4) return { left: 'P = ', right: '2(l + w)' }
+    if (step === 1) return { left: 'පරිමිතිය = ', right: 'a' }
+    if (step === 2) return { left: 'පරිමිතිය = ', right: 'a + b' }
+    if (step === 3) return { left: 'පරිමිතිය = ', right: 'a + b + a' }
+    if (step === 4) return { left: 'පරිමිතිය = ', right: 'a + b + a + b' }
+    if (step >= 5) return { left: 'පරිමිතිය = ', right: '2 × (a + b)' }
     return { left: '', right: '' }
   }
-
   const formula = getFormulaDisplay()
-  const showFormulaArea = true
+
+  const startAutoPlay = () => {
+    if (autoPlayRef.current) return
+    setStep(0)
+    let s = 0
+    const advance = () => {
+      s++
+      if (s < totalSteps) {
+        setStep(s)
+        autoPlayRef.current = setTimeout(advance, 2200)
+      } else {
+        autoPlayRef.current = null
+      }
+    }
+    autoPlayRef.current = setTimeout(advance, 1400)
+  }
+  useEffect(() => () => { if (autoPlayRef.current) clearTimeout(autoPlayRef.current) }, [])
 
   return (
     <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 shadow-xl shadow-sipyaya-900/5">
       <div className="h-1.5 bg-gradient-to-r from-sipyaya-400 via-sipyaya-500 to-emerald-500" />
-
       <div className="p-6 md:p-8">
         <div className="flex flex-col items-center gap-6">
-          {/* SVG Diagram */}
           <div className="relative w-full max-w-md">
-            <svg
-              viewBox="0 0 280 220"
-              className="w-full drop-shadow-lg"
-              style={{ minHeight: 240 }}
-            >
+            <svg viewBox="0 0 280 220" className="w-full drop-shadow-lg" style={{ minHeight: 240 }}>
               <defs>
-                <linearGradient id="lengthGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#22c55e" />
-                  <stop offset="50%" stopColor="#4ade80" />
-                  <stop offset="100%" stopColor="#22c55e" />
-                </linearGradient>
-                <linearGradient id="widthGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#0d9488" />
-                  <stop offset="50%" stopColor="#2dd4bf" />
-                  <stop offset="100%" stopColor="#0d9488" />
-                </linearGradient>
+                {/* a=නිල්, b=තේල් — පාද border වෙන පාට */}
                 <filter id="borderGlow" x="-30%" y="-30%" width="160%" height="160%">
                   <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
+                  <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
                 </filter>
-                <filter id="softShadow">
-                  <feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.08" />
-                </filter>
+                <filter id="softShadow"><feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.08" /></filter>
               </defs>
-
-              {/* Main rectangle - සුදු, අඳුරු නැත, border වෙනම draw කරමු */}
-              <rect
-                x={cx - l / 2}
-                y={cy - w / 2}
-                width={l}
-                height={w}
-                fill="white"
-                stroke="none"
-                filter="url(#softShadow)"
-              />
-
-              {/* Borders - highlight කරන විට ලස්සන gradient + glow */}
+              <rect x={cx - l/2} y={cy - w/2} width={l} height={w} fill="white" stroke="none" filter="url(#softShadow)" />
               <g strokeLinecap="round" strokeLinejoin="round">
-                {/* Top (දිග) - step 1 */}
-                <line
-                  x1={cx - l / 2}
-                  y1={cy - w / 2}
-                  x2={cx + l / 2}
-                  y2={cy - w / 2}
-                  stroke={highlightLength ? 'url(#lengthGrad)' : '#64748b'}
-                  strokeWidth={highlightLength ? 6 : 2.5}
-                  filter={highlightLength ? 'url(#borderGlow)' : undefined}
-                  className="transition-all duration-500"
-                />
-                {/* Bottom (දිග) - step 3 */}
-                <line
-                  x1={cx - l / 2}
-                  y1={cy + w / 2}
-                  x2={cx + l / 2}
-                  y2={cy + w / 2}
-                  stroke={highlightSecondSet ? 'url(#lengthGrad)' : '#64748b'}
-                  strokeWidth={highlightSecondSet ? 6 : 2.5}
-                  filter={highlightSecondSet ? 'url(#borderGlow)' : undefined}
-                  className="transition-all duration-500"
-                />
-                {/* Left (පළල) - step 2 */}
-                <line
-                  x1={cx - l / 2}
-                  y1={cy - w / 2}
-                  x2={cx - l / 2}
-                  y2={cy + w / 2}
-                  stroke={highlightWidth ? 'url(#widthGrad)' : '#64748b'}
-                  strokeWidth={highlightWidth ? 6 : 2.5}
-                  filter={highlightWidth ? 'url(#borderGlow)' : undefined}
-                  className="transition-all duration-500"
-                />
-                {/* Right (පළල) - step 3 */}
-                <line
-                  x1={cx + l / 2}
-                  y1={cy - w / 2}
-                  x2={cx + l / 2}
-                  y2={cy + w / 2}
-                  stroke={highlightSecondSet ? 'url(#widthGrad)' : '#64748b'}
-                  strokeWidth={highlightSecondSet ? 6 : 2.5}
-                  filter={highlightSecondSet ? 'url(#borderGlow)' : undefined}
-                  className="transition-all duration-500"
-                />
-              </g>
-
-              {/* Labels */}
-              <text x={cx} y={cy - w / 2 - 14} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">
-                දිග
-              </text>
-              <text
-                x={cx - l / 2 - 22}
-                y={cy}
-                textAnchor="middle"
-                transform={`rotate(-90 ${cx - l/2 - 22} ${cy})`}
-                className="fill-ink-700 text-sm font-semibold"
-              >
-                පළල
-              </text>
-
-              {/* Formula - builds step by step, border highlights with draw animation when formula has content */}
-              {showFormulaArea && (
-                <g>
-                  <rect
-                    x="15"
-                    y="175"
-                    width="250"
-                    height="36"
-                    fill="white"
-                    stroke={step >= 1 ? '#16a34a' : '#e2e8f0'}
-                    strokeWidth={step >= 1 ? 2 : 1.5}
-                    strokeDasharray={step >= 1 ? 572 : undefined}
-                    className={step >= 1 ? 'animate-formula-border-draw' : ''}
-                    filter="url(#softShadow)"
+                {paths.map((d, idx) => (
+                  <path
+                    key={idx}
+                    d={d}
+                    pathLength={100}
+                    fill="none"
+                    stroke={step > idx ? sideColors[idx] : '#e2e8f0'}
+                    strokeWidth={step > idx ? 6 : 4}
+                    filter={step > idx ? 'url(#borderGlow)' : undefined}
+                    className="shape-side-draw"
+                    style={{ strokeDasharray: 100, strokeDashoffset: step > idx ? 0 : 100, transition: 'stroke-dashoffset 1s linear' }}
                   />
-                  {/* Formula text - builds step by step */}
-                  <text x="140" y="197" textAnchor="middle" className="fill-sipyaya-800 text-base font-bold">
-                    {formula.left}
-                    <tspan fill={formula.right ? '#16a34a' : '#94a3b8'}>{formula.right || '...'}</tspan>
-                  </text>
-                </g>
-              )}
+                ))}
+              </g>
+              <text x={cx} y={cy - w/2 - 14} textAnchor="middle" className={`fill-sipyaya-800 text-sm font-bold transition-opacity duration-500 ${step >= 1 ? 'opacity-100' : 'opacity-0'}`}>a</text>
+              <text x={cx + l/2 + 14} y={cy} textAnchor="start" className={`fill-sipyaya-800 text-sm font-bold transition-opacity duration-500 ${step >= 2 ? 'opacity-100' : 'opacity-0'}`}>b</text>
+              <text x={cx} y={cy + w/2 + 14} textAnchor="middle" className={`fill-sipyaya-800 text-sm font-bold transition-opacity duration-500 ${step >= 3 ? 'opacity-100' : 'opacity-0'}`}>a</text>
+              <text x={cx - l/2 - 14} y={cy} textAnchor="end" className={`fill-sipyaya-800 text-sm font-bold transition-opacity duration-500 ${step >= 4 ? 'opacity-100' : 'opacity-0'}`}>b</text>
+              <g>
+                <rect x="15" y="175" width="250" height="36" fill="white" stroke={step >= 1 ? '#16a34a' : '#e2e8f0'} strokeWidth={step >= 1 ? 2 : 1.5} filter="url(#softShadow)" />
+                <text x="140" y="197" textAnchor="middle" className="fill-sipyaya-800 text-base font-bold">
+                  {formula.left}<tspan fill={formula.right ? '#2563eb' : '#94a3b8'}>{formula.right || '...'}</tspan>
+                </text>
+              </g>
             </svg>
           </div>
-
-          {/* Step description */}
-          <div className="w-full max-w-md rounded-2xl bg-white/80 dark:bg-ink-900/80 px-5 py-4 shadow-sm border border-ink-100 dark:border-ink-700 backdrop-blur-sm max-md:backdrop-blur-none max-md:bg-white/95 max-md:dark:bg-ink-900/95">
+          <div className="w-full max-w-md rounded-2xl bg-white/80 px-5 py-4 shadow-sm border border-ink-100 min-h-[80px] flex items-center justify-center">
             <p className="text-center text-ink-700 font-medium">{stepLabels[step]}</p>
           </div>
-
-          {/* Controls */}
-          <div className="flex items-center gap-4 w-full max-w-sm justify-center">
-            <button
-              type="button"
-              onClick={() => setStep(0)}
-              className="p-2.5 rounded-xl bg-ink-100 text-ink-500 hover:bg-sipyaya-100 hover:text-sipyaya-600 transition-all duration-200"
-              aria-label="මුලට"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
+          <div className="flex flex-col gap-3 w-full max-w-sm items-center">
+            <button type="button" onClick={startAutoPlay} className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition-all">
+              සජීවීකරණය ආරම්භ කරන්න
             </button>
-            <button
-              type="button"
-              onClick={goPrev}
-              className="p-2.5 rounded-xl bg-ink-100 text-ink-500 hover:bg-sipyaya-100 hover:text-sipyaya-600 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
-              disabled={step === 0}
-              aria-label="පෙර"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <div className="flex gap-2">
-              {[...Array(totalSteps)].map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => setStep(i)}
-                  className={`h-2.5 rounded-full transition-all duration-300 ${
-                    i === step ? 'w-8 bg-gradient-to-r from-sipyaya-500 to-emerald-500' : 'w-2.5 bg-ink-200 hover:bg-ink-300 hover:w-3'
-                  }`}
-                  aria-label={`පියවර ${i + 1}`}
-                />
-              ))}
-            </div>
-            <button
-              type="button"
-              onClick={goNext}
-              className="p-2.5 rounded-xl bg-ink-100 text-ink-500 hover:bg-sipyaya-100 hover:text-sipyaya-600 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
-              disabled={step === totalSteps - 1}
-              aria-label="ඊළඟ"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
+            <StepControls step={step} totalSteps={totalSteps} setStep={setStep} />
           </div>
         </div>
       </div>
@@ -275,29 +148,62 @@ function RectanglePerimeterExampleAnimation({ exampleId = '01.01.01', lengthVal 
   )
 }
 
-/** සමචතුරස්‍රයේ පරිමිතිය - සූත්‍රය (4 පැති සමාන) */
-function SquarePerimeterAnimation() {
+/** සමචතුරස්‍රයේ පරිමිතිය - පියවර: 1) border නිල් 2) a ලේබල් 3) සූත්‍රය */
+export function SquarePerimeterAnimation() {
   const [step, setStep] = useState(0)
-  const totalSteps = 5
+  const totalSteps = 14
+  const autoPlayRef = useRef(null)
+
+  const startAutoPlay = () => {
+    if (autoPlayRef.current) return
+    setStep(0)
+    let s = 0
+    const advance = () => {
+      s++
+      if (s < totalSteps) {
+        setStep(s)
+        autoPlayRef.current = setTimeout(advance, 2200)
+      } else {
+        autoPlayRef.current = null
+      }
+    }
+    autoPlayRef.current = setTimeout(advance, 1400)
+  }
+  useEffect(() => () => { if (autoPlayRef.current) clearTimeout(autoPlayRef.current) }, [])
   const side = 100
   const cx = 140
   const cy = 100
 
-  const highlightSides = step >= 1
+  const pts = [[cx - side/2, cy - side/2], [cx + side/2, cy - side/2], [cx + side/2, cy + side/2], [cx - side/2, cy + side/2]]
+  const paths = pts.map((p, i) => `M ${p[0]} ${p[1]} L ${pts[(i+1)%4][0]} ${pts[(i+1)%4][1]}`)
+  const sideColors = ['#2563eb', '#0d9488', '#6366f1', '#d97706']
+  const showBorder = (idx) => step >= 1 + idx * 3
+  const showLabel = (idx) => step >= 2 + idx * 3
   const stepLabels = [
     'පරිමිතිය සොයා ගැනීම ආරම්භ කරමු',
-    'පැත්ත 1 — සූත්‍රයට පැත්ත එකතු වේ',
-    'පැත්ත 2 — දෙවන පැත්ත',
-    'පැති 3 සහ 4 — සියලු පැති සමාන, පරිමිතිය = 4 × පැත්ත',
-    'වීජීය සංකේත: P = 4s — s = පැත්තක දිග',
+    'උඩ පාදය — border නිල් පාටින් highlight වේ',
+    'පාදය a කියලා නම් කරමු',
+    'පරිමිතිය = a',
+    'දකුණු පාදය — border highlight',
+    'දෙවන පැත්ත a',
+    'පරිමිතිය = a + a',
+    'පහළ පාදය — border highlight',
+    'තෙවන පැත්ත a',
+    'පරිමිතිය = a + a + a',
+    'වම් පාදය — border highlight',
+    'හතරවන පැත්ත a',
+    'පරිමිතිය = a + a + a + a',
+    'සමාන පැති 4 බැවින් පරිමිතිය = 4 × a',
   ]
   const getFormulaDisplay = () => {
     if (step === 0) return { left: 'පරිමිතිය = ', right: '' }
-    if (step === 1) return { left: 'පරිමිතිය = ', right: 'පැත්ත' }
-    if (step === 2) return { left: 'පරිමිතිය = ', right: 'පැත්ත + පැත්ත' }
-    if (step === 3) return { left: 'පරිමිතිය = ', right: '4 × පැත්ත' }
-    if (step >= 4) return { left: 'P = ', right: '4s' }
-    return { left: '', right: '' }
+    if (step <= 2) return { left: 'පරිමිතිය = ', right: '' }
+    if (step <= 5) return { left: 'පරිමිතිය = ', right: 'a' }
+    if (step <= 8) return { left: 'පරිමිතිය = ', right: 'a + a' }
+    if (step <= 11) return { left: 'පරිමිතිය = ', right: 'a + a + a' }
+    if (step === 12) return { left: 'පරිමිතිය = ', right: 'a + a + a + a' }
+    if (step >= 13) return { left: 'පරිමිතිය = ', right: '4 × a' }
+    return { left: 'පරිමිතිය = ', right: '' }
   }
   const formula = getFormulaDisplay()
 
@@ -309,42 +215,61 @@ function SquarePerimeterAnimation() {
           <div className="relative w-full max-w-md">
             <svg viewBox="0 0 280 220" className="w-full drop-shadow-lg" style={{ minHeight: 240 }}>
               <defs>
-                <linearGradient id="squareGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#22c55e" />
-                  <stop offset="100%" stopColor="#0d9488" />
-                </linearGradient>
+                {/* ත්‍රිකෝණයේ c පාදය වගේ — border highlight */}
                 <filter id="squareGlow" x="-30%" y="-30%" width="160%" height="160%">
                   <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
                   <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
                 </filter>
                 <filter id="squareShadow"><feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.08" /></filter>
               </defs>
-              <rect x={cx - side/2} y={cy - side/2} width={side} height={side} fill="white" stroke="none" filter="url(#squareShadow)" />
+              <polygon points={pts.flat().join(' ')} fill="white" stroke="none" filter="url(#squareShadow)" />
               <g strokeLinecap="round" strokeLinejoin="round">
-                {[[0,1],[1,2],[2,3],[3,0]].map(([i,j], idx) => {
-                  const pts = [[cx-side/2,cy-side/2],[cx+side/2,cy-side/2],[cx+side/2,cy+side/2],[cx-side/2,cy+side/2]]
-                  const [x1,y1] = pts[i]
-                  const [x2,y2] = pts[j]
+                {paths.map((d, idx) => {
+                  const [p1, p2] = [pts[idx], pts[(idx + 1) % 4]]
                   return (
-                    <line key={idx} x1={x1} y1={y1} x2={x2} y2={y2}
-                      stroke={highlightSides ? 'url(#squareGrad)' : '#64748b'} strokeWidth={highlightSides ? 6 : 2.5}
-                      filter={highlightSides ? 'url(#squareGlow)' : undefined} className="transition-all duration-500" />
+                    <line
+                      key={idx}
+                      x1={p1[0]}
+                      y1={p1[1]}
+                      x2={p2[0]}
+                      y2={p2[1]}
+                      stroke={showBorder(idx) ? sideColors[idx] : '#94a3b8'}
+                      strokeWidth={showBorder(idx) ? 7 : 4}
+                      fill="none"
+                      filter={showBorder(idx) ? 'url(#squareGlow)' : undefined}
+                      style={{
+                        strokeDasharray: 100,
+                        strokeDashoffset: showBorder(idx) ? 0 : 100,
+                        transition: 'stroke-dashoffset 1s linear',
+                      }}
+                    />
                   )
                 })}
               </g>
-              <text x={cx} y={cy - side/2 - 14} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">පැත්ත</text>
+              {[[cx, cy - side/2 - 14, 'middle'], [cx + side/2 + 14, cy, 'start'], [cx, cy + side/2 + 14, 'middle'], [cx - side/2 - 14, cy, 'end']].map(([x, y, anchor], idx) => (
+                <text key={idx} x={x} y={y} textAnchor={anchor} className={`fill-sipyaya-800 text-sm font-bold transition-opacity duration-500 ${showLabel(idx) ? 'opacity-100' : 'opacity-0'}`}>a</text>
+              ))}
               <g>
-                <rect x="15" y="175" width="250" height="36" fill="white" stroke={step >= 1 ? '#16a34a' : '#e2e8f0'} strokeWidth={step >= 1 ? 2 : 1.5} filter="url(#squareShadow)" />
+                <rect x="15" y="175" width="250" height="36" fill="white" stroke={step >= 3 ? '#16a34a' : '#e2e8f0'} strokeWidth={step >= 3 ? 2 : 1.5} filter="url(#squareShadow)" />
                 <text x="140" y="197" textAnchor="middle" className="fill-sipyaya-800 text-base font-bold">
-                  {formula.left}<tspan fill={formula.right ? '#16a34a' : '#94a3b8'}>{formula.right || '...'}</tspan>
+                  {formula.left}<tspan fill={formula.right ? '#2563eb' : '#94a3b8'} className={formula.right ? 'formula-part-visible' : ''}>{formula.right || '...'}</tspan>
                 </text>
               </g>
             </svg>
           </div>
-          <div className="w-full max-w-md rounded-2xl bg-white/80 px-5 py-4 shadow-sm border border-ink-100">
+          <div className="w-full max-w-md rounded-2xl bg-white/80 px-5 py-4 shadow-sm border border-ink-100 min-h-[80px] flex items-center justify-center">
             <p className="text-center text-ink-700 font-medium">{stepLabels[step]}</p>
           </div>
-          <StepControls step={step} totalSteps={totalSteps} setStep={setStep} />
+          <div className="flex flex-col gap-3 w-full max-w-sm items-center">
+            <button
+              type="button"
+              onClick={startAutoPlay}
+              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition-all"
+            >
+              සජීවීකරණය ආරම්භ කරන්න
+            </button>
+            <StepControls step={step} totalSteps={totalSteps} setStep={setStep} />
+          </div>
         </div>
       </div>
     </div>
@@ -374,14 +299,17 @@ function SquarePerimeterExampleAnimation({ exampleId = '01.01.02', sideVal = 5 }
   )
 }
 
-/** ත්‍රිකෝණයේ පරිමිතිය - සූත්‍රය (පාද තුනේ එකතුව) */
-function TrianglePerimeterAnimation() {
+/** ත්‍රිකෝණයේ පරිමිතිය - සූත්‍රය (පාද තුනේ එකතුව) - සජීවී draw animation */
+export function TrianglePerimeterAnimation() {
   const [step, setStep] = useState(0)
   const totalSteps = 5
-  // 3-4-5 right triangle: top-left, bottom-left, bottom-right (a=4 base, b=3 left, c=5 hypotenuse)
+  const autoPlayRef = useRef(null)
   const pts = [[70, 75], [70, 180], [210, 180]]
+  const paths = pts.map((p, i) => `M ${p[0]} ${p[1]} L ${pts[(i+1)%3][0]} ${pts[(i+1)%3][1]}`)
+  const labels = ['a', 'b', 'c']
+  const labelPos = [{ x: 62, y: 127 }, { x: 140, y: 178 }, { x: 148, y: 120 }]
+  const sideColors = ['#2563eb', '#0d9488', '#6366f1']
 
-  const highlightSides = step >= 1
   const stepLabels = [
     'පරිමිතිය සොයා ගැනීම ආරම්භ කරමු',
     'පාදය a — සූත්‍රයට a එකතු වේ',
@@ -399,10 +327,22 @@ function TrianglePerimeterAnimation() {
   }
   const formula = getFormulaDisplay()
 
-  // Labels: a=3 (left), b=4 (base), c=5 (hypotenuse) — formula rect at y=205
-  const labelA = { x: 62, y: 127 }
-  const labelB = { x: 140, y: 178 }
-  const labelC = { x: 148, y: 120 }
+  const startAutoPlay = () => {
+    if (autoPlayRef.current) return
+    setStep(0)
+    let s = 0
+    const advance = () => {
+      s++
+      if (s < totalSteps) {
+        setStep(s)
+        autoPlayRef.current = setTimeout(advance, 2200)
+      } else {
+        autoPlayRef.current = null
+      }
+    }
+    autoPlayRef.current = setTimeout(advance, 1400)
+  }
+  useEffect(() => () => { if (autoPlayRef.current) clearTimeout(autoPlayRef.current) }, [])
 
   return (
     <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 shadow-xl shadow-sipyaya-900/5">
@@ -412,7 +352,7 @@ function TrianglePerimeterAnimation() {
           <div className="relative w-full max-w-md">
             <svg viewBox="0 0 280 250" className="w-full drop-shadow-lg" style={{ minHeight: 240 }}>
               <defs>
-                <linearGradient id="triGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#22c55e" /><stop offset="100%" stopColor="#0d9488" /></linearGradient>
+                {/* a=නිල්, b=තේල්, c=ඉන්ඩිගෝ */}
                 <filter id="triGlow" x="-30%" y="-30%" width="160%" height="160%">
                   <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
                   <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
@@ -421,31 +361,40 @@ function TrianglePerimeterAnimation() {
               </defs>
               <polygon points={pts.flat().join(' ')} fill="white" stroke="none" filter="url(#triShadow)" />
               <g strokeLinecap="round" strokeLinejoin="round">
-                {[[0,1],[1,2],[2,0]].map(([i,j], idx) => {
-                  const isBase = idx === 1
-                  const shouldHighlight = highlightSides && !isBase
-                  return (
-                    <line key={idx} x1={pts[i][0]} y1={pts[i][1]} x2={pts[j][0]} y2={pts[j][1]}
-                      stroke={shouldHighlight ? 'url(#triGrad)' : '#64748b'} strokeWidth={shouldHighlight ? 6 : 2.5}
-                      filter={shouldHighlight ? 'url(#triGlow)' : undefined} className="transition-all duration-500" />
-                  )
-                })}
+                {paths.map((d, idx) => (
+                  <path
+                    key={idx}
+                    d={d}
+                    pathLength={100}
+                    fill="none"
+                    stroke={step > idx ? sideColors[idx] : '#e2e8f0'}
+                    strokeWidth={step > idx ? 6 : 4}
+                    filter={step > idx ? 'url(#triGlow)' : undefined}
+                    className="shape-side-draw"
+                    style={{ strokeDasharray: 100, strokeDashoffset: step > idx ? 0 : 100, transition: 'stroke-dashoffset 1s linear' }}
+                  />
+                ))}
               </g>
-              <text x={labelA.x} y={labelA.y} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">a</text>
-              <text x={labelB.x} y={labelB.y} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">b</text>
-              <text x={labelC.x} y={labelC.y} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">c</text>
+              {labelPos.map((pos, idx) => (
+                <text key={idx} x={pos.x} y={pos.y} textAnchor="middle" className={`fill-sipyaya-800 text-sm font-bold transition-opacity duration-500 ${step > idx ? 'opacity-100' : 'opacity-0'}`}>{labels[idx]}</text>
+              ))}
               <g>
                 <rect x="15" y="205" width="250" height="36" fill="white" stroke={step >= 1 ? '#16a34a' : '#e2e8f0'} strokeWidth={step >= 1 ? 2 : 1.5} filter="url(#triShadow)" />
                 <text x="140" y="223" textAnchor="middle" className="fill-sipyaya-800 text-base font-bold">
-                  {formula.left}<tspan fill={formula.right ? '#16a34a' : '#94a3b8'}>{formula.right || '...'}</tspan>
+                  {formula.left}<tspan fill={formula.right ? '#2563eb' : '#94a3b8'}>{formula.right || '...'}</tspan>
                 </text>
               </g>
             </svg>
           </div>
-          <div className="w-full max-w-md rounded-2xl bg-white/80 px-5 py-4 shadow-sm border border-ink-100">
+          <div className="w-full max-w-md rounded-2xl bg-white/80 px-5 py-4 shadow-sm border border-ink-100 min-h-[80px] flex items-center justify-center">
             <p className="text-center text-ink-700 font-medium">{stepLabels[step]}</p>
           </div>
-          <StepControls step={step} totalSteps={totalSteps} setStep={setStep} />
+          <div className="flex flex-col gap-3 w-full max-w-sm items-center">
+            <button type="button" onClick={startAutoPlay} className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition-all">
+              සජීවීකරණය ආරම්භ කරන්න
+            </button>
+            <StepControls step={step} totalSteps={totalSteps} setStep={setStep} />
+          </div>
         </div>
       </div>
     </div>
@@ -586,10 +535,11 @@ function TrianglePerimeterExampleAnimation({ exampleId = '01.01.03', a = 3, b = 
   )
 }
 
-/** වෘත්තයේ පරිමිතිය - සූත්‍රය (2πr) */
-function CirclePerimeterAnimation() {
+/** වෘත්තයේ පරිමිතිය - සූත්‍රය (2πr) - සජීවී draw animation */
+export function CirclePerimeterAnimation() {
   const [step, setStep] = useState(0)
   const totalSteps = 4
+  const autoPlayRef = useRef(null)
   const cx = 140
   const cy = 95
   const r = 70
@@ -609,6 +559,23 @@ function CirclePerimeterAnimation() {
   }
   const formula = getFormulaDisplay()
 
+  const startAutoPlay = () => {
+    if (autoPlayRef.current) return
+    setStep(0)
+    let s = 0
+    const advance = () => {
+      s++
+      if (s < totalSteps) {
+        setStep(s)
+        autoPlayRef.current = setTimeout(advance, 2200)
+      } else {
+        autoPlayRef.current = null
+      }
+    }
+    autoPlayRef.current = setTimeout(advance, 1400)
+  }
+  useEffect(() => () => { if (autoPlayRef.current) clearTimeout(autoPlayRef.current) }, [])
+
   return (
     <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 shadow-xl shadow-sipyaya-900/5">
       <div className="h-1.5 bg-gradient-to-r from-sipyaya-400 via-sipyaya-500 to-emerald-500" />
@@ -617,23 +584,38 @@ function CirclePerimeterAnimation() {
           <div className="relative w-full max-w-md">
             <svg viewBox="0 0 280 220" className="w-full drop-shadow-lg" style={{ minHeight: 240 }}>
               <defs>
+                <linearGradient id="circleGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#2563eb" /><stop offset="100%" stopColor="#0d9488" /></linearGradient>
                 <filter id="circleShadow"><feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.08" /></filter>
               </defs>
-              <circle cx={cx} cy={cy} r={r} fill="white" stroke="#64748b" strokeWidth="2.5" className="transition-all duration-500" />
-              <line x1={cx} y1={cy} x2={cx + r} y2={cy} stroke="#64748b" strokeWidth="2" strokeDasharray="4" />
-              <text x={cx + r/2 + 10} y={cy - 8} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">r (අරය)</text>
+              <circle cx={cx} cy={cy} r={r} fill="white" stroke="none" filter="url(#circleShadow)" />
+              <circle
+                cx={cx} cy={cy} r={r}
+                fill="none"
+                stroke={step >= 1 ? 'url(#circleGrad)' : '#e2e8f0'}
+                strokeWidth={step >= 1 ? 6 : 4}
+                pathLength={100}
+                className="shape-side-draw"
+                style={{ strokeDasharray: 100, strokeDashoffset: step >= 1 ? 0 : 100, transition: 'stroke-dashoffset 1.2s linear' }}
+              />
+              <line x1={cx} y1={cy} x2={cx + r} y2={cy} stroke={step >= 1 ? '#2563eb' : '#64748b'} strokeWidth={step >= 1 ? 3 : 2} strokeDasharray="4" className="transition-all duration-500" />
+              <text x={cx + r/2 + 10} y={cy - 8} textAnchor="middle" className={`fill-sipyaya-800 text-sm font-bold transition-opacity duration-500 ${step >= 1 ? 'opacity-100' : 'opacity-0'}`}>r (අරය)</text>
               <g>
                 <rect x="15" y="175" width="250" height="36" fill="white" stroke={step >= 1 ? '#16a34a' : '#e2e8f0'} strokeWidth={step >= 1 ? 2 : 1.5} filter="url(#circleShadow)" />
                 <text x="140" y="197" textAnchor="middle" className="fill-sipyaya-800 text-base font-bold">
-                  {formula.left}<tspan fill={formula.right ? '#16a34a' : '#94a3b8'}>{formula.right || '...'}</tspan>
+                  {formula.left}<tspan fill={formula.right ? '#2563eb' : '#94a3b8'}>{formula.right || '...'}</tspan>
                 </text>
               </g>
             </svg>
           </div>
-          <div className="w-full max-w-md rounded-2xl bg-white/80 px-5 py-4 shadow-sm border border-ink-100">
+          <div className="w-full max-w-md rounded-2xl bg-white/80 px-5 py-4 shadow-sm border border-ink-100 min-h-[80px] flex items-center justify-center">
             <p className="text-center text-ink-700 font-medium">{stepLabels[step]}</p>
           </div>
-          <StepControls step={step} totalSteps={totalSteps} setStep={setStep} />
+          <div className="flex flex-col gap-3 w-full max-w-sm items-center">
+            <button type="button" onClick={startAutoPlay} className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition-all">
+              සජීවීකරණය ආරම්භ කරන්න
+            </button>
+            <StepControls step={step} totalSteps={totalSteps} setStep={setStep} />
+          </div>
         </div>
       </div>
     </div>
