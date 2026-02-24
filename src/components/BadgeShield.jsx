@@ -27,7 +27,7 @@ export default function BadgeShield({ color, glow, iconIndex, threshold, size = 
       >
         {earned && (
           <div
-            className={`neon-back-glow absolute inset-[10%] blur-[40px] opacity-20 group-hover:opacity-70 group-hover:scale-125 transition-all duration-500 rounded-full -z-10 ${glow}`}
+            className={`neon-back-glow absolute inset-[10%] blur-[40px] opacity-20 dark:opacity-35 group-hover:opacity-70 group-hover:scale-125 transition-all duration-500 rounded-full -z-10 ${glow}`}
           />
         )}
         <svg className="shield-svg w-full h-full drop-shadow-md" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
@@ -47,7 +47,7 @@ export default function BadgeShield({ color, glow, iconIndex, threshold, size = 
         </svg>
       </div>
       {showPoints && (pointsLabel != null || threshold != null) && (
-        <span className={`absolute -bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-semibold ${darkBg ? 'text-slate-400' : 'text-ink-600 dark:text-ink-400'}`}>
+        <span className={`absolute -bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-semibold ${darkBg ? 'text-slate-300' : 'text-ink-600 dark:text-ink-300'}`}>
           {pointsLabel ?? formatPoints(threshold)}
         </span>
       )}

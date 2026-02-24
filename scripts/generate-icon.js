@@ -44,26 +44,16 @@ async function generate() {
   const buffer = Buffer.from(svgIcon)
 
   await sharp(buffer)
-    .resize(size, size)
-    .webp({ quality: 94, effort: 6 })
-    .toFile(join(publicDir, 'icon.webp'))
-
-  await sharp(buffer)
-    .resize(192, 192)
-    .webp({ quality: 92 })
-    .toFile(join(publicDir, 'icon-192.webp'))
-
-  await sharp(buffer)
-    .resize(512, 512)
-    .webp({ quality: 94 })
-    .toFile(join(publicDir, 'icon-512.webp'))
-
-  await sharp(buffer)
     .resize(32, 32)
     .png()
     .toFile(join(publicDir, 'favicon.png'))
 
-  console.log('✓ Generated icon.webp, icon-192.webp, icon-512.webp, favicon.png')
+  await sharp(buffer)
+    .resize(180, 180)
+    .png()
+    .toFile(join(publicDir, 'icon.png'))
+
+  console.log('✓ Generated favicon.png, icon.png')
 }
 
 generate().catch(console.error)

@@ -6,8 +6,10 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   signOut,
+  updateProfile,
 } from 'firebase/auth'
 import { auth } from '../firebase/config'
+import { updateUserDisplayName } from '../services/scoreService'
 
 const AuthContext = createContext(null)
 
@@ -24,7 +26,13 @@ export function AuthProvider({ children }) {
   }, [])
 
   const login = (email, password) => signInWithEmailAndPassword(auth, email, password)
-  const register = (email, password) => createUserWithEmailAndPassword(auth, email, password)
+  const register = async (email, password, displayName) => {
+    const { user } = await createUserWithEmailAndPassword(auth, email, password)
+    if (displayName?.trim()) {
+      await updateProfile(user, { displayName: displayName.trim() })
+      await updateUserDisplayName(user.uid, displayName.trim())
+    }
+  }
   const loginWithGoogle = () => {
     const provider = new GoogleAuthProvider()
     provider.addScope('profile')

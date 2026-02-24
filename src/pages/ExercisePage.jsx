@@ -25,7 +25,7 @@ export default function ExercisePage() {
     return (
       <div className="text-center py-16 animate-fade-in">
         <div className="inline-flex w-16 h-16 rounded-full bg-ink-100 items-center justify-center text-3xl mb-4">?</div>
-        <p className="text-ink-600 mb-4">මෙම අභ්‍යාසය හමු නොවුණි.</p>
+        <p className="text-ink-600 dark:text-ink-300 mb-4">මෙම අභ්‍යාසය හමු නොවුණි.</p>
         <Link to="/chapters" className="inline-flex items-center gap-2 text-sipyaya-600 hover:text-sipyaya-700 font-medium">
           ← පාඩම් වෙත ආපසු යන්න
         </Link>
@@ -62,13 +62,14 @@ export default function ExercisePage() {
     if (user) {
       setSavingScore(true)
       try {
-        await saveExerciseScore(user.uid, chapterNum, exerciseId, {
-          correctCount,
-          wrongCount,
-          totalCount,
-          bonusPoints,
-          points,
-        })
+        await saveExerciseScore(
+          user.uid,
+          chapterNum,
+          exerciseId,
+          { correctCount, wrongCount, totalCount, bonusPoints, points },
+          exercise?.title,
+          user.displayName || user.email
+        )
         setScoreSaved(true)
         window.dispatchEvent(new CustomEvent('score-updated'))
       } catch (err) {
@@ -136,15 +137,15 @@ export default function ExercisePage() {
 
   return (
     <div className="max-w-2xl mx-auto animate-fade-in-up">
-      <nav className="mb-6 flex items-center gap-2 text-sm text-ink-500 dark:text-ink-400 flex-wrap">
+      <nav className="mb-6 flex items-center gap-2 text-sm text-ink-500 dark:text-ink-300 flex-wrap">
         <Link to="/chapters" className="hover:text-sipyaya-600 dark:hover:text-sipyaya-400 transition-colors">
           පාඩම්
         </Link>
-        <span className="text-ink-300 dark:text-ink-500">/</span>
+        <span className="text-ink-300 dark:text-ink-400">/</span>
         <Link to={`/chapter/${chapterNum}`} className="hover:text-sipyaya-600 dark:hover:text-sipyaya-400 transition-colors">
           {section.label} — {lesson.title}
         </Link>
-        <span className="text-ink-300 dark:text-ink-500">/</span>
+        <span className="text-ink-300 dark:text-ink-400">/</span>
         <span className="font-medium text-ink-900 dark:text-ink-100">{exercise.title}</span>
       </nav>
 
@@ -154,7 +155,7 @@ export default function ExercisePage() {
             අභ්‍යාස
           </span>
           <h1 className="text-2xl md:text-3xl font-bold text-ink-900 dark:text-ink-100">{exercise.title}</h1>
-          <p className="text-ink-600 dark:text-ink-400 mt-1">
+          <p className="text-ink-600 dark:text-ink-300 mt-1">
             පහත ප්‍රශ්න විසඳන්න. එක් එක් ආකාරයේ ගැටලු තියෙනවා.
           </p>
         </header>
@@ -188,7 +189,7 @@ export default function ExercisePage() {
               {!user && (
                 <Link
                   to="/login"
-                  className="text-sm text-ink-500 dark:text-ink-400 hover:text-sipyaya-600 dark:hover:text-sipyaya-400"
+                  className="text-sm text-ink-500 dark:text-ink-300 hover:text-sipyaya-600 dark:hover:text-sipyaya-400"
                 >
                   ලකුණු සුරැකීමට පිවිසෙන්න
                 </Link>
@@ -201,7 +202,7 @@ export default function ExercisePage() {
                     <span className="text-xl">✓</span> ඔබේ ලකුණු සාර්ථකව සුරකින ලදී!
                   </p>
                 )}
-                <p className="text-sm text-ink-600 dark:text-ink-400">
+                <p className="text-sm text-ink-600 dark:text-ink-300">
                   නිවැරදි {lastScoreBreakdown.correctCount} × 10 = {lastScoreBreakdown.correctCount * 10} | වැරදි {lastScoreBreakdown.wrongCount} × 2 = -{lastScoreBreakdown.wrongCount * 2}
                   {lastScoreBreakdown.bonusPoints > 0 && ` | කාල bonus +${lastScoreBreakdown.bonusPoints}`}
                   {' '}→ මුළු {lastScoreBreakdown.points} ලකුණු
@@ -244,7 +245,7 @@ export default function ExercisePage() {
       <div className="mt-8 flex justify-between items-center">
         <Link
           to={`/chapter/${chapterNum}`}
-          className="inline-flex items-center gap-2 p-2.5 md:px-4 md:py-2.5 rounded-xl text-sipyaya-600 dark:text-sipyaya-400 hover:bg-sipyaya-50 dark:hover:bg-ink-800 font-medium transition-colors"
+          className="inline-flex items-center gap-2 p-2.5 md:px-4 md:py-2.5 rounded-xl text-sipyaya-600 dark:text-sipyaya-300 hover:bg-sipyaya-50 dark:hover:bg-ink-800 font-medium transition-colors"
           aria-label="පාඩමට ආපසු"
         >
           <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

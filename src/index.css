@@ -9,9 +9,15 @@
   }
   html[data-theme="light"] {
     color-scheme: light;
+    --shape-fill: #ffffff;
+    --shape-stroke: #e2e8f0;
+    --formula-box-bg: #ffffff;
   }
   html[data-theme="dark"] {
     color-scheme: dark;
+    --shape-fill: #1e293b;
+    --shape-stroke: #475569;
+    --formula-box-bg: #1e293b;
   }
   body {
     @apply bg-white dark:bg-ink-900 transition-colors duration-300;
@@ -47,7 +53,7 @@
   /* PerimeterLessonLive — HTML reference වගේ */
   .shape-side {
     fill: none;
-    stroke: #e2e8f0;
+    stroke: var(--shape-stroke);
     stroke-width: 4;
     stroke-linecap: round;
   }
@@ -75,6 +81,26 @@
     font-weight: bold;
   }
   .label-visible { opacity: 1; }
+  .segment-label {
+    fill: #1e40af;
+    font-weight: bold;
+    transition: opacity 0.4s ease;
+  }
+  .dark .segment-label { fill: #93c5fd; }
+  /* සංයුත්ත රූප — ලේබල පැහැදිළිව (paint-order stroke) */
+  .segment-label-stroke {
+    font-weight: 800;
+    fill: #0f172a;
+    paint-order: stroke;
+    stroke: #ffffff;
+    stroke-width: 2.5px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .dark .segment-label-stroke {
+    fill: #f8fafc;
+    stroke: #1e293b;
+  }
   .formula-part {
     display: inline-block;
     opacity: 0;

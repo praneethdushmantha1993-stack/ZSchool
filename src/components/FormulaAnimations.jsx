@@ -54,7 +54,7 @@ export function RectanglePerimeterAnimation() {
   useEffect(() => () => { if (autoPlayRef.current) clearTimeout(autoPlayRef.current) }, [])
 
   return (
-    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 shadow-xl shadow-sipyaya-900/5">
+    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 dark:border-ink-700/60 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 dark:from-ink-800 dark:via-ink-800/90 dark:to-ink-900 shadow-xl shadow-sipyaya-900/5 dark:shadow-black/20">
       <div className="h-1.5 bg-gradient-to-r from-sipyaya-400 via-sipyaya-500 to-emerald-500" />
       <div className="p-6 md:p-8">
         <div className="flex flex-col items-center gap-6">
@@ -68,7 +68,7 @@ export function RectanglePerimeterAnimation() {
                 </filter>
                 <filter id="softShadow"><feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.08" /></filter>
               </defs>
-              <rect x={cx - l/2} y={cy - w/2} width={l} height={w} fill="white" stroke="none" filter="url(#softShadow)" />
+              <rect x={cx - l/2} y={cy - w/2} width={l} height={w} fill="var(--shape-fill)" stroke="none" filter="url(#softShadow)" />
               <g strokeLinecap="round" strokeLinejoin="round">
                 {paths.map((d, idx) => (
                   <path
@@ -76,7 +76,7 @@ export function RectanglePerimeterAnimation() {
                     d={d}
                     pathLength={100}
                     fill="none"
-                    stroke={step > idx ? sideColors[idx] : '#e2e8f0'}
+                    stroke={step > idx ? sideColors[idx] : 'var(--shape-stroke)'}
                     strokeWidth={step > idx ? 6 : 4}
                     filter={step > idx ? 'url(#borderGlow)' : undefined}
                     className="shape-side-draw"
@@ -84,20 +84,20 @@ export function RectanglePerimeterAnimation() {
                   />
                 ))}
               </g>
-              <text x={cx} y={cy - w/2 - 14} textAnchor="middle" className={`fill-sipyaya-800 text-sm font-bold transition-opacity duration-500 ${step >= 1 ? 'opacity-100' : 'opacity-0'}`}>a</text>
-              <text x={cx + l/2 + 14} y={cy} textAnchor="start" className={`fill-sipyaya-800 text-sm font-bold transition-opacity duration-500 ${step >= 2 ? 'opacity-100' : 'opacity-0'}`}>b</text>
-              <text x={cx} y={cy + w/2 + 14} textAnchor="middle" className={`fill-sipyaya-800 text-sm font-bold transition-opacity duration-500 ${step >= 3 ? 'opacity-100' : 'opacity-0'}`}>a</text>
-              <text x={cx - l/2 - 14} y={cy} textAnchor="end" className={`fill-sipyaya-800 text-sm font-bold transition-opacity duration-500 ${step >= 4 ? 'opacity-100' : 'opacity-0'}`}>b</text>
+              <text x={cx} y={cy - w/2 - 14} textAnchor="middle" className={`fill-sipyaya-800 dark:fill-sipyaya-200 dark:fill-sipyaya-200 text-sm font-bold transition-opacity duration-500 ${step >= 1 ? 'opacity-100' : 'opacity-0'}`}>a</text>
+              <text x={cx + l/2 + 14} y={cy} textAnchor="start" className={`fill-sipyaya-800 dark:fill-sipyaya-200 text-sm font-bold transition-opacity duration-500 ${step >= 2 ? 'opacity-100' : 'opacity-0'}`}>b</text>
+              <text x={cx} y={cy + w/2 + 14} textAnchor="middle" className={`fill-sipyaya-800 dark:fill-sipyaya-200 text-sm font-bold transition-opacity duration-500 ${step >= 3 ? 'opacity-100' : 'opacity-0'}`}>a</text>
+              <text x={cx - l/2 - 14} y={cy} textAnchor="end" className={`fill-sipyaya-800 dark:fill-sipyaya-200 text-sm font-bold transition-opacity duration-500 ${step >= 4 ? 'opacity-100' : 'opacity-0'}`}>b</text>
               <g>
-                <rect x="15" y="175" width="250" height="36" fill="white" stroke={step >= 1 ? '#16a34a' : '#e2e8f0'} strokeWidth={step >= 1 ? 2 : 1.5} filter="url(#softShadow)" />
-                <text x="140" y="197" textAnchor="middle" className="fill-sipyaya-800 text-base font-bold">
+                <rect x="15" y="175" width="250" height="36" fill="var(--shape-fill)" stroke={step >= 1 ? '#16a34a' : 'var(--shape-stroke)'} strokeWidth={step >= 1 ? 2 : 1.5} filter="url(#softShadow)" />
+                <text x="140" y="197" textAnchor="middle" className="fill-sipyaya-800 dark:fill-sipyaya-200 text-base font-bold">
                   {formula.left}<tspan fill={formula.right ? '#2563eb' : '#94a3b8'}>{formula.right || '...'}</tspan>
                 </text>
               </g>
             </svg>
           </div>
-          <div className="w-full max-w-md rounded-2xl bg-white/80 px-5 py-4 shadow-sm border border-ink-100 min-h-[80px] flex items-center justify-center">
-            <p className="text-center text-ink-700 font-medium">{stepLabels[step]}</p>
+          <div className="w-full max-w-md rounded-2xl bg-white/80 dark:bg-ink-800/80 px-5 py-4 shadow-sm border border-ink-100 dark:border-ink-700 min-h-[80px] flex items-center justify-center">
+            <p className="text-center text-ink-700 dark:text-ink-300 font-medium">{stepLabels[step]}</p>
           </div>
           <div className="flex flex-col gap-3 w-full max-w-sm items-center">
             <button type="button" onClick={startAutoPlay} className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition-all">
@@ -208,7 +208,7 @@ export function SquarePerimeterAnimation() {
   const formula = getFormulaDisplay()
 
   return (
-    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 shadow-xl shadow-sipyaya-900/5">
+    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 dark:border-ink-700/60 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 dark:from-ink-800 dark:via-ink-800/90 dark:to-ink-900 shadow-xl shadow-sipyaya-900/5 dark:shadow-black/20">
       <div className="h-1.5 bg-gradient-to-r from-sipyaya-400 via-sipyaya-500 to-emerald-500" />
       <div className="p-6 md:p-8">
         <div className="flex flex-col items-center gap-6">
@@ -222,7 +222,7 @@ export function SquarePerimeterAnimation() {
                 </filter>
                 <filter id="squareShadow"><feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.08" /></filter>
               </defs>
-              <polygon points={pts.flat().join(' ')} fill="white" stroke="none" filter="url(#squareShadow)" />
+              <polygon points={pts.flat().join(' ')} fill="var(--shape-fill)" stroke="none" filter="url(#squareShadow)" />
               <g strokeLinecap="round" strokeLinejoin="round">
                 {paths.map((d, idx) => {
                   const [p1, p2] = [pts[idx], pts[(idx + 1) % 4]]
@@ -247,18 +247,18 @@ export function SquarePerimeterAnimation() {
                 })}
               </g>
               {[[cx, cy - side/2 - 14, 'middle'], [cx + side/2 + 14, cy, 'start'], [cx, cy + side/2 + 14, 'middle'], [cx - side/2 - 14, cy, 'end']].map(([x, y, anchor], idx) => (
-                <text key={idx} x={x} y={y} textAnchor={anchor} className={`fill-sipyaya-800 text-sm font-bold transition-opacity duration-500 ${showLabel(idx) ? 'opacity-100' : 'opacity-0'}`}>a</text>
+                <text key={idx} x={x} y={y} textAnchor={anchor} className={`fill-sipyaya-800 dark:fill-sipyaya-200 text-sm font-bold transition-opacity duration-500 ${showLabel(idx) ? 'opacity-100' : 'opacity-0'}`}>a</text>
               ))}
               <g>
-                <rect x="15" y="175" width="250" height="36" fill="white" stroke={step >= 3 ? '#16a34a' : '#e2e8f0'} strokeWidth={step >= 3 ? 2 : 1.5} filter="url(#squareShadow)" />
-                <text x="140" y="197" textAnchor="middle" className="fill-sipyaya-800 text-base font-bold">
+                <rect x="15" y="175" width="250" height="36" fill="var(--shape-fill)" stroke={step >= 3 ? '#16a34a' : 'var(--shape-stroke)'} strokeWidth={step >= 3 ? 2 : 1.5} filter="url(#squareShadow)" />
+                <text x="140" y="197" textAnchor="middle" className="fill-sipyaya-800 dark:fill-sipyaya-200 text-base font-bold">
                   {formula.left}<tspan fill={formula.right ? '#2563eb' : '#94a3b8'} className={formula.right ? 'formula-part-visible' : ''}>{formula.right || '...'}</tspan>
                 </text>
               </g>
             </svg>
           </div>
-          <div className="w-full max-w-md rounded-2xl bg-white/80 px-5 py-4 shadow-sm border border-ink-100 min-h-[80px] flex items-center justify-center">
-            <p className="text-center text-ink-700 font-medium">{stepLabels[step]}</p>
+          <div className="w-full max-w-md rounded-2xl bg-white/80 dark:bg-ink-800/80 px-5 py-4 shadow-sm border border-ink-100 dark:border-ink-700 min-h-[80px] flex items-center justify-center">
+            <p className="text-center text-ink-700 dark:text-ink-300 font-medium">{stepLabels[step]}</p>
           </div>
           <div className="flex flex-col gap-3 w-full max-w-sm items-center">
             <button
@@ -345,7 +345,7 @@ export function TrianglePerimeterAnimation() {
   useEffect(() => () => { if (autoPlayRef.current) clearTimeout(autoPlayRef.current) }, [])
 
   return (
-    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 shadow-xl shadow-sipyaya-900/5">
+    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 dark:border-ink-700/60 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 dark:from-ink-800 dark:via-ink-800/90 dark:to-ink-900 shadow-xl shadow-sipyaya-900/5 dark:shadow-black/20">
       <div className="h-1.5 bg-gradient-to-r from-sipyaya-400 via-sipyaya-500 to-emerald-500" />
       <div className="p-6 md:p-8">
         <div className="flex flex-col items-center gap-6">
@@ -359,7 +359,7 @@ export function TrianglePerimeterAnimation() {
                 </filter>
                 <filter id="triShadow"><feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.08" /></filter>
               </defs>
-              <polygon points={pts.flat().join(' ')} fill="white" stroke="none" filter="url(#triShadow)" />
+              <polygon points={pts.flat().join(' ')} fill="var(--shape-fill)" stroke="none" filter="url(#triShadow)" />
               <g strokeLinecap="round" strokeLinejoin="round">
                 {paths.map((d, idx) => (
                   <path
@@ -367,7 +367,7 @@ export function TrianglePerimeterAnimation() {
                     d={d}
                     pathLength={100}
                     fill="none"
-                    stroke={step > idx ? sideColors[idx] : '#e2e8f0'}
+                    stroke={step > idx ? sideColors[idx] : 'var(--shape-stroke)'}
                     strokeWidth={step > idx ? 6 : 4}
                     filter={step > idx ? 'url(#triGlow)' : undefined}
                     className="shape-side-draw"
@@ -376,18 +376,18 @@ export function TrianglePerimeterAnimation() {
                 ))}
               </g>
               {labelPos.map((pos, idx) => (
-                <text key={idx} x={pos.x} y={pos.y} textAnchor="middle" className={`fill-sipyaya-800 text-sm font-bold transition-opacity duration-500 ${step > idx ? 'opacity-100' : 'opacity-0'}`}>{labels[idx]}</text>
+                <text key={idx} x={pos.x} y={pos.y} textAnchor="middle" className={`fill-sipyaya-800 dark:fill-sipyaya-200 text-sm font-bold transition-opacity duration-500 ${step > idx ? 'opacity-100' : 'opacity-0'}`}>{labels[idx]}</text>
               ))}
               <g>
-                <rect x="15" y="205" width="250" height="36" fill="white" stroke={step >= 1 ? '#16a34a' : '#e2e8f0'} strokeWidth={step >= 1 ? 2 : 1.5} filter="url(#triShadow)" />
-                <text x="140" y="223" textAnchor="middle" className="fill-sipyaya-800 text-base font-bold">
+                <rect x="15" y="205" width="250" height="36" fill="var(--shape-fill)" stroke={step >= 1 ? '#16a34a' : 'var(--shape-stroke)'} strokeWidth={step >= 1 ? 2 : 1.5} filter="url(#triShadow)" />
+                <text x="140" y="223" textAnchor="middle" className="fill-sipyaya-800 dark:fill-sipyaya-200 text-base font-bold">
                   {formula.left}<tspan fill={formula.right ? '#2563eb' : '#94a3b8'}>{formula.right || '...'}</tspan>
                 </text>
               </g>
             </svg>
           </div>
-          <div className="w-full max-w-md rounded-2xl bg-white/80 px-5 py-4 shadow-sm border border-ink-100 min-h-[80px] flex items-center justify-center">
-            <p className="text-center text-ink-700 font-medium">{stepLabels[step]}</p>
+          <div className="w-full max-w-md rounded-2xl bg-white/80 dark:bg-ink-800/80 px-5 py-4 shadow-sm border border-ink-100 dark:border-ink-700 min-h-[80px] flex items-center justify-center">
+            <p className="text-center text-ink-700 dark:text-ink-300 font-medium">{stepLabels[step]}</p>
           </div>
           <div className="flex flex-col gap-3 w-full max-w-sm items-center">
             <button type="button" onClick={startAutoPlay} className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition-all">
@@ -415,22 +415,22 @@ function TriangleTypeEquilateralAnimation() {
     'පරිමිතිය = 3a (a = පැත්තක දිග)',
   ]
   return (
-    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 shadow-xl shadow-sipyaya-900/5">
+    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 dark:border-ink-700/60 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 dark:from-ink-800 dark:via-ink-800/90 dark:to-ink-900 shadow-xl shadow-sipyaya-900/5 dark:shadow-black/20">
       <div className="h-1.5 bg-gradient-to-r from-sipyaya-400 via-sipyaya-500 to-emerald-500" />
       <div className="p-6 md:p-8">
         <div className="flex flex-col items-center gap-6">
           <div className="relative w-full max-w-md">
             <svg viewBox="0 0 280 220" className="w-full drop-shadow-lg" style={{ minHeight: 200 }}>
               <defs><filter id="triTypeShadow"><feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.08" /></filter></defs>
-              <polygon points={pts.flat().join(' ')} fill="white" stroke="#64748b" strokeWidth="2.5" filter="url(#triTypeShadow)" />
+              <polygon points={pts.flat().join(' ')} fill="var(--shape-fill)" stroke="var(--shape-stroke)" strokeWidth="2.5" filter="url(#triTypeShadow)" />
               <text x={cx} y={cy - size - 8} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">a</text>
               <text x={cx - size * 0.866 - 12} y={cy + size / 2 + 4} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">b</text>
               <text x={cx + size * 0.866 + 12} y={cy + size / 2 + 4} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">c</text>
               <text x={cx} y={cy + size / 2 + 28} textAnchor="middle" className="fill-ink-600 text-xs">a = b = c</text>
             </svg>
           </div>
-          <div className="w-full max-w-md rounded-2xl bg-white/80 px-5 py-4 shadow-sm border border-ink-100">
-            <p className="text-center text-ink-700 font-medium">{stepLabels[step]}</p>
+          <div className="w-full max-w-md rounded-2xl bg-white/80 dark:bg-ink-800/80 px-5 py-4 shadow-sm border border-ink-100 dark:border-ink-700">
+            <p className="text-center text-ink-700 dark:text-ink-300 font-medium">{stepLabels[step]}</p>
           </div>
           <StepControls step={step} totalSteps={totalSteps} setStep={setStep} />
         </div>
@@ -450,22 +450,22 @@ function TriangleTypeIsoscelesAnimation() {
     'පරිමිතිය = 2a + c (a = සමාන පැති, c = පාදය)',
   ]
   return (
-    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 shadow-xl shadow-sipyaya-900/5">
+    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 dark:border-ink-700/60 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 dark:from-ink-800 dark:via-ink-800/90 dark:to-ink-900 shadow-xl shadow-sipyaya-900/5 dark:shadow-black/20">
       <div className="h-1.5 bg-gradient-to-r from-sipyaya-400 via-sipyaya-500 to-emerald-500" />
       <div className="p-6 md:p-8">
         <div className="flex flex-col items-center gap-6">
           <div className="relative w-full max-w-md">
             <svg viewBox="0 0 280 220" className="w-full drop-shadow-lg" style={{ minHeight: 200 }}>
               <defs><filter id="triTypeIsoShadow"><feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.08" /></filter></defs>
-              <polygon points={pts.flat().join(' ')} fill="white" stroke="#64748b" strokeWidth="2.5" filter="url(#triTypeIsoShadow)" />
+              <polygon points={pts.flat().join(' ')} fill="var(--shape-fill)" stroke="var(--shape-stroke)" strokeWidth="2.5" filter="url(#triTypeIsoShadow)" />
               <text x={115} y={115} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">a</text>
               <text x={165} y={115} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">b</text>
               <text x={140} y={188} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">c</text>
               <text x={140} y={205} textAnchor="middle" className="fill-ink-600 text-xs">a = b</text>
             </svg>
           </div>
-          <div className="w-full max-w-md rounded-2xl bg-white/80 px-5 py-4 shadow-sm border border-ink-100">
-            <p className="text-center text-ink-700 font-medium">{stepLabels[step]}</p>
+          <div className="w-full max-w-md rounded-2xl bg-white/80 dark:bg-ink-800/80 px-5 py-4 shadow-sm border border-ink-100 dark:border-ink-700">
+            <p className="text-center text-ink-700 dark:text-ink-300 font-medium">{stepLabels[step]}</p>
           </div>
           <StepControls step={step} totalSteps={totalSteps} setStep={setStep} />
         </div>
@@ -485,22 +485,22 @@ function TriangleTypeScaleneAnimation() {
     'පරිමිතිය = a + b + c',
   ]
   return (
-    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 shadow-xl shadow-sipyaya-900/5">
+    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 dark:border-ink-700/60 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 dark:from-ink-800 dark:via-ink-800/90 dark:to-ink-900 shadow-xl shadow-sipyaya-900/5 dark:shadow-black/20">
       <div className="h-1.5 bg-gradient-to-r from-sipyaya-400 via-sipyaya-500 to-emerald-500" />
       <div className="p-6 md:p-8">
         <div className="flex flex-col items-center gap-6">
           <div className="relative w-full max-w-md">
             <svg viewBox="0 0 280 220" className="w-full drop-shadow-lg" style={{ minHeight: 200 }}>
               <defs><filter id="triTypeScalShadow"><feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.08" /></filter></defs>
-              <polygon points={pts.flat().join(' ')} fill="white" stroke="#64748b" strokeWidth="2.5" filter="url(#triTypeScalShadow)" />
+              <polygon points={pts.flat().join(' ')} fill="var(--shape-fill)" stroke="var(--shape-stroke)" strokeWidth="2.5" filter="url(#triTypeScalShadow)" />
               <text x={62} y={127} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">a</text>
               <text x={140} y={178} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">b</text>
               <text x={148} y={120} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">c</text>
               <text x={140} y={200} textAnchor="middle" className="fill-ink-600 text-xs">a ≠ b ≠ c</text>
             </svg>
           </div>
-          <div className="w-full max-w-md rounded-2xl bg-white/80 px-5 py-4 shadow-sm border border-ink-100">
-            <p className="text-center text-ink-700 font-medium">{stepLabels[step]}</p>
+          <div className="w-full max-w-md rounded-2xl bg-white/80 dark:bg-ink-800/80 px-5 py-4 shadow-sm border border-ink-100 dark:border-ink-700">
+            <p className="text-center text-ink-700 dark:text-ink-300 font-medium">{stepLabels[step]}</p>
           </div>
           <StepControls step={step} totalSteps={totalSteps} setStep={setStep} />
         </div>
@@ -577,7 +577,7 @@ export function CirclePerimeterAnimation() {
   useEffect(() => () => { if (autoPlayRef.current) clearTimeout(autoPlayRef.current) }, [])
 
   return (
-    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 shadow-xl shadow-sipyaya-900/5">
+    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 dark:border-ink-700/60 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 dark:from-ink-800 dark:via-ink-800/90 dark:to-ink-900 shadow-xl shadow-sipyaya-900/5 dark:shadow-black/20">
       <div className="h-1.5 bg-gradient-to-r from-sipyaya-400 via-sipyaya-500 to-emerald-500" />
       <div className="p-6 md:p-8">
         <div className="flex flex-col items-center gap-6">
@@ -587,28 +587,28 @@ export function CirclePerimeterAnimation() {
                 <linearGradient id="circleGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#2563eb" /><stop offset="100%" stopColor="#0d9488" /></linearGradient>
                 <filter id="circleShadow"><feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.08" /></filter>
               </defs>
-              <circle cx={cx} cy={cy} r={r} fill="white" stroke="none" filter="url(#circleShadow)" />
+              <circle cx={cx} cy={cy} r={r} fill="var(--shape-fill)" stroke="none" filter="url(#circleShadow)" />
               <circle
                 cx={cx} cy={cy} r={r}
                 fill="none"
-                stroke={step >= 1 ? 'url(#circleGrad)' : '#e2e8f0'}
+                stroke={step >= 1 ? 'url(#circleGrad)' : 'var(--shape-stroke)'}
                 strokeWidth={step >= 1 ? 6 : 4}
                 pathLength={100}
                 className="shape-side-draw"
                 style={{ strokeDasharray: 100, strokeDashoffset: step >= 1 ? 0 : 100, transition: 'stroke-dashoffset 1.2s linear' }}
               />
-              <line x1={cx} y1={cy} x2={cx + r} y2={cy} stroke={step >= 1 ? '#2563eb' : '#64748b'} strokeWidth={step >= 1 ? 3 : 2} strokeDasharray="4" className="transition-all duration-500" />
-              <text x={cx + r/2 + 10} y={cy - 8} textAnchor="middle" className={`fill-sipyaya-800 text-sm font-bold transition-opacity duration-500 ${step >= 1 ? 'opacity-100' : 'opacity-0'}`}>r (අරය)</text>
+              <line x1={cx} y1={cy} x2={cx + r} y2={cy} stroke={step >= 1 ? '#2563eb' : 'var(--shape-stroke)'} strokeWidth={step >= 1 ? 3 : 2} strokeDasharray="4" className="transition-all duration-500" />
+              <text x={cx + r/2 + 10} y={cy - 8} textAnchor="middle" className={`fill-sipyaya-800 dark:fill-sipyaya-200 dark:fill-sipyaya-200 text-sm font-bold transition-opacity duration-500 ${step >= 1 ? 'opacity-100' : 'opacity-0'}`}>r (අරය)</text>
               <g>
-                <rect x="15" y="175" width="250" height="36" fill="white" stroke={step >= 1 ? '#16a34a' : '#e2e8f0'} strokeWidth={step >= 1 ? 2 : 1.5} filter="url(#circleShadow)" />
-                <text x="140" y="197" textAnchor="middle" className="fill-sipyaya-800 text-base font-bold">
+                <rect x="15" y="175" width="250" height="36" fill="var(--shape-fill)" stroke={step >= 1 ? '#16a34a' : 'var(--shape-stroke)'} strokeWidth={step >= 1 ? 2 : 1.5} filter="url(#circleShadow)" />
+                <text x="140" y="197" textAnchor="middle" className="fill-sipyaya-800 dark:fill-sipyaya-200 text-base font-bold">
                   {formula.left}<tspan fill={formula.right ? '#2563eb' : '#94a3b8'}>{formula.right || '...'}</tspan>
                 </text>
               </g>
             </svg>
           </div>
-          <div className="w-full max-w-md rounded-2xl bg-white/80 px-5 py-4 shadow-sm border border-ink-100 min-h-[80px] flex items-center justify-center">
-            <p className="text-center text-ink-700 font-medium">{stepLabels[step]}</p>
+          <div className="w-full max-w-md rounded-2xl bg-white/80 dark:bg-ink-800/80 px-5 py-4 shadow-sm border border-ink-100 dark:border-ink-700 min-h-[80px] flex items-center justify-center">
+            <p className="text-center text-ink-700 dark:text-ink-300 font-medium">{stepLabels[step]}</p>
           </div>
           <div className="flex flex-col gap-3 w-full max-w-sm items-center">
             <button type="button" onClick={startAutoPlay} className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition-all">
@@ -709,7 +709,7 @@ function ExampleAnimationLayout({ exampleId, shape, sideVal, a, b, c, radiusVal,
       const w = 90
       return (
         <svg viewBox="0 0 280 180" className="w-full drop-shadow-lg">
-          <rect x={cx - l/2} y={cy - w/2} width={l} height={w} fill="white" stroke="#64748b" strokeWidth="2" />
+          <rect x={cx - l/2} y={cy - w/2} width={l} height={w} fill="var(--shape-fill)" stroke="var(--shape-stroke)" strokeWidth="2" />
           <text x={cx} y={cy - w/2 - 12} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">දිග {lengthVal}cm</text>
           <text x={cx - l/2 - 28} y={cy} textAnchor="middle" transform={`rotate(-90 ${cx - l/2 - 28} ${cy})`} className="fill-ink-700 text-sm font-semibold">පළල {widthVal}cm</text>
         </svg>
@@ -719,7 +719,7 @@ function ExampleAnimationLayout({ exampleId, shape, sideVal, a, b, c, radiusVal,
       const s = sideVal ? 80 : 100
       return (
         <svg viewBox="0 0 280 180" className="w-full drop-shadow-lg">
-          <rect x={cx-s/2} y={cy-s/2} width={s} height={s} fill="white" stroke="#64748b" strokeWidth="2" />
+          <rect x={cx-s/2} y={cy-s/2} width={s} height={s} fill="var(--shape-fill)" stroke="var(--shape-stroke)" strokeWidth="2" />
           <text x={cx} y={cy-s/2-12} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">පැත්ත {sideVal}cm</text>
         </svg>
       )
@@ -729,7 +729,7 @@ function ExampleAnimationLayout({ exampleId, shape, sideVal, a, b, c, radiusVal,
       const pts = [[70, 75], [70, 180], [210, 180]]
       return (
         <svg viewBox="0 0 280 220" className="w-full drop-shadow-lg">
-          <polygon points={pts.flat().join(' ')} fill="white" stroke="#64748b" strokeWidth="2" />
+          <polygon points={pts.flat().join(' ')} fill="var(--shape-fill)" stroke="var(--shape-stroke)" strokeWidth="2" />
           <text x={62} y={127} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">{a}cm</text>
           <text x={140} y={178} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">{b}cm</text>
           <text x={148} y={120} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">{c}cm</text>
@@ -741,8 +741,8 @@ function ExampleAnimationLayout({ exampleId, shape, sideVal, a, b, c, radiusVal,
       const radiusLabel = radiusVal
       return (
         <svg viewBox="0 0 280 180" className="w-full drop-shadow-lg">
-          <circle cx={cx} cy={cy} r={r} fill="white" stroke="#64748b" strokeWidth="2" />
-          <line x1={cx} y1={cy} x2={cx+r} y2={cy} stroke="#64748b" strokeWidth="2" strokeDasharray="4" />
+          <circle cx={cx} cy={cy} r={r} fill="var(--shape-fill)" stroke="var(--shape-stroke)" strokeWidth="2" />
+          <line x1={cx} y1={cy} x2={cx+r} y2={cy} stroke="var(--shape-stroke)" strokeWidth="2" strokeDasharray="4" />
           <text x={cx+r/2+8} y={cy-10} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">r = {radiusLabel} cm</text>
         </svg>
       )
@@ -757,7 +757,7 @@ function ExampleAnimationLayout({ exampleId, shape, sideVal, a, b, c, radiusVal,
     shape === 'circle' ? `අරය ${circleRadiusLabel} cm ඇති වෘත්තය` : ''
 
   return (
-    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 shadow-xl shadow-sipyaya-900/5">
+    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 dark:border-ink-700/60 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 dark:from-ink-800 dark:via-ink-800/90 dark:to-ink-900 shadow-xl shadow-sipyaya-900/5 dark:shadow-black/20">
       <div className="h-1.5 bg-gradient-to-r from-sipyaya-400 via-sipyaya-500 to-emerald-500" />
       <div className="px-4 py-2 bg-sipyaya-50/50 border-b border-sipyaya-200/60">
         <p className="text-center text-sm font-medium text-sipyaya-700">උදාහරණය {exampleId}</p>
@@ -765,18 +765,18 @@ function ExampleAnimationLayout({ exampleId, shape, sideVal, a, b, c, radiusVal,
       <div className="p-6 md:p-8">
         <div className="flex flex-col gap-8 w-full max-w-lg mx-auto">
           <div className="flex flex-col items-center gap-2">
-            <p className="text-ink-600 font-medium">{diagramLabel}</p>
+            <p className="text-ink-600 dark:text-ink-300 font-medium">{diagramLabel}</p>
             <div className="relative w-full max-w-xs">{renderDiagram()}</div>
           </div>
-          <div className="rounded-2xl border border-sipyaya-200/80 bg-white/90 p-5 shadow-sm">
+          <div className="rounded-2xl border border-sipyaya-200/80 dark:border-ink-700/60 bg-white/90 dark:bg-ink-800/90 p-5 shadow-sm">
             <h3 className="text-sm font-bold text-sipyaya-700 uppercase tracking-wider mb-4">පියවර</h3>
             <ol className="space-y-3">
               {steps.map((s, i) => (
                 <li key={s.num} className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all ${
-                  step === i + 1 ? 'bg-sipyaya-100 border-2 border-sipyaya-400' : step > i + 1 ? 'bg-emerald-50/60 text-ink-600' : 'bg-ink-50/50 text-ink-400'
+                  step === i + 1 ? 'bg-sipyaya-100 border-2 border-sipyaya-400' : step > i + 1 ? 'bg-emerald-50/60 dark:bg-emerald-900/30 text-ink-600 dark:text-ink-300' : 'bg-ink-50/50 dark:bg-ink-800/50 text-ink-400 dark:text-ink-300'
                 }`}>
                   <span className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold ${
-                    step === i + 1 ? 'bg-sipyaya-500 text-white' : step > i + 1 ? 'bg-emerald-500 text-white' : 'bg-ink-200 text-ink-500'
+                    step === i + 1 ? 'bg-sipyaya-500 text-white' : step > i + 1 ? 'bg-emerald-500 text-white' : 'bg-ink-200 dark:bg-ink-700 text-ink-500 dark:text-ink-300'
                   }`}>
                     {step > i + 1 ? '✓' : s.num}
                   </span>
@@ -795,10 +795,10 @@ function ExampleAnimationLayout({ exampleId, shape, sideVal, a, b, c, radiusVal,
                   if (!isVisible) return null
                   return (
                     <div key={i} className={`flex items-center gap-3 px-4 py-3 rounded-xl font-mono text-lg transition-all ${
-                      isCurrent ? 'bg-emerald-100 border-2 border-emerald-500 shadow-md' : 'bg-white/80 border border-emerald-100'
+                      isCurrent ? 'bg-emerald-100 dark:bg-emerald-900/40 border-2 border-emerald-500 shadow-md' : 'bg-white/80 dark:bg-ink-800/80 border border-emerald-100 dark:border-ink-600'
                     }`}>
                       <span className="flex-shrink-0 w-6 h-6 rounded bg-emerald-200/80 text-emerald-800 text-xs font-bold flex items-center justify-center">{i + 1}</span>
-                      <span className={isCurrent ? 'font-bold text-emerald-900' : 'text-ink-700'}>{line}</span>
+                      <span className={isCurrent ? 'font-bold text-emerald-900 dark:text-emerald-200' : 'text-ink-700 dark:text-ink-300'}>{line}</span>
                     </div>
                   )
                 })}
@@ -806,10 +806,10 @@ function ExampleAnimationLayout({ exampleId, shape, sideVal, a, b, c, radiusVal,
             </div>
           )}
           <div className="flex items-center gap-4 w-full justify-center">
-            <button type="button" onClick={() => setStep(0)} className="p-2.5 rounded-xl bg-ink-100 text-ink-500 hover:bg-sipyaya-100 hover:text-sipyaya-600 transition-all duration-200" aria-label="මුලට">
+            <button type="button" onClick={() => setStep(0)} className="p-2.5 rounded-xl bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-300 hover:bg-sipyaya-100 dark:hover:bg-sipyaya-900/50 hover:text-sipyaya-600 dark:hover:text-sipyaya-400 transition-all duration-200" aria-label="මුලට">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
             </button>
-            <button type="button" onClick={goPrev} disabled={step === 0} className="p-2.5 rounded-xl bg-ink-100 text-ink-500 hover:bg-sipyaya-100 hover:text-sipyaya-600 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed" aria-label="පෙර">
+            <button type="button" onClick={goPrev} disabled={step === 0} className="p-2.5 rounded-xl bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-300 hover:bg-sipyaya-100 dark:hover:bg-sipyaya-900/50 hover:text-sipyaya-600 dark:hover:text-sipyaya-400 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed" aria-label="පෙර">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
             </button>
             <div className="flex gap-2">
@@ -817,10 +817,264 @@ function ExampleAnimationLayout({ exampleId, shape, sideVal, a, b, c, radiusVal,
                 <button key={i} type="button" onClick={() => setStep(i)} className={`h-2.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-gradient-to-r from-sipyaya-500 to-emerald-500' : 'w-2.5 bg-ink-200 hover:bg-ink-300 hover:w-3'}`} aria-label={`පියවර ${i + 1}`} />
               ))}
             </div>
-            <button type="button" onClick={goNext} disabled={step === totalSteps - 1} className="p-2.5 rounded-xl bg-ink-100 text-ink-500 hover:bg-sipyaya-100 hover:text-sipyaya-600 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed" aria-label="ඊළඟ">
+            <button type="button" onClick={goNext} disabled={step === totalSteps - 1} className="p-2.5 rounded-xl bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-300 hover:bg-sipyaya-100 dark:hover:bg-sipyaya-900/50 hover:text-sipyaya-600 dark:hover:text-sipyaya-400 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed" aria-label="ඊළඟ">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/** හිස්තැන් පුරවන්න — වැරදුණොත් උපදෙස් */
+function parseNum(val) {
+  if (val == null || val === '') return NaN
+  const s = String(val).trim().replace(/,/g, '.')
+  const n = parseFloat(s)
+  return Number.isNaN(n) ? NaN : n
+}
+function numEq(a, b) {
+  const x = parseNum(a)
+  const y = typeof b === 'number' ? b : parseNum(b)
+  if (Number.isNaN(x) || Number.isNaN(y)) return false
+  return Math.abs(x - y) < 0.01 || Math.round(x) === Math.round(y)
+}
+
+/** සියල්ල එකවර — පේළි, හිස්තැන් සමීකරණයේම. input නැවත නොපෙන්වයි */
+function getAllLinesConfig(shape, props) {
+  if (shape === 'rectangle') {
+    const l = props.lengthVal
+    const w = props.widthVal
+    const sum = l + w
+    const ans = 2 * sum
+    return {
+      dataLabel: `දිග ${l}cm, පළල ${w}cm`,
+      lines: [
+        { static: 'පරිමිතිය = 2 × (දිග + පළල)' },
+        { parts: ['පරිමිතිය = 2 × (', { i: 0 }, ' + ', { i: 1 }, ')'], correct: [l, w] },
+        { parts: ['පරිමිතිය = 2 × ', { i: 2 }], correct: [sum] },
+        { parts: ['පරිමිතිය = ', { i: 3 }, ' cm'], correct: [ans] },
+      ],
+    }
+  }
+  if (shape === 'square') {
+    const s = props.sideVal
+    const ans = 4 * s
+    return {
+      dataLabel: `පැත්ත ${s}cm`,
+      lines: [
+        { static: 'පරිමිතිය = 4 × s' },
+        { parts: ['පරිමිතිය = 4 × ', { i: 0 }], correct: [s] },
+        { parts: ['පරිමිතිය = ', { i: 1 }, ' cm'], correct: [ans] },
+      ],
+    }
+  }
+  if (shape === 'triangle') {
+    const { a, b, c } = props
+    const sum = a + b + c
+    return {
+      dataLabel: `පාද a=${a}cm, b=${b}cm, c=${c}cm`,
+      lines: [
+        { static: 'පරිමිතිය = a + b + c' },
+        { parts: ['පරිමිතිය = ', { i: 0 }, ' + ', { i: 1 }, ' + ', { i: 2 }], correct: [a, b, c] },
+        { parts: ['පරිමිතිය = ', { i: 3 }, ' cm'], correct: [sum] },
+      ],
+    }
+  }
+  if (shape === 'circle') {
+    const r = props.radiusVal
+    const ans = Math.round(2 * (22 / 7) * r)
+    return {
+      dataLabel: `අරය r = ${r} cm`,
+      lines: [
+        { static: 'පරිමිතිය = 2πr' },
+        { parts: ['පරිමිතිය = 2 × (22/7) × ', { i: 0 }], correct: [r] },
+        { parts: ['පරිමිතිය = ', { i: 1 }, ' cm'], correct: [ans] },
+      ],
+    }
+  }
+  return { lines: [], dataLabel: '' }
+}
+
+function PerimeterFillInExample({ exampleId, shape, ...props }) {
+  const config = getAllLinesConfig(shape, props)
+  const totalBlanks = (() => {
+    let max = -1
+    config.lines.forEach((l) => {
+      if (l.parts) l.parts.forEach((p) => { if (typeof p === 'object' && p.i !== undefined && p.i > max) max = p.i })
+    })
+    return max + 1
+  })()
+  const [inputs, setInputs] = useState(() => Array(totalBlanks).fill(''))
+  const [lineCorrect, setLineCorrect] = useState([])
+  const [wrongHint, setWrongHint] = useState(null)
+  const inputRefs = useRef([])
+
+  const isStepCorrect = (blanks, userVals) => {
+    if (blanks.length === 2) {
+      return (numEq(userVals[0], blanks[0]) && numEq(userVals[1], blanks[1])) ||
+             (numEq(userVals[0], blanks[1]) && numEq(userVals[1], blanks[0]))
+    }
+    if (blanks.length === 3) {
+      const u = userVals.map((v) => parseNum(v)).filter((n) => !Number.isNaN(n))
+      const c = blanks.map((b) => (typeof b === 'number' ? b : parseNum(b)))
+      if (u.length !== 3 || c.length !== 3) return false
+      const su = [...u].sort((a, b) => a - b)
+      const sc = [...c].sort((a, b) => a - b)
+      return su.every((x, i) => numEq(x, sc[i]))
+    }
+    return blanks.every((correct, i) => numEq(userVals[i], correct))
+  }
+
+  const getBlanksFromLine = (line) => {
+    if (!line.parts) return []
+    return line.parts.filter((p) => typeof p === 'object' && p.i !== undefined).map((p) => p.i)
+  }
+
+  const handleCheck = () => {
+    const correct = config.lines.map((line) => {
+      if (!line.correct) return true
+      const blanks = getBlanksFromLine(line)
+      const vals = blanks.map((i) => inputs[i] ?? '')
+      return isStepCorrect(line.correct, vals)
+    })
+    setLineCorrect(correct)
+    const allOk = correct.every(Boolean)
+    if (allOk) setWrongHint(null)
+    else {
+      const firstWrong = correct.findIndex((c) => !c)
+      const hints = { rectangle: ['දිග, පළල රූපයේ බලන්න.', 'දිග + පළල එකතු කරන්න.', '2 × එකතුව = පිළිතුර'], square: ['පැත්ත රූපයේ බලන්න.', '4 × පැත්ත = පිළිතුර'], triangle: ['පාද තුන රූපයේ බලන්න.', 'පාද තුන එකතු කරන්න.'], circle: ['අරය රූපයේ බලන්න.', '2 × (22/7) × අරය = පිළිතුර'] }
+      const blankIdx = config.lines.slice(0, firstWrong + 1).filter((l) => l.correct).length - 1
+      setWrongHint((hints[shape] ?? [])[blankIdx] ?? 'නැවත උත්සාහ කරන්න.')
+    }
+  }
+
+  const renderDiagram = () => {
+    const cx = 140
+    const cy = 95
+    const lengthVal = props.lengthVal
+    const widthVal = props.widthVal
+    const sideVal = props.sideVal
+    const a = props.a
+    const b = props.b
+    const c = props.c
+    const radiusVal = props.radiusVal
+    if (shape === 'rectangle') {
+      const l = 140
+      const w = 90
+      return (
+        <svg viewBox="0 0 280 180" className="w-full drop-shadow-lg">
+          <rect x={cx - l/2} y={cy - w/2} width={l} height={w} fill="var(--shape-fill)" stroke="var(--shape-stroke)" strokeWidth="2" />
+          <text x={cx} y={cy - w/2 - 12} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">දිග {lengthVal}cm</text>
+          <text x={cx - l/2 - 28} y={cy} textAnchor="middle" transform={`rotate(-90 ${cx - l/2 - 28} ${cy})`} className="fill-ink-700 text-sm font-semibold">පළල {widthVal}cm</text>
+        </svg>
+      )
+    }
+    if (shape === 'square') {
+      const s = sideVal ? 80 : 100
+      return (
+        <svg viewBox="0 0 280 180" className="w-full drop-shadow-lg">
+          <rect x={cx-s/2} y={cy-s/2} width={s} height={s} fill="var(--shape-fill)" stroke="var(--shape-stroke)" strokeWidth="2" />
+          <text x={cx} y={cy-s/2-12} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">පැත්ත {sideVal}cm</text>
+        </svg>
+      )
+    }
+    if (shape === 'triangle') {
+      const pts = [[70, 75], [70, 180], [210, 180]]
+      return (
+        <svg viewBox="0 0 280 220" className="w-full drop-shadow-lg">
+          <polygon points={pts.flat().join(' ')} fill="var(--shape-fill)" stroke="var(--shape-stroke)" strokeWidth="2" />
+          <text x={62} y={127} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">{a}cm</text>
+          <text x={140} y={178} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">{b}cm</text>
+          <text x={148} y={120} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">{c}cm</text>
+        </svg>
+      )
+    }
+    if (shape === 'circle') {
+      const r = 60
+      return (
+        <svg viewBox="0 0 280 180" className="w-full drop-shadow-lg">
+          <circle cx={cx} cy={cy} r={r} fill="var(--shape-fill)" stroke="var(--shape-stroke)" strokeWidth="2" />
+          <line x1={cx} y1={cy} x2={cx+r} y2={cy} stroke="var(--shape-stroke)" strokeWidth="2" strokeDasharray="4" />
+          <text x={cx+r/2+8} y={cy-10} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">r = {radiusVal} cm</text>
+        </svg>
+      )
+    }
+    return null
+  }
+
+  const diagramLabel = shape === 'rectangle' ? `දිග ${props.lengthVal}cm සහ පළල ${props.widthVal}cm ඇති ඍජුකෝණාස්‍රය` :
+    shape === 'square' ? `පැත්ත ${props.sideVal}cm ඇති සමචතුරස්‍රය` :
+    shape === 'triangle' ? `පැති ${props.a}cm, ${props.b}cm, ${props.c}cm ඇති ත්‍රිකෝණය` :
+    shape === 'circle' ? `අරය ${props.radiusVal} cm ඇති වෘත්තය` : ''
+
+  const getInputCls = (lineIdx) => `inline-block w-12 sm:w-14 px-1 py-0.5 font-mono text-center text-base sm:text-lg align-middle bg-transparent border-0 border-b-2 border-dashed min-w-[2rem] focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+    lineCorrect[lineIdx] ? 'border-emerald-500 text-emerald-600' : wrongHint ? 'border-red-400 text-red-700' : 'border-ink-400 text-ink-800 focus:border-amber-500'
+  }`
+
+  const isComplete = lineCorrect.length > 0 && lineCorrect.every(Boolean)
+
+  return (
+    <div className="my-8 overflow-hidden rounded-3xl border border-amber-200/80 dark:border-ink-700/60 bg-gradient-to-br from-white via-amber-50/30 to-orange-50/40 dark:from-ink-800 dark:via-ink-800/90 dark:to-ink-900 shadow-xl shadow-amber-900/5 dark:shadow-black/20">
+      <div className="h-1.5 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500" />
+      <div className="px-4 py-2 bg-amber-50/50 border-b border-amber-200/60">
+        <p className="text-center text-sm font-medium text-amber-800">හිස්තැන් පුරවන්න — උදාහරණය {exampleId}</p>
+      </div>
+      <div className="p-6 md:p-8">
+        <div className="flex flex-col gap-6 w-full max-w-xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-start gap-5 md:gap-8">
+            <div className="flex flex-col items-center gap-2 flex-shrink-0 md:w-48">
+              <p className="text-ink-600 dark:text-ink-300 font-medium text-center text-sm">{diagramLabel}</p>
+              <div className="relative w-full max-w-[180px]">{renderDiagram()}</div>
+              <p className="text-xs font-semibold text-amber-700 bg-amber-100/80 px-3 py-1.5 rounded-lg">දත්ත: {config.dataLabel}</p>
+            </div>
+            <div className="rounded-2xl border border-amber-200/80 dark:border-ink-700/60 bg-white/90 dark:bg-ink-800/90 p-5 shadow-sm flex-1 min-w-0">
+              <div className="space-y-3 font-mono text-lg text-ink-700 dark:text-ink-300">
+                {config.lines.map((line, li) => {
+                  if (line.static) return <div key={li}>{line.static}</div>
+                  return (
+                    <div key={li} className="flex items-baseline gap-x-1 gap-y-1 flex-wrap">
+                      {line.parts.map((p, pi) =>
+                        typeof p === 'object' && p.i !== undefined ? (
+                          <input
+                            key={pi}
+                            ref={(el) => { inputRefs.current[p.i] = el }}
+                            type="number"
+                            inputMode="decimal"
+                            placeholder="?"
+                            value={inputs[p.i] ?? ''}
+                            onChange={(e) => {
+                              setInputs((prev) => { const n = [...prev]; n[p.i] = e.target.value; return n })
+                              setWrongHint(null)
+                            }}
+                            onKeyDown={(e) => e.key === 'Enter' && handleCheck()}
+                            className={getInputCls(li)}
+                          />
+                        ) : (
+                          <span key={pi}>{p}</span>
+                        )
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+              {wrongHint && (
+                <div className="flex items-center gap-2 rounded-xl bg-amber-100 border border-amber-300 px-4 py-3 text-amber-900 mt-4">
+                  <span className="text-amber-600" aria-hidden>💡</span>
+                  <span className="font-medium">{wrongHint}</span>
+                </div>
+              )}
+              <button type="button" onClick={handleCheck} className="mt-4 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold transition-colors">
+                පරීක්ෂා කරන්න
+              </button>
+            </div>
+          </div>
+          {isComplete && (
+            <div className="rounded-xl bg-emerald-100 border border-emerald-300 px-4 py-3 text-emerald-800 font-medium flex items-center gap-2">
+              <span>✓</span> හොඳයි! ඔබ විසඳුම සම්පූර්ණ කළා.
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -833,10 +1087,10 @@ function StepControls({ step, totalSteps, setStep }) {
   const goPrev = () => setStep((s) => Math.max(s - 1, 0))
   return (
     <div className="flex items-center gap-4 w-full max-w-sm justify-center">
-      <button type="button" onClick={() => setStep(0)} className="p-2.5 rounded-xl bg-ink-100 text-ink-500 hover:bg-sipyaya-100 hover:text-sipyaya-600 transition-all duration-200" aria-label="මුලට">
+      <button type="button" onClick={() => setStep(0)} className="p-2.5 rounded-xl bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-300 hover:bg-sipyaya-100 dark:hover:bg-sipyaya-900/50 hover:text-sipyaya-600 dark:hover:text-sipyaya-400 transition-all duration-200" aria-label="මුලට">
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
       </button>
-      <button type="button" onClick={goPrev} disabled={step === 0} className="p-2.5 rounded-xl bg-ink-100 text-ink-500 hover:bg-sipyaya-100 hover:text-sipyaya-600 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed" aria-label="පෙර">
+      <button type="button" onClick={goPrev} disabled={step === 0} className="p-2.5 rounded-xl bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-300 hover:bg-sipyaya-100 dark:hover:bg-sipyaya-900/50 hover:text-sipyaya-600 dark:hover:text-sipyaya-400 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed" aria-label="පෙර">
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
       </button>
       <div className="flex gap-2">
@@ -844,67 +1098,10 @@ function StepControls({ step, totalSteps, setStep }) {
           <button key={i} type="button" onClick={() => setStep(i)} className={`h-2.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-gradient-to-r from-sipyaya-500 to-emerald-500' : 'w-2.5 bg-ink-200 hover:bg-ink-300 hover:w-3'}`} aria-label={`පියවර ${i + 1}`} />
         ))}
       </div>
-      <button type="button" onClick={goNext} disabled={step === totalSteps - 1} className="p-2.5 rounded-xl bg-ink-100 text-ink-500 hover:bg-sipyaya-100 hover:text-sipyaya-600 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed" aria-label="ඊළඟ">
+      <button type="button" onClick={goNext} disabled={step === totalSteps - 1} className="p-2.5 rounded-xl bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-300 hover:bg-sipyaya-100 dark:hover:bg-sipyaya-900/50 hover:text-sipyaya-600 dark:hover:text-sipyaya-400 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed" aria-label="ඊළඟ">
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
       </button>
     </div>
-  )
-}
-
-/** සංයුක්ත තල රූපවල පරිමිතිය — L හැඩය, කොටුවකින් කැපූ රූප ආදිය */
-export function LShapeDiagram({ dims }) {
-  const { topW, leftH, rightH, bottomW, innerW, innerH } = dims
-  const scale = 16
-  const ox = 35
-  const oy = 25
-  const path = `M ${ox} ${oy} h ${topW * scale} v ${rightH * scale} h ${-innerW * scale} v ${innerH * scale} h ${-bottomW * scale} v ${-(leftH) * scale} Z`
-  return (
-    <svg viewBox="0 0 220 160" className="w-full drop-shadow-lg">
-      <path d={path} fill="white" stroke="#0d9488" strokeWidth="2" strokeLinejoin="round" />
-      <text x={ox + (topW * scale) / 2} y={oy - 6} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{topW}cm</text>
-      <text x={ox - 10} y={oy + (leftH * scale) / 2} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{leftH}cm</text>
-      <text x={ox + (topW - innerW) * scale + (innerW * scale) / 2} y={oy + rightH * scale + 12} textAnchor="middle" className="fill-ink-600 text-xs font-medium">{innerW}cm</text>
-      <text x={ox + (topW - innerW) * scale + innerW * scale + 12} y={oy + rightH * scale + (innerH * scale) / 2} textAnchor="middle" className="fill-ink-600 text-xs font-medium">{innerH}cm</text>
-      <text x={ox + (bottomW * scale) / 2} y={oy + leftH * scale + 14} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{bottomW}cm</text>
-      <text x={ox + topW * scale + 12} y={oy + (rightH * scale) / 2} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{rightH}cm</text>
-    </svg>
-  )
-}
-
-/** L හැඩය — පියවර අනුව දාර එකින් එක highlight (0=කිසිදු, 1=පළමු පාදය, 2=පළමු දෙක, ... 6=සියල්ල) */
-function LShapeDiagramAnimated({ dims, highlightedEdgeCount = 0 }) {
-  const { topW, leftH, rightH, bottomW, innerW, innerH } = dims
-  const scale = 14
-  const ox = 40
-  const oy = 30
-  const s = scale
-  const hl = (edgeIdx) => highlightedEdgeCount > edgeIdx
-  const edges = [
-    { d: `M ${ox} ${oy} h ${topW * s}`, idx: 0 },
-    { d: `M ${ox + topW * s} ${oy} v ${rightH * s}`, idx: 1 },
-    { d: `M ${ox + topW * s - innerW * s} ${oy + rightH * s} h ${innerW * s}`, idx: 2 },
-    { d: `M ${ox + topW * s - innerW * s} ${oy + rightH * s} v ${innerH * s}`, idx: 3 },
-    { d: `M ${ox + topW * s - innerW * s - bottomW * s} ${oy + leftH * s} h ${bottomW * s}`, idx: 4 },
-    { d: `M ${ox} ${oy + leftH * s} v ${-leftH * s}`, idx: 5 },
-  ]
-  return (
-    <svg viewBox="0 0 240 180" className="w-full drop-shadow-lg">
-      <defs>
-        <linearGradient id="lShapeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#22c55e" /><stop offset="100%" stopColor="#0d9488" />
-        </linearGradient>
-      </defs>
-      <path d={`M ${ox} ${oy} h ${topW * s} v ${rightH * s} h ${-innerW * s} v ${innerH * s} h ${-bottomW * s} v ${-leftH * s} Z`} fill="white" stroke="#e2e8f0" strokeWidth="2" strokeLinejoin="round" />
-      {edges.map(({ d, idx }) => (
-        <path key={idx} d={d} fill="none" stroke={hl(idx) ? 'url(#lShapeGrad)' : '#94a3b8'} strokeWidth={hl(idx) ? 5 : 2} strokeLinecap="round" className="transition-all duration-400" />
-      ))}
-      <text x={ox + (topW * s) / 2} y={oy - 8} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">{topW}cm</text>
-      <text x={ox - 12} y={oy + (leftH * s) / 2} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">{leftH}cm</text>
-      <text x={ox + topW * s - innerW * s / 2} y={oy + rightH * s + 14} textAnchor="middle" className="fill-ink-600 text-xs font-medium">{innerW}cm</text>
-      <text x={ox + topW * s - innerW * s + 14} y={oy + rightH * s + (innerH * s) / 2} textAnchor="middle" className="fill-ink-600 text-xs font-medium">{innerH}cm</text>
-      <text x={ox + (bottomW * s) / 2} y={oy + leftH * s + 16} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">{bottomW}cm</text>
-      <text x={ox + topW * s + 14} y={oy + (rightH * s) / 2} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">{rightH}cm</text>
-    </svg>
   )
 }
 
@@ -945,60 +1142,38 @@ export function TShapeDiagramAnimated({ dims, highlightedEdgeCount = 0 }) {
           <stop offset="0%" stopColor="#22c55e" /><stop offset="100%" stopColor="#0d9488" />
         </linearGradient>
       </defs>
-      <path d={fullPath} fill="white" stroke="#e2e8f0" strokeWidth="2" strokeLinejoin="round" />
+      <path d={fullPath} fill="var(--shape-fill)" stroke="#0d9488" strokeWidth="3.5" strokeLinejoin="round" />
       {edges.map(({ d, idx }) => (
-        <path key={idx} d={d} fill="none" stroke={hl(idx) ? 'url(#tShapeGrad)' : '#94a3b8'} strokeWidth={hl(idx) ? 5 : 2} strokeLinecap="round" className="transition-all duration-400" />
+        <path key={idx} d={d} fill="none" stroke={hl(idx) ? 'url(#tShapeGrad)' : '#0d9488'} strokeWidth={hl(idx) ? 5 : 3} strokeLinecap="round" className="transition-all duration-400" />
       ))}
       {edgeVals.map((val, i) => (
-        <text key={i} x={labels[i].x} y={labels[i].y} textAnchor={labels[i].anchor} className="fill-ink-700 text-[10px] font-medium">{val}cm</text>
+        <text key={i} x={labels[i].x} y={labels[i].y} textAnchor={labels[i].anchor} className="text-base segment-label-stroke">{val}cm</text>
       ))}
     </svg>
   )
 }
 
-/** U හැඩය — පහළ තිරස්, ඉහළ මැද කැපුම (U අකුර වගේ), සෑම පාදයකටම අගය */
-export function UShapeDiagramAnimated({ dims, highlightedEdgeCount = 0 }) {
-  const { topW, cutW, cutH, sideH, leftPart } = dims
-  const s = 14
-  const ox = 35
+/** පියගැට හැඩය — stepW, stepH, lastStepH, numSteps=3 (user HTML SVG: fill #fecaca, stroke #dc2626) */
+export function StairShapeDiagram({ dims }) {
+  const { stepW = 6, stepH = 4, lastStepH = 5, numSteps = 3 } = dims
+  const bottomW = numSteps * stepW
+  const leftH = (numSteps - 1) * stepH + lastStepH
+  const s = 10
+  const ox = 40
   const oy = 30
-  const lp = leftPart ?? (topW - cutW) / 2
-  const hl = (i) => highlightedEdgeCount > i
-  const edges = [
-    { d: `M ${ox} ${oy + sideH * s} h ${topW * s}`, idx: 0, val: topW },
-    { d: `M ${ox + topW * s} ${oy + sideH * s} v ${-sideH * s}`, idx: 1, val: sideH },
-    { d: `M ${ox + topW * s} ${oy} h ${-lp * s}`, idx: 2, val: lp },
-    { d: `M ${ox + lp * s + cutW * s} ${oy} v ${cutH * s}`, idx: 3, val: cutH },
-    { d: `M ${ox + lp * s + cutW * s} ${oy + cutH * s} h ${-cutW * s}`, idx: 4, val: cutW },
-    { d: `M ${ox + lp * s} ${oy + cutH * s} v ${-cutH * s}`, idx: 5, val: cutH },
-    { d: `M ${ox + lp * s} ${oy} h ${-lp * s}`, idx: 6, val: lp },
-    { d: `M ${ox} ${oy} v ${sideH * s}`, idx: 7, val: sideH },
-  ]
-  const fullPath = `M ${ox} ${oy + sideH * s} h ${topW * s} v ${-sideH * s} h ${-lp * s} v ${cutH * s} h ${-cutW * s} v ${-cutH * s} h ${-lp * s} v ${sideH * s} Z`
-  const labels = [
-    { x: ox + (topW * s) / 2, y: oy + sideH * s + 12, anchor: 'middle' },
-    { x: ox + topW * s + 12, y: oy + (sideH * s) / 2, anchor: 'start' },
-    { x: ox + topW * s - (lp * s) / 2, y: oy - 8, anchor: 'middle' },
-    { x: ox + lp * s + cutW * s + 12, y: oy + (cutH * s) / 2, anchor: 'start' },
-    { x: ox + lp * s + (cutW * s) / 2, y: oy + cutH * s + 12, anchor: 'middle' },
-    { x: ox + lp * s - 10, y: oy + (cutH * s) / 2, anchor: 'end' },
-    { x: ox + (lp * s) / 2, y: oy - 8, anchor: 'middle' },
-    { x: ox - 10, y: oy + (sideH * s) / 2, anchor: 'end' },
-  ]
+  const path = `M ${ox} ${oy + leftH * s} h ${bottomW * s} v ${-lastStepH * s} h ${-stepW * s} v ${-stepH * s} h ${-stepW * s} v ${-stepH * s} h ${-stepW * s} v ${leftH * s} Z`
+  const labelCls = 'text-base segment-label-stroke'
   return (
-    <svg viewBox="0 0 240 230" className="w-full drop-shadow-lg">
-      <defs>
-        <linearGradient id="uShapeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#22c55e" /><stop offset="100%" stopColor="#0d9488" />
-        </linearGradient>
-      </defs>
-      <path d={fullPath} fill="white" stroke="#e2e8f0" strokeWidth="2" strokeLinejoin="round" />
-      {edges.map(({ d, idx }) => (
-        <path key={idx} d={d} fill="none" stroke={hl(idx) ? 'url(#uShapeGrad)' : '#94a3b8'} strokeWidth={hl(idx) ? 5 : 2} strokeLinecap="round" className="transition-all duration-400" />
-      ))}
-      {edges.map((e, i) => (
-        <text key={i} x={labels[i].x} y={labels[i].y} textAnchor={labels[i].anchor} className="fill-ink-700 text-[10px] font-medium">{e.val}cm</text>
-      ))}
+    <svg viewBox="0 0 320 240" className="w-full drop-shadow-lg min-h-[220px]">
+      <path d={path} fill="#fecaca" stroke="#dc2626" strokeWidth="2" strokeLinejoin="round" />
+      <text x={ox + (stepW * s) / 2} y={oy + stepH * s - 8} textAnchor="middle" className={labelCls}>{stepW}cm</text>
+      <text x={ox + stepW * s + 12} y={oy + (stepH * s) / 2} textAnchor="start" className={labelCls}>{stepH}cm</text>
+      <text x={ox + stepW * s + (stepW * s) / 2} y={oy + 2 * stepH * s - 8} textAnchor="middle" className={labelCls}>{stepW}cm</text>
+      <text x={ox + 2 * stepW * s + 12} y={oy + stepH * s + (stepH * s) / 2} textAnchor="start" className={labelCls}>{stepH}cm</text>
+      <text x={ox + 2 * stepW * s + (stepW * s) / 2} y={oy + 3 * stepH * s - 8} textAnchor="middle" className={labelCls}>{stepW}cm</text>
+      <text x={ox + 3 * stepW * s + 12} y={oy + 2 * stepH * s + (lastStepH * s) / 2} textAnchor="start" className={labelCls}>{lastStepH}cm</text>
+      <text x={ox + (bottomW * s) / 2} y={oy + leftH * s + 14} textAnchor="middle" className={labelCls}>{bottomW}cm</text>
+      <text x={ox - 10} y={oy + (leftH * s) / 2} textAnchor="end" className={labelCls}>{leftH}cm</text>
     </svg>
   )
 }
@@ -1012,8 +1187,8 @@ function FrameDiagram({ dims }) {
   const iy = oy + (outerW - innerW) / 2 * scale
   return (
     <svg viewBox="0 0 220 140" className="w-full drop-shadow-lg">
-      <rect x={ox} y={oy} width={outerL * scale} height={outerW * scale} fill="white" stroke="#0d9488" strokeWidth="2" />
-      <rect x={ix} y={iy} width={innerL * scale} height={innerW * scale} fill="white" stroke="#0d9488" strokeWidth="2" strokeDasharray="4" />
+      <rect x={ox} y={oy} width={outerL * scale} height={outerW * scale} fill="var(--shape-fill)" stroke="#0d9488" strokeWidth="2" />
+      <rect x={ix} y={iy} width={innerL * scale} height={innerW * scale} fill="var(--shape-fill)" stroke="#0d9488" strokeWidth="2" strokeDasharray="4" />
       <text x={ox + (outerL * scale) / 2} y={oy - 6} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{outerL}×{outerW}cm</text>
       <text x={ix + (innerL * scale) / 2} y={iy + (innerW * scale) / 2 + 4} textAnchor="middle" className="fill-ink-600 text-xs font-medium">{innerL}×{innerW}</text>
     </svg>
@@ -1029,7 +1204,7 @@ function DiagonalShapeDiagram({ dims }) {
   const path = `M ${ox} ${oy + rightH * scale} h ${bottomLeft * scale} h ${bottomRight * scale} v ${-rightH * scale} h ${-topW * scale} h ${-topW * scale} L ${ox} ${oy + rightH * scale} Z`
   return (
     <svg viewBox="0 0 220 110" className="w-full drop-shadow-lg">
-      <path d={path} fill="white" stroke="#0d9488" strokeWidth="2" strokeLinejoin="round" />
+      <path d={path} fill="var(--shape-fill)" stroke="#0d9488" strokeWidth="2" strokeLinejoin="round" />
       <text x={ox + (bottomLeft * scale) / 2} y={oy + rightH * scale + 14} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{bottomLeft}cm</text>
       <text x={ox + bottomLeft * scale + (bottomRight * scale) / 2} y={oy + rightH * scale + 14} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{bottomRight}cm</text>
       <text x={ox + (bottomLeft + bottomRight) * scale + 10} y={oy + (rightH * scale) / 2} textAnchor="middle" className="fill-ink-700 text-xs font-semibold">{rightH}cm</text>
@@ -1055,7 +1230,7 @@ function DiagonalShapeDiagramAnimated({ dims, highlightedEdgeCount = 0 }) {
           <stop offset="0%" stopColor="#22c55e" /><stop offset="100%" stopColor="#0d9488" />
         </linearGradient>
       </defs>
-      <path d={`M ${ox} ${oy + rightH * s} h ${bottomLeft * s} h ${bottomRight * s} v ${-rightH * s} h ${-topW * s} h ${-topW * s} L ${ox} ${oy + rightH * s} Z`} fill="white" stroke="#e2e8f0" strokeWidth="2" strokeLinejoin="round" />
+      <path d={`M ${ox} ${oy + rightH * s} h ${bottomLeft * s} h ${bottomRight * s} v ${-rightH * s} h ${-topW * s} h ${-topW * s} L ${ox} ${oy + rightH * s} Z`} fill="var(--shape-fill)" stroke="var(--shape-stroke)" strokeWidth="2" strokeLinejoin="round" />
       <path d={`M ${ox} ${oy + rightH * s} h ${bottomLeft * s}`} fill="none" stroke={hl(0) ? 'url(#diagGrad)' : '#94a3b8'} strokeWidth={hl(0) ? 5 : 2} strokeLinecap="round" className="transition-all duration-400" />
       <path d={`M ${ox + bottomLeft * s} ${oy + rightH * s} h ${bottomRight * s}`} fill="none" stroke={hl(1) ? 'url(#diagGrad)' : '#94a3b8'} strokeWidth={hl(1) ? 5 : 2} strokeLinecap="round" className="transition-all duration-400" />
       <path d={`M ${ox + (bottomLeft + bottomRight) * s} ${oy + rightH * s} v ${-rightH * s}`} fill="none" stroke={hl(2) ? 'url(#diagGrad)' : '#94a3b8'} strokeWidth={hl(2) ? 5 : 2} strokeLinecap="round" className="transition-all duration-400" />
@@ -1072,9 +1247,9 @@ function DiagonalShapeDiagramAnimated({ dims, highlightedEdgeCount = 0 }) {
 }
 
 /** සංයුක්ත රූප උදාහරණ — පාදය highlight වන විට පරිමිතිය = ... + දාලා ගොඩනැගීම */
-function CompositeExampleAnimation({ example, exampleId }) {
+export function CompositeExampleAnimation({ example, exampleId }) {
   const edgeValues = example.edgeValues || []
-  const useEdgeByEdge = edgeValues.length > 0 && ['l-shape', 'diagonal', 't-shape', 'u-shape'].includes(example.shape)
+  const useEdgeByEdge = edgeValues.length > 0 && ['diagonal', 't-shape', 'stair-shape'].includes(example.shape)
 
   const [step, setStep] = useState(0)
   const totalSteps = useEdgeByEdge ? edgeValues.length + 2 : (example.steps?.length || 0) + 1
@@ -1083,12 +1258,11 @@ function CompositeExampleAnimation({ example, exampleId }) {
 
   const highlightedEdgeCount = useEdgeByEdge ? step : 0
   const renderDiagram = () => {
-    if (example.shape === 'l-shape') return <LShapeDiagramAnimated dims={example.dims} highlightedEdgeCount={highlightedEdgeCount} />
     if (example.shape === 'diagonal') return <DiagonalShapeDiagramAnimated dims={example.dims} highlightedEdgeCount={highlightedEdgeCount} />
     if (example.shape === 't-shape') return <TShapeDiagramAnimated dims={example.dims} highlightedEdgeCount={highlightedEdgeCount} />
-    if (example.shape === 'u-shape') return <UShapeDiagramAnimated dims={example.dims} highlightedEdgeCount={highlightedEdgeCount} />
+    if (example.shape === 'stair-shape') return <StairShapeDiagram dims={example.dims} />
     if (example.shape === 'frame') return <FrameDiagram dims={example.dims} />
-    return <LShapeDiagram dims={example.dims} />
+    return null
   }
 
   const getFormulaDisplay = () => {
@@ -1101,24 +1275,24 @@ function CompositeExampleAnimation({ example, exampleId }) {
   }
 
   return (
-    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 shadow-xl shadow-sipyaya-900/5">
+    <div className="my-8 overflow-hidden rounded-3xl border border-sipyaya-200/80 dark:border-ink-700/60 bg-gradient-to-br from-white via-sipyaya-50/30 to-emerald-50/40 dark:from-ink-800 dark:via-ink-800/90 dark:to-ink-900 shadow-xl shadow-sipyaya-900/5 dark:shadow-black/20">
       <div className="h-1.5 bg-gradient-to-r from-sipyaya-400 via-sipyaya-500 to-emerald-500" />
       <div className="px-4 py-2 bg-sipyaya-50/50 border-b border-sipyaya-200/60">
         <p className="text-center text-sm font-medium text-sipyaya-700">උදාහරණය {exampleId}</p>
       </div>
       <div className="p-6 md:p-8">
         <div className="flex flex-col gap-8 w-full max-w-2xl mx-auto">
-          <p className="text-ink-600 font-medium text-center">{example.label}</p>
+          <p className="text-ink-600 dark:text-ink-300 font-medium text-center">{example.label}</p>
           {example.explanation && (
-            <div className="rounded-xl border border-amber-200/80 bg-amber-50/60 px-4 py-3 text-sm text-ink-700">
+            <div className="rounded-xl border border-amber-200/80 dark:border-ink-700/60 bg-amber-50/60 dark:bg-ink-800/60 px-4 py-3 text-sm text-ink-700 dark:text-ink-300">
               <span className="font-semibold text-amber-800">පැහැදිළි කිරීම: </span>
               {example.explanation}
             </div>
           )}
-          <div className={`flex justify-center mx-auto ${['t-shape', 'u-shape'].includes(example.shape) ? 'max-w-[560px]' : 'max-w-[320px]'}`}>{renderDiagram()}</div>
+          <div className={`flex justify-center mx-auto min-h-[200px] ${['t-shape', 'stair-shape'].includes(example.shape) ? 'max-w-[420px]' : 'max-w-[320px]'}`}>{renderDiagram()}</div>
           {useEdgeByEdge && (
-            <div className="rounded-2xl border border-sipyaya-200/80 bg-white/90 p-5 shadow-sm">
-              <p className="text-ink-500 text-sm mb-3 px-4 py-2 rounded-xl bg-sipyaya-50/50">
+            <div className="rounded-2xl border border-sipyaya-200/80 dark:border-ink-700/60 bg-white/90 dark:bg-ink-800/90 p-5 shadow-sm">
+              <p className="text-ink-500 dark:text-ink-300 text-sm mb-3 px-4 py-2 rounded-xl bg-sipyaya-50/50 dark:bg-sipyaya-900/30">
                 {step === 0 ? 'පාදය highlight වන විට පරිමිතිය = කියලා පටන්ගන්න. ඊළඟ පාදය highlight වන වට + දාලා දාන්න.' : step <= edgeValues.length ? `පාදය ${step} එකතු කළා` : 'පිළිතුර'}
               </p>
               <p className="px-4 py-3 rounded-xl bg-sipyaya-100 text-sipyaya-800 font-semibold text-lg">
@@ -1135,18 +1309,18 @@ function CompositeExampleAnimation({ example, exampleId }) {
           )}
           {!useEdgeByEdge && example.steps && (
             <>
-              <div className="rounded-2xl border border-sipyaya-200/80 bg-white/90 p-5 shadow-sm">
+              <div className="rounded-2xl border border-sipyaya-200/80 dark:border-ink-700/60 bg-white/90 dark:bg-ink-800/90 p-5 shadow-sm">
                 <h3 className="text-sm font-bold text-sipyaya-700 uppercase tracking-wider mb-4">පියවර</h3>
                 {step === 0 && (
-                  <p className="text-ink-500 text-sm mb-4 px-4 py-2 rounded-xl bg-sipyaya-50/50">පියවර අනුගමනය කිරීමට ඊළඟ බොත්තම ඔබන්න</p>
+                  <p className="text-ink-500 dark:text-ink-300 text-sm mb-4 px-4 py-2 rounded-xl bg-sipyaya-50/50 dark:bg-sipyaya-900/30">පියවර අනුගමනය කිරීමට ඊළඟ බොත්තම ඔබන්න</p>
                 )}
                 <ol className="space-y-3">
                   {example.steps.map((s, i) => (
                     <li key={i} className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 ${
-                      step === i + 1 ? 'bg-sipyaya-100 border-2 border-sipyaya-400' : step > i + 1 ? 'bg-emerald-50/60 text-ink-600' : 'bg-ink-50/50 text-ink-400'
+                      step === i + 1 ? 'bg-sipyaya-100 border-2 border-sipyaya-400' : step > i + 1 ? 'bg-emerald-50/60 dark:bg-emerald-900/30 text-ink-600 dark:text-ink-300' : 'bg-ink-50/50 dark:bg-ink-800/50 text-ink-400 dark:text-ink-300'
                     }`}>
                       <span className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold ${
-                        step === i + 1 ? 'bg-sipyaya-500 text-white' : step > i + 1 ? 'bg-emerald-500 text-white' : 'bg-ink-200 text-ink-500'
+                        step === i + 1 ? 'bg-sipyaya-500 text-white' : step > i + 1 ? 'bg-emerald-500 text-white' : 'bg-ink-200 dark:bg-ink-700 text-ink-500 dark:text-ink-300'
                       }`}>
                         {step > i + 1 ? '✓' : i + 1}
                       </span>
@@ -1165,10 +1339,10 @@ function CompositeExampleAnimation({ example, exampleId }) {
             </>
           )}
           <div className="flex items-center gap-4 w-full justify-center">
-            <button type="button" onClick={() => setStep(0)} className="p-2.5 rounded-xl bg-ink-100 text-ink-500 hover:bg-sipyaya-100 hover:text-sipyaya-600 transition-all duration-200" aria-label="මුලට">
+            <button type="button" onClick={() => setStep(0)} className="p-2.5 rounded-xl bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-300 hover:bg-sipyaya-100 dark:hover:bg-sipyaya-900/50 hover:text-sipyaya-600 dark:hover:text-sipyaya-400 transition-all duration-200" aria-label="මුලට">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
             </button>
-            <button type="button" onClick={goPrev} disabled={step === 0} className="p-2.5 rounded-xl bg-ink-100 text-ink-500 hover:bg-sipyaya-100 hover:text-sipyaya-600 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed" aria-label="පෙර">
+            <button type="button" onClick={goPrev} disabled={step === 0} className="p-2.5 rounded-xl bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-300 hover:bg-sipyaya-100 dark:hover:bg-sipyaya-900/50 hover:text-sipyaya-600 dark:hover:text-sipyaya-400 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed" aria-label="පෙර">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
             </button>
             <div className="flex gap-2">
@@ -1176,10 +1350,82 @@ function CompositeExampleAnimation({ example, exampleId }) {
                 <button key={i} type="button" onClick={() => setStep(i)} className={`h-2.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-gradient-to-r from-sipyaya-500 to-emerald-500' : 'w-2.5 bg-ink-200 hover:bg-ink-300 hover:w-3'}`} aria-label={`පියවර ${i + 1}`} />
               ))}
             </div>
-            <button type="button" onClick={goNext} disabled={step === totalSteps - 1} className="p-2.5 rounded-xl bg-ink-100 text-ink-500 hover:bg-sipyaya-100 hover:text-sipyaya-600 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed" aria-label="ඊළඟ">
+            <button type="button" onClick={goNext} disabled={step === totalSteps - 1} className="p-2.5 rounded-xl bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-300 hover:bg-sipyaya-100 dark:hover:bg-sipyaya-900/50 hover:text-sipyaya-600 dark:hover:text-sipyaya-400 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed" aria-label="ඊළඟ">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/** සංයුත්ත රූප — හිස්තැන් පුරවන්න (පරිමිතිය එක අංකය) */
+export function CompositeFillInExample({ exampleId, shape, dims, edgeValues, perimeter, label }) {
+  const nums = (edgeValues || []).map((v) => (typeof v === 'string' ? v.replace(/cm/gi, '').trim() : v))
+  const sumStr = nums.join(' + ')
+  const [ans, setAns] = useState('')
+  const [correct, setCorrect] = useState(null)
+
+  const parseNum = (v) => {
+    if (v == null || v === '') return NaN
+    const n = parseFloat(String(v).trim().replace(/,/g, '.'))
+    return Number.isNaN(n) ? NaN : n
+  }
+  const numEq = (a, b) => {
+    const x = parseNum(a)
+    const y = typeof b === 'number' ? b : parseNum(b)
+    return !Number.isNaN(x) && !Number.isNaN(y) && (Math.abs(x - y) < 0.01 || Math.round(x) === Math.round(y))
+  }
+
+  const handleCheck = () => setCorrect(numEq(ans, perimeter))
+
+  const renderDiagram = () => {
+    if (shape === 't-shape') return <TShapeDiagramAnimated dims={dims} highlightedEdgeCount={0} />
+    if (shape === 'stair-shape') return <StairShapeDiagram dims={dims} />
+    return null
+  }
+
+  return (
+    <div className="my-8 overflow-hidden rounded-3xl border border-amber-200/80 dark:border-ink-700/60 bg-gradient-to-br from-white via-amber-50/30 to-orange-50/40 dark:from-ink-800 dark:via-ink-800/90 dark:to-ink-900 shadow-xl shadow-amber-900/5 dark:shadow-black/20">
+      <div className="h-1.5 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500" />
+      <div className="px-4 py-2 bg-amber-50/50 border-b border-amber-200/60">
+        <p className="text-center text-sm font-medium text-amber-800">හිස්තැන් පුරවන්න — උදාහරණය {exampleId}</p>
+      </div>
+      <div className="p-6 md:p-8">
+        <div className="flex flex-col gap-6 w-full max-w-xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-start gap-5 md:gap-8">
+            <div className="flex flex-col items-center gap-2 flex-shrink-0 md:w-56">
+              <p className="text-ink-600 dark:text-ink-300 font-medium text-center text-sm">{label}</p>
+              <div className="relative w-full min-w-[220px] max-w-[280px] min-h-[180px]">{renderDiagram()}</div>
+            </div>
+            <div className="rounded-2xl border border-amber-200/80 dark:border-ink-700/60 bg-white/90 dark:bg-ink-800/90 p-5 shadow-sm flex-1 min-w-0">
+              <p className="text-ink-700 dark:text-ink-300 font-medium mb-3">පරිමිතිය = සියලු පාදවල දිග එකතුව</p>
+              <div className="flex items-baseline gap-x-1 flex-wrap font-mono text-lg">
+                <span>පරිමිතිය = {sumStr} = </span>
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  placeholder="?"
+                  value={ans}
+                  onChange={(e) => { setAns(e.target.value); setCorrect(null) }}
+                  onKeyDown={(e) => e.key === 'Enter' && handleCheck()}
+                  className={`inline-block w-14 px-2 py-1 font-mono text-center bg-transparent border-0 border-b-2 border-dashed focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+                    correct === true ? 'border-emerald-500 text-emerald-600' : correct === false ? 'border-red-400 text-red-700' : 'border-ink-400 focus:border-amber-500'
+                  }`}
+                />
+                <span> cm</span>
+              </div>
+              <button type="button" onClick={handleCheck} className="mt-4 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold transition-colors">
+                පරීක්ෂා කරන්න
+              </button>
+            </div>
+          </div>
+          {correct === true && (
+            <div className="rounded-xl bg-emerald-100 border border-emerald-300 px-4 py-3 text-emerald-800 font-medium flex items-center gap-2">
+              <span>✓</span> හොඳයි! නිවැරදියි.
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -1218,41 +1464,20 @@ export function CompositePerimeterSection({ examples }) {
   )
 }
 
-/** තල රූපයකට උදාහරණ 5 — කැමති නම් බලන්න, නැත්නම් මගහැර යන්න */
+/** තල රූපයකට උදාහරණ 5 — 2 විසඳුම් + 3 හිස්තැන් පුරවන්න (අදාළ තැනම) */
 export function PerimeterExamplesSection({ shape, examples, shapeLabel }) {
-  const [expanded, setExpanded] = useState(false)
   const ExampleComponent = shape === 'rectangle' ? RectanglePerimeterExampleAnimation :
     shape === 'square' ? SquarePerimeterExampleAnimation :
     shape === 'triangle' ? TrianglePerimeterExampleAnimation :
     CirclePerimeterExampleAnimation
 
   return (
-    <div className="my-8 space-y-4">
-      <div className="space-y-6">
-        <ExampleComponent exampleId="01" {...examples[0]} />
-      </div>
-      <div className="flex flex-wrap items-center gap-3">
-        <button
-          type="button"
-          onClick={() => setExpanded(!expanded)}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sipyaya-100 hover:bg-sipyaya-200/80 text-sipyaya-700 font-medium transition-colors"
-        >
-          {expanded ? 'උදාහරණ හැකුලුම් කරන්න' : `තවත් උදාහරණ ${examples.length - 1} බලන්න`}
-          <svg className={`w-5 h-5 transition-transform ${expanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-        {!expanded && (
-          <span className="text-sm text-ink-500">නැත්නම් මෙතැනින් මගහැර යන්න</span>
-        )}
-      </div>
-      {expanded && (
-        <div className="space-y-8 animate-fade-in pt-4 border-t border-sipyaya-200/60">
-          {examples.slice(1).map((ex, i) => (
-            <ExampleComponent key={i} exampleId={`${String(i + 2).padStart(2, '0')}`} {...ex} />
-          ))}
-        </div>
-      )}
+    <div className="my-8 space-y-8">
+      <ExampleComponent exampleId="01" {...examples[0]} />
+      <ExampleComponent exampleId="02" {...examples[1]} />
+      <PerimeterFillInExample exampleId="03" shape={shape} {...examples[2]} />
+      <PerimeterFillInExample exampleId="04" shape={shape} {...examples[3]} />
+      <PerimeterFillInExample exampleId="05" shape={shape} {...examples[4]} />
     </div>
   )
 }

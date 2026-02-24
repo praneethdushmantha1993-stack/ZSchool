@@ -10,6 +10,7 @@ import Topics from './pages/Topics'
 import Lesson from './pages/Lesson'
 import Login from './pages/Login'
 import Achievements from './pages/Achievements'
+import Leaderboard from './pages/Leaderboard'
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="lesson/:topicId/:lessonId" element={<Lesson />} />
           <Route path="login" element={<Login />} />
           <Route path="achievements" element={<Achievements />} />
+          <Route path="leaderboard" element={<Leaderboard />} />
         </Route>
       </Routes>
     </BrowserRouter>

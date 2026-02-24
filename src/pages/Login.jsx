@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true)
+  const [displayName, setDisplayName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -33,7 +34,12 @@ export default function Login() {
       if (isLogin) {
         await login(email, password)
       } else {
-        await register(email, password)
+        if (!displayName.trim()) {
+          setError('ඔබේ නම ඇතුළත් කරන්න')
+          setLoading(false)
+          return
+        }
+        await register(email, password, displayName)
       }
       navigate('/')
     } catch (err) {
@@ -62,7 +68,7 @@ export default function Login() {
           <h1 className="text-2xl font-bold text-ink-900 dark:text-ink-100">
             {isLogin ? 'ගිණුමට පිවිසෙන්න' : 'නව ගිණුමක් සාදන්න'}
           </h1>
-          <p className="text-ink-600 dark:text-ink-400 mt-1 text-sm">
+          <p className="text-ink-600 dark:text-ink-300 mt-1 text-sm">
             {isLogin ? 'ඔබේ ලකුණු සුරකිනු පිණිස පිවිසෙන්න' : 'ලකුණු ගබඩා කිරීමට ලියාපදිංචි වන්න'}
           </p>
         </header>
@@ -71,6 +77,26 @@ export default function Login() {
           {error && (
             <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50 text-amber-800 dark:text-amber-200 text-sm">
               {error}
+            </div>
+          )}
+
+          {!isLogin && (
+            <div>
+              <label htmlFor="displayName" className="block text-sm font-medium text-ink-700 dark:text-ink-300 mb-1.5">
+                ඔබේ නම <span className="text-amber-600 dark:text-amber-400">*</span>
+              </label>
+              <input
+                id="displayName"
+                type="text"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                placeholder="උදාහරණ: කුමාර"
+                required
+                className="w-full px-4 py-3 rounded-xl border-2 border-ink-200 dark:border-ink-600 dark:bg-ink-900/50 dark:text-ink-100 focus:border-sipyaya-500 focus:ring-2 focus:ring-sipyaya-200 dark:focus:border-sipyaya-400 outline-none transition-all"
+              />
+              <p className="mt-1 text-xs text-ink-500 dark:text-ink-300">
+                ලැයිස්තුවේ ඔබව මෙම නමින් පෙන්වයි
+              </p>
             </div>
           )}
 
@@ -134,7 +160,7 @@ export default function Login() {
               <div className="w-full border-t border-ink-200" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white dark:bg-ink-900/80 text-ink-500 dark:text-ink-400">හෝ</span>
+              <span className="px-2 bg-white dark:bg-ink-900/80 text-ink-500 dark:text-ink-300">හෝ</span>
             </div>
           </div>
 
@@ -168,7 +194,7 @@ export default function Login() {
             Google එකෙන් පිවිසෙන්න
           </button>
 
-          <p className="text-center text-sm text-ink-600 dark:text-ink-400">
+          <p className="text-center text-sm text-ink-600 dark:text-ink-300">
             {isLogin ? (
               <>
                 ගිණුමක් නැද්ද?{' '}
@@ -176,9 +202,10 @@ export default function Login() {
                   type="button"
                   onClick={() => {
                     setIsLogin(false)
+                    setDisplayName('')
                     setError('')
                   }}
-                  className="text-sipyaya-600 dark:text-sipyaya-400 hover:text-sipyaya-700 dark:hover:text-sipyaya-300 font-medium"
+                  className="text-sipyaya-600 dark:text-sipyaya-300 hover:text-sipyaya-700 dark:hover:text-sipyaya-300 font-medium"
                 >
                   ලියාපදිංචි වන්න
                 </button>
@@ -192,7 +219,7 @@ export default function Login() {
                     setIsLogin(true)
                     setError('')
                   }}
-                  className="text-sipyaya-600 dark:text-sipyaya-400 hover:text-sipyaya-700 dark:hover:text-sipyaya-300 font-medium"
+                  className="text-sipyaya-600 dark:text-sipyaya-300 hover:text-sipyaya-700 dark:hover:text-sipyaya-300 font-medium"
                 >
                   පිවිසෙන්න
                 </button>
@@ -203,7 +230,7 @@ export default function Login() {
       </div>
 
       <p className="text-center mt-6">
-        <Link to="/" className="text-ink-500 dark:text-ink-400 hover:text-sipyaya-600 dark:hover:text-sipyaya-400 text-sm font-medium">
+        <Link to="/" className="text-ink-500 dark:text-ink-300 hover:text-sipyaya-600 dark:hover:text-sipyaya-400 text-sm font-medium">
           ← මුල් පිටුවට ආපසු යන්න
         </Link>
       </p>

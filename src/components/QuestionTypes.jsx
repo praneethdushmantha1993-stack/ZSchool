@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { LShapeDiagram, TShapeDiagramAnimated, UShapeDiagramAnimated } from './FormulaAnimations'
+import { TShapeDiagramAnimated, StairShapeDiagram } from './FormulaAnimations'
 
 /** Short answer - රූපය + පෙළ input */
 export function ExerciseDiagram({ question }) {
@@ -7,22 +7,24 @@ export function ExerciseDiagram({ question }) {
   const cy = 95
   const { shape } = question
 
+  const labelClass = 'fill-ink-800 dark:fill-ink-200 text-base font-bold'
   if (shape === 'rectangle') {
     const { lengthVal, widthVal } = question
     const l = 140
     const w = 90
     return (
-      <svg viewBox="0 0 280 180" className="w-full max-w-xs drop-shadow-lg">
-        <rect x={cx - l / 2} y={cy - w / 2} width={l} height={w} fill="white" stroke="#16a34a" strokeWidth="2" />
-        <text x={cx} y={cy - w / 2 - 12} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">
+      <svg viewBox="0 0 280 180" className="w-full min-w-[200px] max-w-[320px] drop-shadow-lg">
+        <rect x={cx - l / 2} y={cy - w / 2} width={l} height={w} fill="var(--shape-fill)" stroke="#16a34a" strokeWidth="2" />
+        <text x={cx} y={cy - w / 2 - 14} textAnchor="middle" className={labelClass} style={{ fontSize: '16px' }}>
           දිග {lengthVal}cm
         </text>
         <text
-          x={cx - l / 2 - 28}
+          x={cx - l / 2 - 32}
           y={cy}
           textAnchor="middle"
-          transform={`rotate(-90 ${cx - l / 2 - 28} ${cy})`}
-          className="fill-ink-700 text-sm font-semibold"
+          transform={`rotate(-90 ${cx - l / 2 - 32} ${cy})`}
+          className={labelClass}
+          style={{ fontSize: '16px' }}
         >
           පළල {widthVal}cm
         </text>
@@ -33,9 +35,9 @@ export function ExerciseDiagram({ question }) {
     const { sideVal } = question
     const s = 80
     return (
-      <svg viewBox="0 0 280 180" className="w-full max-w-xs drop-shadow-lg">
-        <rect x={cx - s / 2} y={cy - s / 2} width={s} height={s} fill="white" stroke="#16a34a" strokeWidth="2" />
-        <text x={cx} y={cy - s / 2 - 12} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">
+      <svg viewBox="0 0 280 180" className="w-full min-w-[200px] max-w-[320px] drop-shadow-lg">
+        <rect x={cx - s / 2} y={cy - s / 2} width={s} height={s} fill="var(--shape-fill)" stroke="#16a34a" strokeWidth="2" />
+        <text x={cx} y={cy - s / 2 - 14} textAnchor="middle" className={labelClass} style={{ fontSize: '16px' }}>
           පැත්ත {sideVal}cm
         </text>
       </svg>
@@ -49,15 +51,15 @@ export function ExerciseDiagram({ question }) {
       [210, 180],
     ]
     return (
-      <svg viewBox="0 0 280 220" className="w-full max-w-xs drop-shadow-lg">
-        <polygon points={pts.flat().join(' ')} fill="white" stroke="#16a34a" strokeWidth="2" />
-        <text x={62} y={127} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">
+      <svg viewBox="0 0 280 220" className="w-full min-w-[200px] max-w-[320px] drop-shadow-lg">
+        <polygon points={pts.flat().join(' ')} fill="var(--shape-fill)" stroke="#16a34a" strokeWidth="2" />
+        <text x={62} y={127} textAnchor="middle" className={labelClass} style={{ fontSize: '16px' }}>
           {a}cm
         </text>
-        <text x={140} y={178} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">
+        <text x={140} y={178} textAnchor="middle" className={labelClass} style={{ fontSize: '16px' }}>
           {b}cm
         </text>
-        <text x={148} y={120} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">
+        <text x={148} y={120} textAnchor="middle" className={labelClass} style={{ fontSize: '16px' }}>
           {c}cm
         </text>
       </svg>
@@ -67,36 +69,28 @@ export function ExerciseDiagram({ question }) {
     const { radiusVal } = question
     const r = 60
     return (
-      <svg viewBox="0 0 280 180" className="w-full max-w-xs drop-shadow-lg">
-        <circle cx={cx} cy={cy} r={r} fill="white" stroke="#16a34a" strokeWidth="2" />
+      <svg viewBox="0 0 280 180" className="w-full min-w-[200px] max-w-[320px] drop-shadow-lg">
+        <circle cx={cx} cy={cy} r={r} fill="var(--shape-fill)" stroke="#16a34a" strokeWidth="2" />
         <line x1={cx} y1={cy} x2={cx + r} y2={cy} stroke="#16a34a" strokeWidth="2" strokeDasharray="4" />
-        <text x={cx + r / 2 + 8} y={cy - 10} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">
+        <text x={cx + r / 2 + 10} y={cy - 12} textAnchor="middle" className={labelClass} style={{ fontSize: '16px' }}>
           r = {radiusVal} cm
         </text>
       </svg>
     )
   }
-  if (shape === 'l-shape') {
-    const { dims } = question
-    return (
-      <div className="w-full max-w-[240px]">
-        <LShapeDiagram dims={dims} />
-      </div>
-    )
-  }
   if (shape === 't-shape') {
     const { dims } = question
     return (
-      <div className="w-full max-w-[240px]">
+      <div className="w-full min-w-[220px] max-w-[360px] min-h-[200px] flex items-center justify-center">
         <TShapeDiagramAnimated dims={dims} highlightedEdgeCount={0} />
       </div>
     )
   }
-  if (shape === 'u-shape') {
+  if (shape === 'stair-shape') {
     const { dims } = question
     return (
-      <div className="w-full max-w-[240px]">
-        <UShapeDiagramAnimated dims={dims} highlightedEdgeCount={0} />
+      <div className="w-full min-w-[220px] max-w-[360px] min-h-[200px] flex items-center justify-center">
+        <StairShapeDiagram dims={dims} />
       </div>
     )
   }
@@ -108,7 +102,7 @@ export function ShortAnswerQuestion({ question, idx, value, onChange, checked, u
   return (
     <div className="flex flex-col sm:flex-row gap-4 md:gap-6 items-start">
       {!question.hideDiagram && question.shape && (
-        <div className="flex-shrink-0 w-full sm:w-40 flex justify-center">
+        <div className="flex-shrink-0 w-full sm:w-64 md:w-72 flex justify-center">
           <ExerciseDiagram question={question} />
         </div>
       )}
@@ -117,11 +111,12 @@ export function ShortAnswerQuestion({ question, idx, value, onChange, checked, u
           {idx + 1}. {question.prompt}
         </p>
         <input
-          type="text"
+          type="number"
+          inputMode="decimal"
           value={value ?? ''}
           onChange={(e) => onChange(e.target.value)}
           placeholder={`උත්තරය (${unit})`}
-          className="w-full px-4 py-3 rounded-xl border-2 border-ink-200 dark:border-ink-600 dark:bg-ink-900/50 dark:text-ink-100 focus:border-sipyaya-500 focus:ring-2 focus:ring-sipyaya-200 dark:focus:border-sipyaya-400 outline-none transition-all"
+          className="w-full px-4 py-3 rounded-xl border-2 border-ink-200 dark:border-ink-600 dark:bg-ink-900/50 dark:text-ink-100 focus:border-sipyaya-500 focus:ring-2 focus:ring-sipyaya-200 dark:focus:border-sipyaya-400 outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
         />
         {checked === true && (
           <p className="text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-2">

@@ -1,4 +1,10 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import { getUserTotalScore } from '../services/scoreService'
+import { useState, useEffect } from 'react'
+import { formatPoints } from '../utils/formatPoints'
+import { getFirstDisplayBadge } from '../utils/badgeUtils'
+import { BadgeIconCompact } from '../components/BadgeHeaderButton'
 
 const features = [
   {
@@ -22,8 +28,56 @@ const features = [
 ]
 
 export default function Home() {
+  const { user } = useAuth()
+  const [totalScore, setTotalScore] = useState(null)
+
+  useEffect(() => {
+    if (user) {
+      getUserTotalScore(user.uid)
+        .then(setTotalScore)
+        .catch(() => setTotalScore(0))
+    } else {
+      setTotalScore(null)
+    }
+  }, [user])
+
+  useEffect(() => {
+    const onScoreUpdated = () => {
+      if (user) getUserTotalScore(user.uid).then(setTotalScore)
+    }
+    window.addEventListener('score-updated', onScoreUpdated)
+    return () => window.removeEventListener('score-updated', onScoreUpdated)
+  }, [user])
+
+  const firstBadge = getFirstDisplayBadge(totalScore ?? 0)
+
   return (
-    <div className="space-y-24">
+    <div className="space-y-24 relative">
+      {user && (
+        <div className="fixed top-20 right-4 sm:right-6 lg:right-8 z-30 flex flex-col gap-2 items-end">
+          {firstBadge && (
+            <Link
+              to="/achievements"
+              className="flex items-center p-2 rounded-xl bg-white/90 dark:bg-ink-800/90 dark:ring-1 dark:ring-ink-600/60 shadow-lg hover:bg-sipyaya-50 dark:hover:bg-sipyaya-900/40 transition-colors"
+              title={`බැජ් - ${formatPoints(firstBadge.threshold)} ලකුණු`}
+            >
+              <BadgeIconCompact
+                color={firstBadge.color}
+                iconIndex={firstBadge.index}
+                earned={firstBadge.earned}
+                size={32}
+              />
+            </Link>
+          )}
+          <Link
+            to="/leaderboard"
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-sipyaya-100 dark:bg-sipyaya-900/60 dark:ring-1 dark:ring-sipyaya-500/40 text-sipyaya-700 dark:text-sipyaya-200 font-bold text-sm shadow-lg hover:bg-sipyaya-200/80 dark:hover:bg-sipyaya-800/50 transition-colors"
+          >
+            <span>🏆</span>
+            <span>{formatPoints(totalScore ?? 0)} ලකුණු</span>
+          </Link>
+        </div>
+      )}
       <section className="grid md:grid-cols-2 gap-8">
         <div className="p-8 md:p-10 glass rounded-3xl border border-ink-200/60 dark:border-ink-700/60 shadow-lg shadow-ink-900/5 dark:shadow-black/20 bg-gradient-to-br from-sipyaya-50/50 to-transparent dark:from-sipyaya-900/20 dark:to-transparent">
           <div className="flex items-center gap-3 mb-4">
@@ -53,21 +107,23 @@ export default function Home() {
           <h1 className="text-5xl md:text-7xl font-display font-bold text-gradient mb-4 drop-shadow-sm">
             ZShool
           </h1>
-          <p className="text-xl md:text-2xl text-ink-600 dark:text-ink-400 mb-3 font-medium">
+          <p className="text-xl md:text-2xl text-ink-600 dark:text-ink-300 mb-3 font-medium">
             ගණිතය පහසුවෙන් ඉගෙන ගන්න
           </p>
-          <p className="text-ink-500 dark:text-ink-400 max-w-xl mx-auto mb-12 text-lg">
+          <p className="text-ink-500 dark:text-ink-300 max-w-xl mx-auto mb-12 text-lg">
             පියවරෙන් පියවර ගණිතය ඉගෙන ගැනීමට සරල සහ රසවත් පාඩම්
           </p>
-          <Link
-            to="/chapters"
-            className="inline-flex items-center gap-2 px-10 py-4 bg-gradient-to-r from-sipyaya-600 to-sipyaya-500 hover:from-sipyaya-700 hover:to-sipyaya-600 text-white font-semibold rounded-2xl shadow-xl shadow-sipyaya-500/30 transition-all hover:shadow-2xl hover:shadow-sipyaya-500/40 hover:-translate-y-0.5 active:translate-y-0"
-          >
-            පාඩම් ආරම්භ කරන්න
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link
+              to="/chapters"
+              className="inline-flex items-center gap-2 px-10 py-4 bg-gradient-to-r from-sipyaya-600 to-sipyaya-500 hover:from-sipyaya-700 hover:to-sipyaya-600 text-white font-semibold rounded-2xl shadow-xl shadow-sipyaya-500/30 transition-all hover:shadow-2xl hover:shadow-sipyaya-500/40 hover:-translate-y-0.5 active:translate-y-0"
+            >
+              පාඩම් ආරම්භ කරන්න
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -82,7 +138,7 @@ export default function Home() {
               {item.icon}
             </div>
             <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-2 text-lg">{item.title}</h3>
-            <p className="text-ink-600 dark:text-ink-400 text-sm leading-relaxed">{item.desc}</p>
+            <p className="text-ink-600 dark:text-ink-300 text-sm leading-relaxed">{item.desc}</p>
           </div>
         ))}
       </section>

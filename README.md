@@ -29,9 +29,22 @@ npm run build
 
 ## Deploy (Firebase Hosting)
 
+### Local deploy
 ```bash
 npm run deploy
 ```
+(මුලින් `.env` එකේ Firebase config අගයන් සකසන්න — `.env.example` බලන්න)
+
+### GitHub Actions (auto deploy)
+`main` branch එකට push කළ විට ස්වයංක්‍රීයව deploy වේ. ක්‍රියාත්මක වීමට GitHub repo → Settings → Secrets and variables → Actions යටින් මෙම secrets එකතු කරන්න:
+
+- `VITE_FIREBASE_API_KEY`
+- `VITE_FIREBASE_AUTH_DOMAIN`
+- `VITE_FIREBASE_PROJECT_ID`
+- `VITE_FIREBASE_STORAGE_BUCKET`
+- `VITE_FIREBASE_MESSAGING_SENDER_ID`
+- `VITE_FIREBASE_APP_ID`
+- `FIREBASE_SERVICE_ACCOUNT` (Firebase Console → Project Settings → Service accounts → Generate new private key — JSON content එක)
 
 ## භාවිතා කළ තාක්ෂණ
 

@@ -26,17 +26,26 @@ firebase deploy --only firestore:rules
 users/
   {userId}/                    # Firebase Auth user ID
     totalScore: number         # මුළු ලකුණු
+    displayName: string        # Leaderboard සඳහා
     lastUpdated: string        # ISO timestamp
-    scores/                    # subcollection
+    scores/                    # subcollection — අනුමාතෘකාවකට උපරිම ලකුණු
       {chapterNum}_{exerciseId}/
         chapterNum: string
         exerciseId: string
+        subtopicTitle: string  # අනුමාතෘකා මාතෘකාව
         correctCount: number
         wrongCount: number
         totalCount: number
         bonusPoints: number
-        points: number
+        points: number         # උපරිම ලබා ගත් ලකුණු
         timestamp: string
+
+leaderboard/                   # තරඟකාරී ලැයිස්තුව
+  {userId}/
+    userId: string
+    displayName: string
+    totalScore: number
+    lastUpdated: string
 ```
 
 ## 4. ගැටළු නිරාකරණය

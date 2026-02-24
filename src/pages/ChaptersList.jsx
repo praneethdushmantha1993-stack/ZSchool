@@ -27,10 +27,10 @@ export default function ChaptersList() {
                     <span className="w-8 h-8 flex items-center justify-center rounded-lg bg-sipyaya-100 dark:bg-sipyaya-900/50 text-sipyaya-700 dark:text-sipyaya-300 font-bold text-sm shrink-0 group-hover:bg-sipyaya-200/80 dark:group-hover:bg-sipyaya-800/50 transition-colors">
                       {lesson.num}
                     </span>
-                    <span className="text-ink-800 dark:text-ink-200 font-medium group-hover:text-sipyaya-700 dark:group-hover:text-sipyaya-400 transition-colors">
+                    <span className="text-ink-800 dark:text-ink-200 font-medium group-hover:text-sipyaya-700 dark:group-hover:text-sipyaya-300 transition-colors">
                       {lesson.title}
                     </span>
-                    <svg className="w-4 h-4 text-ink-400 dark:text-ink-500 ml-auto group-hover:text-sipyaya-500 dark:group-hover:text-sipyaya-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-ink-400 dark:text-ink-300 ml-auto group-hover:text-sipyaya-500 dark:group-hover:text-sipyaya-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </Link>

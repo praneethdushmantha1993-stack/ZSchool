@@ -47,13 +47,14 @@ export default function ExerciseInline({ exercise, chapterNum, exerciseId }) {
     if (user && chapterNum && exerciseId) {
       setSavingScore(true)
       try {
-        await saveExerciseScore(user.uid, chapterNum, exerciseId, {
-          correctCount,
-          wrongCount,
-          totalCount,
-          bonusPoints,
-          points,
-        })
+        await saveExerciseScore(
+          user.uid,
+          chapterNum,
+          exerciseId,
+          { correctCount, wrongCount, totalCount, bonusPoints, points },
+          exercise?.title,
+          user.displayName || user.email
+        )
         setScoreSaved(true)
         window.dispatchEvent(new CustomEvent('score-updated'))
       } catch (err) {
@@ -121,7 +122,7 @@ export default function ExerciseInline({ exercise, chapterNum, exerciseId }) {
 
   if (!exercise || questions.length === 0) {
     return (
-      <p className="text-ink-500 dark:text-ink-400 text-center py-8">
+      <p className="text-ink-500 dark:text-ink-300 text-center py-8">
         මෙම අනුමාතෘකාවට අභ්‍යාස ප්‍රශ්න ඉක්මනින් එකතු කරනු ලැබේ.
       </p>
     )
@@ -129,7 +130,7 @@ export default function ExerciseInline({ exercise, chapterNum, exerciseId }) {
 
   return (
     <div className="p-4 md:p-6 space-y-6 overflow-y-auto">
-      <p className="text-ink-600 dark:text-ink-400 text-sm md:text-base">
+      <p className="text-ink-600 dark:text-ink-300 text-sm md:text-base">
         පහත ප්‍රශ්න විසඳන්න. එක් එක් ආකාරයේ ගැටලු තියෙනවා.
       </p>
 
@@ -160,7 +161,7 @@ export default function ExerciseInline({ exercise, chapterNum, exerciseId }) {
           {savingScore ? 'ලකුණු සුරකිමින්...' : 'සියලු උත්තර පරීක්ෂා කරන්න'}
         </button>
         {!user && (
-          <p className="text-xs text-ink-500 dark:text-ink-400">
+          <p className="text-xs text-ink-500 dark:text-ink-300">
             ලකුණු සුරැකීමට <Link to="/login" className="text-sipyaya-600 hover:underline">පිවිසෙන්න</Link>
           </p>
         )}
@@ -171,7 +172,7 @@ export default function ExerciseInline({ exercise, chapterNum, exerciseId }) {
                 <span className="text-xl">✓</span> ඔබේ ලකුණු සාර්ථකව සුරකින ලදී!
               </p>
             )}
-            <p className="text-ink-600 dark:text-ink-400">
+            <p className="text-ink-600 dark:text-ink-300">
               නිවැරදි {lastScoreBreakdown.correctCount} × 10 = {lastScoreBreakdown.correctCount * 10} | වැරදි {lastScoreBreakdown.wrongCount} × 2 = -{lastScoreBreakdown.wrongCount * 2}
               {lastScoreBreakdown.bonusPoints > 0 && ` | කාල bonus +${lastScoreBreakdown.bonusPoints}`}
               {' '}→ මුළු {lastScoreBreakdown.points} ලකුණු

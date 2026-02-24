@@ -1,13 +1,14 @@
 import { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useParams, Link } from 'react-router-dom'
-import { getChapterByNum, getLessonFirstExercise } from '../data/mathContent'
+import { getChapterByNum, getExerciseForSubtopic } from '../data/mathContent'
 import MathBlock from '../components/MathBlock'
 import FormulaAnimation, {
   PerimeterExamplesSection,
   CompositePerimeterSection,
 } from '../components/FormulaAnimations'
 import PerimeterLessonLive from '../components/PerimeterLessonLive'
+import CompositePerimeterLessonLive from '../components/CompositePerimeterLessonLive'
 import ExerciseInline from '../components/ExerciseInline'
 
 function scrollToSubtopic(id) {
@@ -38,7 +39,7 @@ export default function ChapterLesson() {
     return (
       <div className="text-center py-16 animate-fade-in">
         <div className="inline-flex w-16 h-16 rounded-full bg-ink-100 items-center justify-center text-3xl mb-4">?</div>
-        <p className="text-ink-600 mb-4">මෙම පාඩම හමු නොවුණි.</p>
+        <p className="text-ink-600 dark:text-ink-300 mb-4">මෙම පාඩම හමු නොවුණි.</p>
         <Link to="/chapters" className="inline-flex items-center gap-2 text-sipyaya-600 hover:text-sipyaya-700 font-medium">
           ← පාඩම් වෙත ආපසු යන්න
         </Link>
@@ -71,7 +72,7 @@ export default function ChapterLesson() {
 
   const SubtopicNav = ({ onNavigate, className = '' }) => (
     <nav className={className}>
-      <h3 className="text-sm font-bold text-ink-500 uppercase tracking-wider mb-3">අනුමාතෘකා</h3>
+      <h3 className="text-sm font-bold text-ink-500 dark:text-ink-300 uppercase tracking-wider mb-3">අනුමාතෘකා</h3>
       <ul className="space-y-1">
         {subtopics.map((subtopic, idx) => {
           const exerciseBlock = subtopic.content?.find((b) => b.type === 'exercise' && b.exerciseId)
@@ -81,7 +82,7 @@ export default function ChapterLesson() {
                 <Link
                   to={`/chapter/${chapterNum}/exercise/${exerciseBlock.exerciseId}`}
                   onClick={() => onNavigate?.()}
-                  className="block w-full text-left px-3 py-2 rounded-lg text-sm text-sipyaya-600 hover:bg-sipyaya-50 hover:text-sipyaya-700 transition-colors font-medium"
+                  className="block w-full text-left px-3 py-2 rounded-lg text-sm text-sipyaya-600 dark:text-sipyaya-300 hover:bg-sipyaya-50 dark:hover:bg-sipyaya-900/30 hover:text-sipyaya-700 dark:hover:text-sipyaya-200 transition-colors font-medium"
                 >
                   {subtopic.title}
                 </Link>
@@ -108,7 +109,7 @@ export default function ChapterLesson() {
             <Link
               to={`/chapter/${chapterNum}/exercise/${ex.exerciseId}`}
               onClick={() => onNavigate?.()}
-              className="block w-full text-left px-3 py-2 rounded-lg text-sm text-sipyaya-600 hover:bg-sipyaya-50 hover:text-sipyaya-700 transition-colors font-medium"
+              className="block w-full text-left px-3 py-2 rounded-lg text-sm text-sipyaya-600 dark:text-sipyaya-300 hover:bg-sipyaya-50 dark:hover:bg-sipyaya-900/30 hover:text-sipyaya-700 dark:hover:text-sipyaya-200 transition-colors font-medium"
             >
               {ex.title}
             </Link>
@@ -125,10 +126,10 @@ export default function ChapterLesson() {
       <div
         ref={fullScreenRef}
         className={`relative flex flex-col items-center w-full bg-gradient-to-br from-sipyaya-50/80 via-white to-emerald-50/50 dark:from-ink-900 dark:via-ink-800 dark:to-ink-900 ${
-          isFullScreen ? 'h-screen overflow-y-auto md:overflow-hidden' : 'min-h-[calc(100vh-12rem)]'
+          isFullScreen ? 'h-screen overflow-y-auto md:overflow-hidden' : 'min-h-[calc(100vh-12rem)] overflow-y-auto md:overflow-visible'
         }`}
       >
-        {/* Header: back icon + title + lesson topic + Learn/Practice toggle */}
+        {/* Header: back icon + title + subtopic dropdown + Learn/Practice toggle */}
         <header className="shrink-0 w-full flex flex-col gap-2 md:flex-row md:items-center px-3 py-2 md:px-4 md:py-3 bg-gradient-to-r from-blue-700 to-indigo-800 text-white shadow-md">
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <Link
@@ -145,90 +146,103 @@ export default function ChapterLesson() {
               <p className="text-blue-100 text-xs md:text-sm truncate">{section.label} — {lesson.title}</p>
             </div>
           </div>
+          <div className="relative shrink-0">
+            <button
+              type="button"
+              onClick={() => setDropdownOpen((o) => !o)}
+              className="flex items-center gap-2 px-4 py-2.5 bg-white/20 hover:bg-white/30 rounded-lg font-medium text-sm min-w-[200px] md:min-w-[240px] justify-between transition-colors"
+            >
+              <span className="truncate">{activeSubtopic?.title}</span>
+              <svg
+                className={`w-5 h-5 shrink-0 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {dropdownOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setDropdownOpen(false)}
+                  aria-hidden="true"
+                />
+                <div className="absolute top-full right-0 mt-1 z-50 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-lg shadow-xl overflow-hidden min-w-[240px]">
+                  {subtopics.map((st, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        setActiveSlideIndex(idx)
+                        setDropdownOpen(false)
+                      }}
+                      className={`block w-full text-left px-4 py-3 hover:bg-sipyaya-50 dark:hover:bg-sipyaya-900/30 transition-colors ${
+                        idx === activeSlideIndex ? 'bg-sipyaya-100 dark:bg-sipyaya-900/50 text-sipyaya-700 dark:text-sipyaya-300 font-medium' : 'text-ink-700 dark:text-ink-300'
+                      }`}
+                    >
+                      {st.title}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
           <div className="flex gap-2 shrink-0">
             <button
               type="button"
               onClick={() => setSlideModeTab('learn')}
-              className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+              className={`p-2 md:px-4 md:py-2 rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2 ${
                 slideModeTab === 'learn'
                   ? 'bg-white text-blue-800'
                   : 'bg-white/20 hover:bg-white/30'
               }`}
+              aria-label="ඉගෙන ගන්න"
+              title="ඉගෙන ගන්න"
             >
-              ඉගෙන ගන්න
+              <svg className="w-5 h-5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+              <span className="hidden md:inline">ඉගෙන ගන්න</span>
             </button>
             <button
               type="button"
               onClick={() => setSlideModeTab('practice')}
-              className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+              className={`p-2 md:px-4 md:py-2 rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2 ${
                 slideModeTab === 'practice'
                   ? 'bg-white text-blue-800'
                   : 'bg-white/20 hover:bg-white/30'
               }`}
+              aria-label="ප්‍රශ්න විසඳන්න"
+              title="ප්‍රශ්න විසඳන්න"
             >
-              ප්‍රශ්න විසඳන්න
+              <svg className="w-5 h-5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
+              <span className="hidden md:inline">ප්‍රශ්න විසඳන්න</span>
             </button>
           </div>
         </header>
 
-        {/* Content: Learn (subtopic + shapes) or Practice (questions) */}
+        {/* Content: Learn (shapes) or Practice (questions) */}
         <div className="flex-1 flex flex-col items-center w-full min-h-0 pt-3 pb-2">
           {slideModeTab === 'learn' ? (
             <>
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setDropdownOpen((o) => !o)}
-                  className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-lg shadow-sm hover:border-sipyaya-400 transition-colors min-w-[280px] justify-between"
-                >
-                  <span className="font-medium text-ink-900 dark:text-ink-100">{activeSubtopic?.title}</span>
-                  <svg
-                    className={`w-5 h-5 text-ink-500 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-
-                {dropdownOpen && (
-                  <>
-                    <div
-                      className="fixed inset-0 z-40"
-                      onClick={() => setDropdownOpen(false)}
-                      aria-hidden="true"
-                    />
-                    <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-lg shadow-xl overflow-hidden min-w-[280px]">
-                      {subtopics.map((st, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          onClick={() => {
-                            setActiveSlideIndex(idx)
-                            setDropdownOpen(false)
-                          }}
-                          className={`block w-full text-left px-6 py-3 hover:bg-sipyaya-50 dark:hover:bg-sipyaya-900/30 transition-colors ${
-                            idx === activeSlideIndex ? 'bg-sipyaya-100 dark:bg-sipyaya-900/50 text-sipyaya-700 dark:text-sipyaya-300 font-medium' : 'text-ink-700 dark:text-ink-300'
-                          }`}
-                        >
-                          {st.title}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* Slide content - white box with border */}
-              <div className="flex-1 w-full max-w-5xl mx-4 mt-4 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-xl shadow-lg overflow-y-auto md:overflow-hidden min-h-0 flex flex-col">
+              {/* Slide content - white box with border, scrollable on phone */}
+              <div className="flex-1 w-full max-w-5xl mx-4 mt-4 mb-4 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-xl shadow-lg overflow-y-auto min-h-0 flex flex-col">
                 {activeSubtopic?.content?.length > 0 ? (
-                  <div className="flex-1 flex flex-col min-h-0 w-full overflow-hidden">
+                  <div className="flex flex-col w-full">
                     {activeSubtopic.content.map((block, i) => (
                       <div key={i}>
                         {block.type === 'slideShapes' && block.shapes && (
                           <div className="flex-1 flex flex-col min-h-0 w-full overflow-hidden">
                             <PerimeterLessonLive />
+                          </div>
+                        )}
+                        {block.type === 'slideShapesComposite' && block.shapes && (
+                          <div className="flex-1 flex flex-col min-h-0 w-full overflow-hidden">
+                            <CompositePerimeterLessonLive />
                           </div>
                         )}
                         {block.type === 'text' && <p className="text-ink-700 dark:text-ink-300 leading-loose text-lg text-center p-4">{block.value}</p>}
@@ -237,7 +251,7 @@ export default function ChapterLesson() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-ink-500 dark:text-ink-400 text-lg p-8">මෙම අනුමාතෘකාවේ අන්තර්ගතය ඉක්මනින් එකතු කරනු ලැබේ.</p>
+                  <p className="text-ink-500 dark:text-ink-300 text-lg p-8">මෙම අනුමාතෘකාවේ අන්තර්ගතය ඉක්මනින් එකතු කරනු ලැබේ.</p>
                 )}
               </div>
             </>
@@ -245,10 +259,10 @@ export default function ChapterLesson() {
             /* Practice mode: show exercise questions */
             <div className="flex-1 w-full max-w-2xl mx-4 mt-2 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-xl shadow-lg overflow-y-auto min-h-0">
               {(() => {
-                const exerciseResult = getLessonFirstExercise(chapterNum)
+                const exerciseResult = getExerciseForSubtopic(chapterNum, activeSlideIndex)
                 if (!exerciseResult) {
                   return (
-                    <p className="text-ink-500 dark:text-ink-400 text-center py-12 px-4">
+                    <p className="text-ink-500 dark:text-ink-300 text-center py-12 px-4">
                       මෙම පාඩමට අභ්‍යාස ප්‍රශ්න ඉක්මනින් එකතු කරනු ලැබේ.
                     </p>
                   )
@@ -292,7 +306,7 @@ export default function ChapterLesson() {
 
       {/* Main content */}
       <div className={`min-w-0 flex-1 max-w-3xl ${isFullScreen ? 'pt-16' : 'pt-10'}`}>
-        <nav className="mb-6 flex items-center gap-2 text-sm text-ink-500 flex-wrap">
+        <nav className="mb-6 flex items-center gap-2 text-sm text-ink-500 dark:text-ink-300 flex-wrap">
           <Link to="/chapters" className="hover:text-sipyaya-600 transition-colors">පාඩම්</Link>
           <span className="text-ink-300">/</span>
           <span className="text-ink-700">{section.label}</span>
@@ -362,7 +376,7 @@ export default function ChapterLesson() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 text-ink-500">
+              <div className="text-center py-12 text-ink-500 dark:text-ink-300">
                 <p className="text-lg">මෙම පාඩමේ අන්තර්ගතය ඉක්මනින් එකතු කරනු ලැබේ.</p>
               </div>
             )}
@@ -420,16 +434,16 @@ export default function ChapterLesson() {
 
             {/* Slide-out panel */}
             <div
-              className={`lg:hidden fixed top-0 right-0 z-50 h-full w-72 max-w-[85vw] bg-white shadow-2xl transform transition-transform duration-300 ease-out ${
+              className={`lg:hidden fixed top-0 right-0 z-50 h-full w-72 max-w-[85vw] bg-white dark:bg-ink-800 shadow-2xl transform transition-transform duration-300 ease-out ${
                 mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
               }`}
             >
-              <div className="flex justify-between items-center p-4 border-b border-ink-200">
-                <h3 className="font-bold text-ink-900">අනුමාතෘකා</h3>
+              <div className="flex justify-between items-center p-4 border-b border-ink-200 dark:border-ink-600">
+                <h3 className="font-bold text-ink-900 dark:text-ink-100">අනුමාතෘකා</h3>
                 <button
                   type="button"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 rounded-lg text-ink-500 hover:bg-ink-100 hover:text-ink-700"
+                  className="p-2 rounded-lg text-ink-500 dark:text-ink-300 hover:bg-ink-100 dark:hover:bg-ink-700 hover:text-ink-700 dark:hover:text-ink-200"
                   aria-label="වසන්න"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

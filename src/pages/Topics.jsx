@@ -29,7 +29,7 @@ export default function Topics() {
     <div className="space-y-10">
       <div className="animate-fade-in-up">
         <h1 className="text-4xl font-display font-bold text-gradient mb-2">ගණිත පාඩම්</h1>
-        <p className="text-ink-600 text-lg">තෝරා ගන්නා විෂය කොටසෙන් පාඩම් ආරම්භ කරන්න</p>
+        <p className="text-ink-600 dark:text-ink-300 text-lg">තෝරා ගන්නා විෂය කොටසෙන් පාඩම් ආරම්භ කරන්න</p>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -44,8 +44,8 @@ export default function Topics() {
               <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-4 ${style.icon}`}>
                 {topic.icon}
               </div>
-              <h2 className="text-xl font-bold text-ink-900 mb-2">{topic.title}</h2>
-              <p className="text-sm text-ink-600 mb-5 leading-relaxed">{topic.description}</p>
+              <h2 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-2">{topic.title}</h2>
+              <p className="text-sm text-ink-600 dark:text-ink-300 mb-5 leading-relaxed">{topic.description}</p>
               <div className="space-y-2">
                 {topic.lessons.map((lesson) => (
                   <Link

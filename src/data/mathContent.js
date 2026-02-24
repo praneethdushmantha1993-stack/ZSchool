@@ -1,3 +1,5 @@
+import { PERIMETER_QUESTIONS, COMPOSITE_PERIMETER_QUESTIONS, getRandomPerimeterQuestions, getRandomCompositePerimeterQuestions } from './perimeterQuestions'
+
 /** පෙළපොතේ පරිච්ඡේද - O/L ගණිත පෙළපොත */
 export const textbookChapters = [
   {
@@ -18,81 +20,23 @@ export const textbookChapters = [
                 type: 'exercise',
                 exerciseId: 'perimeter-shapes',
                 title: 'තලරූපවල පරිමිතිය',
-                questions: [
-                  {
-                    type: 'shortAnswer',
-                    shape: 'rectangle',
-                    lengthVal: 12,
-                    widthVal: 8,
-                    prompt: 'පරිමිතිය සොයන්න',
-                    answer: '40',
-                    unit: 'cm',
-                  },
-                  {
-                    type: 'mcq',
-                    prompt: 'සෘජුකෝණාස්‍රයක පරිමිතිය සොයන සූත්‍රය කුමක්ද?',
-                    options: [
-                      { value: '2a+2b', label: '2(a + b)' },
-                      { value: '4a', label: '4a' },
-                      { value: 'a+b+c', label: 'a + b + c' },
-                      { value: '2pir', label: '2πr' },
-                    ],
-                    answer: '2a+2b',
-                  },
-                  {
-                    type: 'shortAnswer',
-                    shape: 'square',
-                    sideVal: 7,
-                    prompt: 'පරිමිතිය සොයන්න',
-                    answer: '28',
-                    unit: 'cm',
-                  },
-                  {
-                    type: 'matching',
-                    prompt: 'රූපයට සූත්‍රය ගලපන්න',
-                    pairs: [
-                      { left: 'සෘජුකෝණාස්‍රය', right: '2(a + b)' },
-                      { left: 'සමචතුරස්‍රය', right: '4a' },
-                      { left: 'ත්‍රිකෝණය', right: 'a + b + c' },
-                      { left: 'වෘත්තය', right: '2πr' },
-                    ],
-                  },
-                  {
-                    type: 'shortAnswer',
-                    shape: 'triangle',
-                    a: 5,
-                    b: 12,
-                    c: 13,
-                    prompt: 'පරිමිතිය සොයන්න',
-                    answer: '30',
-                    unit: 'cm',
-                  },
-                  {
-                    type: 'mcq',
-                    prompt: 'වෘත්තයක පරිධිය (පරිමිතිය) සොයන සූත්‍රය කුමක්ද?',
-                    options: [
-                      { value: '2a+2b', label: '2(a + b)' },
-                      { value: '4a', label: '4a' },
-                      { value: 'a+b+c', label: 'a + b + c' },
-                      { value: '2pir', label: '2πr' },
-                    ],
-                    answer: '2pir',
-                  },
-                  {
-                    type: 'shortAnswer',
-                    shape: 'circle',
-                    radiusVal: 7,
-                    prompt: 'පරිධිය සොයන්න (π = 22/7)',
-                    answer: '44',
-                    unit: 'cm',
-                  },
-                ],
+                questions: PERIMETER_QUESTIONS,
+                randomCount: 6,
               },
             ],
           },
           {
             title: 'සංයුත්ත තලරූපවල පරිමිතිය',
-            content: [],
+            content: [
+              { type: 'slideShapesComposite', shapes: ['t', 'l', 'u', 'e'] },
+              {
+                type: 'exercise',
+                exerciseId: 'perimeter-composite',
+                title: 'සංයුත්ත තලරූපවල පරිමිතිය',
+                questions: COMPOSITE_PERIMETER_QUESTIONS,
+                randomCount: 6,
+              },
+            ],
           },
           {
             title: 'කේන්ද්‍රික ඛණ්ඩවල චාප දිග',
@@ -327,13 +271,48 @@ export function getChapterByNum(chapterNum) {
 
 /** පාඩමක පළමු අභ්‍යාසය ලබා ගන්න (slide mode inline ප්‍රශ්න සඳහා) */
 export function getLessonFirstExercise(chapterNum) {
+  return getExerciseForSubtopic(chapterNum, 0)
+}
+
+/** subtopic index අනුව අභ්‍යාසය ලබා ගන්න (slide mode — active subtopic) */
+export function getExerciseForSubtopic(chapterNum, subtopicIndex = 0) {
+  const result = getChapterByNum(chapterNum)
+  if (!result) return null
+  const { lesson, section } = result
+  const subtopics = lesson.subtopics || []
+  const st = subtopics[subtopicIndex]
+  if (st?.content) {
+    for (const block of st.content) {
+      if (block.type === 'exercise' && block.exerciseId && block.questions?.length) {
+        let questions = block.questions
+        if (block.randomCount && block.questions.length > block.randomCount) {
+          questions = block.exerciseId === 'perimeter-composite'
+            ? getRandomCompositePerimeterQuestions(block.randomCount)
+            : getRandomPerimeterQuestions(block.randomCount)
+        }
+        const exercise = { ...block, questions }
+        return { exercise, lesson, section }
+      }
+    }
+  }
+  return getLessonFirstExerciseFromAny(chapterNum)
+}
+
+function getLessonFirstExerciseFromAny(chapterNum) {
   const result = getChapterByNum(chapterNum)
   if (!result) return null
   const { lesson, section } = result
   for (const subtopic of lesson.subtopics || []) {
     for (const block of subtopic.content || []) {
       if (block.type === 'exercise' && block.exerciseId && block.questions?.length) {
-        return { exercise: block, lesson, section }
+        let questions = block.questions
+        if (block.randomCount && block.questions.length > block.randomCount) {
+          questions = block.exerciseId === 'perimeter-composite'
+            ? getRandomCompositePerimeterQuestions(block.randomCount)
+            : getRandomPerimeterQuestions(block.randomCount)
+        }
+        const exercise = { ...block, questions }
+        return { exercise, lesson, section }
       }
     }
   }
@@ -348,7 +327,14 @@ export function getExercise(chapterNum, exerciseId) {
   for (const subtopic of lesson.subtopics || []) {
     for (const block of subtopic.content || []) {
       if (block.type === 'exercise' && block.exerciseId === exerciseId) {
-        return { exercise: block, lesson, section }
+        let questions = block.questions || []
+        if (block.randomCount && questions.length > block.randomCount) {
+          questions = exerciseId === 'perimeter-composite'
+            ? getRandomCompositePerimeterQuestions(block.randomCount)
+            : getRandomPerimeterQuestions(block.randomCount)
+        }
+        const exercise = { ...block, questions }
+        return { exercise, lesson, section }
       }
     }
   }

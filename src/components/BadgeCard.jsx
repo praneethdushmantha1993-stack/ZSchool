@@ -50,9 +50,9 @@ export default function BadgeCard({ index, name, color, iconIndex, earned = true
           {num}
         </span>
       </div>
-      <div className={`text-center ${darkBg ? 'text-slate-200' : 'text-ink-800 dark:text-ink-200'}`}>
+      <div className={`text-center ${darkBg ? 'text-slate-100' : 'text-ink-800 dark:text-ink-200'}`}>
         <p className="text-sm font-semibold">{name}</p>
-        <p className={`text-[10px] font-mono ${darkBg ? 'text-slate-400' : 'text-ink-500 dark:text-ink-400'}`}>{color}</p>
+        <p className={`text-[10px] font-mono ${darkBg ? 'text-slate-300' : 'text-ink-500 dark:text-ink-300'}`}>{color}</p>
       </div>
     </div>
   )

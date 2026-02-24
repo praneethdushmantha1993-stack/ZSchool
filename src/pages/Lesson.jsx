@@ -27,7 +27,7 @@ export default function Lesson() {
     return (
       <div className="text-center py-16 animate-fade-in">
         <div className="inline-flex w-16 h-16 rounded-full bg-ink-100 items-center justify-center text-3xl mb-4">?</div>
-        <p className="text-ink-600 mb-4">මෙම පාඩම හමු නොවුණි.</p>
+        <p className="text-ink-600 dark:text-ink-300 mb-4">මෙම පාඩම හමු නොවුණි.</p>
         <Link to="/chapters" className="inline-flex items-center gap-2 text-sipyaya-600 hover:text-sipyaya-700 font-medium">
           ← පාඩම් වෙත ආපසු යන්න
         </Link>
@@ -57,7 +57,7 @@ export default function Lesson() {
       </Link>
 
       <div className={`px-6 py-8 ${isFullScreen ? 'pt-16' : ''}`}>
-      <nav className="mb-6 flex items-center gap-2 text-sm text-ink-500 flex-wrap">
+      <nav className="mb-6 flex items-center gap-2 text-sm text-ink-500 dark:text-ink-300 flex-wrap">
         <Link to="/chapters" className="hover:text-sipyaya-600 transition-colors">පාඩම්</Link>
         <span className="text-ink-300">/</span>
         <span className="text-ink-700">{topic.title}</span>

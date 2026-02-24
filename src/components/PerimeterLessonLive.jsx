@@ -1,4 +1,37 @@
 import { useState, useRef, useEffect } from 'react'
+import { PerimeterExamplesSection } from './FormulaAnimations'
+
+/** එක් එක් රූපයට උදාහරණ — 2 විසඳුම් + 3 හිස්තැන් පුරවන්න */
+const SHAPE_EXAMPLES = {
+  rectangle: [
+    { lengthVal: 10, widthVal: 5 },
+    { lengthVal: 12, widthVal: 8 },
+    { lengthVal: 8, widthVal: 6 },
+    { lengthVal: 15, widthVal: 9 },
+    { lengthVal: 7, widthVal: 4 },
+  ],
+  square: [
+    { sideVal: 7 },
+    { sideVal: 5 },
+    { sideVal: 6 },
+    { sideVal: 9 },
+    { sideVal: 4 },
+  ],
+  triangle: [
+    { a: 5, b: 12, c: 13 },
+    { a: 3, b: 4, c: 5 },
+    { a: 6, b: 8, c: 10 },
+    { a: 7, b: 24, c: 25 },
+    { a: 4, b: 5, c: 6 },
+  ],
+  circle: [
+    { radiusVal: 7 },
+    { radiusVal: 3.5 },
+    { radiusVal: 14 },
+    { radiusVal: 10.5 },
+    { radiusVal: 21 },
+  ],
+}
 
 const SHAPES = {
   rectangle: {
@@ -15,7 +48,7 @@ const SHAPES = {
     ],
     svg: (
         <svg viewBox="0 0 300 200" className="w-full h-full max-h-[240px] md:max-h-[280px]">
-        <path d="M50 50 L250 50 L250 150 L50 150 Z" fill="white" stroke="#e2e8f0" strokeWidth="1" />
+        <path d="M50 50 L250 50 L250 150 L50 150 Z" fill="var(--shape-fill)" stroke="var(--shape-stroke)" strokeWidth="1" />
         <path id="side-0" d="M50 50 L250 50" className="shape-side" />
         <text id="label-0" x="150" y="40" textAnchor="middle" className="label-text">a</text>
         <path id="side-1" d="M250 50 L250 150" className="shape-side" />
@@ -40,7 +73,7 @@ const SHAPES = {
     ],
     svg: (
         <svg viewBox="0 0 300 200" className="w-full h-full max-h-[240px] md:max-h-[280px]">
-        <path d="M75 25 L225 25 L225 175 L75 175 Z" fill="white" stroke="#e2e8f0" strokeWidth="1" />
+        <path d="M75 25 L225 25 L225 175 L75 175 Z" fill="var(--shape-fill)" stroke="var(--shape-stroke)" strokeWidth="1" />
         <path id="side-0" d="M75 25 L225 25" className="shape-side" />
         <text id="label-0" x="150" y="20" textAnchor="middle" className="label-text">a</text>
         <path id="side-1" d="M225 25 L225 175" className="shape-side" />
@@ -64,7 +97,7 @@ const SHAPES = {
     ],
     svg: (
         <svg viewBox="0 0 300 200" className="w-full h-full max-h-[240px] md:max-h-[280px]">
-        <path d="M150 30 L250 170 L50 170 Z" fill="white" stroke="#e2e8f0" strokeWidth="1" />
+        <path d="M150 30 L250 170 L50 170 Z" fill="var(--shape-fill)" stroke="var(--shape-stroke)" strokeWidth="1" />
         <path id="side-0" d="M150 30 L250 170" className="shape-side" />
         <text id="label-0" x="215" y="100" textAnchor="start" className="label-text">a</text>
         <path id="side-1" d="M250 170 L50 170" className="shape-side" />
@@ -85,7 +118,7 @@ const SHAPES = {
     ],
     svg: (
         <svg viewBox="0 0 300 200" className="w-full h-full max-h-[240px] md:max-h-[280px]">
-        <circle cx="150" cy="100" r="70" fill="white" stroke="#e2e8f0" strokeWidth="1" />
+        <circle cx="150" cy="100" r="70" fill="var(--shape-fill)" stroke="var(--shape-stroke)" strokeWidth="1" />
         <circle id="side-0" cx="150" cy="100" r="70" fill="none" pathLength="100" className="shape-side circle-side" />
         <line x1="150" y1="100" x2="220" y2="100" stroke="#94a3b8" strokeWidth="2" strokeDasharray="4" id="radius-line" />
         <text id="label-0" x="185" y="92" textAnchor="middle" className="label-text">r (අරය)</text>
@@ -104,6 +137,7 @@ export default function PerimeterLessonLive() {
   const [formulaStep3, setFormulaStep3] = useState('')
   const [showStep2, setShowStep2] = useState(false)
   const [showStep3, setShowStep3] = useState(false)
+  const [showExampleOverlay, setShowExampleOverlay] = useState(false)
   const svgContainerRef = useRef(null)
   const timeoutsRef = useRef([])
 
@@ -190,10 +224,38 @@ export default function PerimeterLessonLive() {
   }, [selectedShape])
 
   return (
-    <div className="h-full flex flex-col min-h-0 w-full overflow-hidden">
+    <div className="h-full flex flex-col min-h-0 w-full overflow-hidden relative">
+      {/* උදාහරණය — හිස්පිටුවක (full overlay) */}
+      {showExampleOverlay && selectedShape && (
+        <div className="fixed inset-0 z-50 bg-white dark:bg-ink-900 flex flex-col overflow-auto">
+          <div className="shrink-0 flex justify-between items-center px-4 py-3 border-b border-ink-200 dark:border-ink-700">
+            <h3 className="font-bold text-ink-800 dark:text-ink-100">
+              උදාහරණය — {SHAPES[currentShape].title}
+            </h3>
+            <button
+              type="button"
+              onClick={() => setShowExampleOverlay(false)}
+              className="p-2 rounded-xl bg-ink-100 dark:bg-ink-800 hover:bg-ink-200 dark:hover:bg-ink-700 text-ink-700 dark:text-ink-300 transition"
+              aria-label="වසන්න"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div className="flex-1 p-4 md:p-6 overflow-auto">
+            <PerimeterExamplesSection
+              shape={currentShape}
+              examples={SHAPE_EXAMPLES[currentShape]}
+              shapeLabel={SHAPES[currentShape].title}
+            />
+          </div>
+        </div>
+      )}
+
       {!selectedShape ? (
         <div className="flex-1 flex flex-col justify-center p-4 md:p-6 min-h-0 overflow-auto">
-          <p className="text-center text-ink-600 dark:text-ink-400 font-medium mb-4 md:mb-6">තලරූපයක් තෝරන්න</p>
+          <p className="text-center text-ink-600 dark:text-ink-300 font-medium mb-4 md:mb-6">තලරූපයක් තෝරන්න</p>
           <div className="flex flex-wrap gap-4 md:gap-6 justify-center items-end">
             {['rectangle', 'square', 'triangle', 'circle'].map((id) => (
               <button
@@ -219,7 +281,7 @@ export default function PerimeterLessonLive() {
             <button
               type="button"
               onClick={() => { setSelectedShape(null); clearTimeouts(); }}
-              className="inline-flex items-center gap-2 p-2 md:p-0 md:py-0.5 text-sm text-sipyaya-600 hover:text-sipyaya-700 dark:text-sipyaya-400 dark:hover:text-sipyaya-300 font-medium"
+              className="inline-flex items-center gap-2 p-2 md:p-0 md:py-0.5 text-sm text-sipyaya-600 hover:text-sipyaya-700 dark:text-sipyaya-300 dark:hover:text-sipyaya-200 font-medium"
               aria-label="රූප තෝරන්න"
             >
               <svg className="w-5 h-5 shrink-0 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -241,12 +303,12 @@ export default function PerimeterLessonLive() {
 
         <div className="flex flex-col gap-3 md:gap-4 min-h-0 overflow-auto">
           <div className="bg-white dark:bg-ink-800 p-3 md:p-4 rounded-xl border-2 border-dashed border-blue-200 dark:border-ink-600 shadow-sm shrink-0">
-            <h3 className="text-ink-500 dark:text-ink-400 font-bold uppercase tracking-widest text-xs mb-2 text-center">
+            <h3 className="text-ink-500 dark:text-ink-300 font-bold uppercase tracking-widest text-xs mb-2 text-center">
               පරිමිතිය සඳහා සූත්‍රය ගොඩනැගීම
             </h3>
             <div className="space-y-1">
               <div className="flex justify-center items-center min-h-[32px] mb-1 text-base md:text-lg font-bold text-blue-800 dark:text-blue-200">
-                <span className="text-ink-400 dark:text-ink-500 text-lg mr-2">
+                <span className="text-ink-400 dark:text-ink-300 text-lg mr-2">
                   {SHAPES[currentShape].isCircle ? 'පරිධිය =' : 'පරිමිතිය ='}
                 </span>
                 <div className="flex items-center flex-wrap justify-center gap-1">
@@ -262,13 +324,13 @@ export default function PerimeterLessonLive() {
               </div>
               {showStep2 && (
                 <div className="formula-step flex justify-center items-center min-h-[28px] text-base md:text-lg font-bold text-indigo-700 dark:text-indigo-300 transition-opacity duration-500">
-                  <span className="text-ink-400 dark:text-ink-500 text-sm mr-1">=</span>
+                  <span className="text-ink-400 dark:text-ink-300 text-sm mr-1">=</span>
                   {formulaStep2}
                 </div>
               )}
               {showStep3 && (
                 <div className="formula-step flex justify-center items-center min-h-[28px] text-lg md:text-xl font-black text-green-600 dark:text-green-400 transition-opacity duration-500">
-                  <span className="text-ink-400 dark:text-ink-500 text-sm mr-1">=</span>
+                  <span className="text-ink-400 dark:text-ink-300 text-sm mr-1">=</span>
                   {formulaStep3}
                 </div>
               )}
@@ -291,6 +353,14 @@ export default function PerimeterLessonLive() {
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-3 rounded-xl shadow-lg transition transform active:scale-95 text-base md:text-lg shrink-0"
           >
             සජීවීකරණය ආරම්භ කරන්න
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowExampleOverlay(true)}
+            className="w-full bg-sipyaya-100 dark:bg-sipyaya-900/50 hover:bg-sipyaya-200 dark:hover:bg-sipyaya-800/50 text-sipyaya-700 dark:text-sipyaya-300 font-bold py-3 rounded-xl border-2 border-dashed border-sipyaya-300 dark:border-sipyaya-600 transition text-base md:text-lg shrink-0"
+          >
+            උදාහරණය පෙන්වන්න
           </button>
         </div>
       </div>
