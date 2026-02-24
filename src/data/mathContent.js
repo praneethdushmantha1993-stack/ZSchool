@@ -14,6 +14,80 @@ export const textbookChapters = [
             title: 'තලරූපවල පරිමිතිය',
             content: [
               { type: 'slideShapes', shapes: ['square', 'rectangle', 'triangle', 'circle'] },
+              {
+                type: 'exercise',
+                exerciseId: 'perimeter-shapes',
+                title: 'තලරූපවල පරිමිතිය',
+                questions: [
+                  {
+                    type: 'shortAnswer',
+                    shape: 'rectangle',
+                    lengthVal: 12,
+                    widthVal: 8,
+                    prompt: 'පරිමිතිය සොයන්න',
+                    answer: '40',
+                    unit: 'cm',
+                  },
+                  {
+                    type: 'mcq',
+                    prompt: 'සෘජුකෝණාස්‍රයක පරිමිතිය සොයන සූත්‍රය කුමක්ද?',
+                    options: [
+                      { value: '2a+2b', label: '2(a + b)' },
+                      { value: '4a', label: '4a' },
+                      { value: 'a+b+c', label: 'a + b + c' },
+                      { value: '2pir', label: '2πr' },
+                    ],
+                    answer: '2a+2b',
+                  },
+                  {
+                    type: 'shortAnswer',
+                    shape: 'square',
+                    sideVal: 7,
+                    prompt: 'පරිමිතිය සොයන්න',
+                    answer: '28',
+                    unit: 'cm',
+                  },
+                  {
+                    type: 'matching',
+                    prompt: 'රූපයට සූත්‍රය ගලපන්න',
+                    pairs: [
+                      { left: 'සෘජුකෝණාස්‍රය', right: '2(a + b)' },
+                      { left: 'සමචතුරස්‍රය', right: '4a' },
+                      { left: 'ත්‍රිකෝණය', right: 'a + b + c' },
+                      { left: 'වෘත්තය', right: '2πr' },
+                    ],
+                  },
+                  {
+                    type: 'shortAnswer',
+                    shape: 'triangle',
+                    a: 5,
+                    b: 12,
+                    c: 13,
+                    prompt: 'පරිමිතිය සොයන්න',
+                    answer: '30',
+                    unit: 'cm',
+                  },
+                  {
+                    type: 'mcq',
+                    prompt: 'වෘත්තයක පරිධිය (පරිමිතිය) සොයන සූත්‍රය කුමක්ද?',
+                    options: [
+                      { value: '2a+2b', label: '2(a + b)' },
+                      { value: '4a', label: '4a' },
+                      { value: 'a+b+c', label: 'a + b + c' },
+                      { value: '2pir', label: '2πr' },
+                    ],
+                    answer: '2pir',
+                  },
+                  {
+                    type: 'shortAnswer',
+                    shape: 'circle',
+                    radiusVal: 7,
+                    prompt: 'පරිධිය සොයන්න (π = 22/7)',
+                    answer: '44',
+                    unit: 'cm',
+                  },
+                ],
+              },
             ],
           },
           {
@@ -247,6 +321,21 @@ export function getChapterByNum(chapterNum) {
   for (const section of textbookChapters) {
     const lesson = section.lessons.find((l) => l.num === num)
     if (lesson) return { lesson, section }
+  }
+  return null
+}
+
+/** පාඩමක පළමු අභ්‍යාසය ලබා ගන්න (slide mode inline ප්‍රශ්න සඳහා) */
+export function getLessonFirstExercise(chapterNum) {
+  const result = getChapterByNum(chapterNum)
+  if (!result) return null
+  const { lesson, section } = result
+  for (const subtopic of lesson.subtopics || []) {
+    for (const block of subtopic.content || []) {
+      if (block.type === 'exercise' && block.exerciseId && block.questions?.length) {
+        return { exercise: block, lesson, section }
+      }
+    }
   }
   return null
 }

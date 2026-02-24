@@ -191,13 +191,6 @@ export default function PerimeterLessonLive() {
 
   return (
     <div className="h-full flex flex-col min-h-0 w-full overflow-hidden">
-      <div className="shrink-0 bg-gradient-to-r from-blue-700 to-indigo-800 px-4 py-3 md:py-4 text-white text-center">
-        <h1 className="text-xl md:text-2xl font-extrabold">පරිමිතිය සජීවීව ඉගෙන ගනිමු</h1>
-        <p className="text-blue-100 text-xs md:text-sm">
-          {selectedShape ? `${SHAPES[selectedShape].title} — පරිමිතිය සොයන විදිය` : 'තලරූපයක් තෝරා එහි පරිමිතිය සොයන විදිය නරඹන්න'}
-        </p>
-      </div>
-
       {!selectedShape ? (
         <div className="flex-1 flex flex-col justify-center p-4 md:p-6 min-h-0 overflow-auto">
           <p className="text-center text-ink-600 dark:text-ink-400 font-medium mb-4 md:mb-6">තලරූපයක් තෝරන්න</p>

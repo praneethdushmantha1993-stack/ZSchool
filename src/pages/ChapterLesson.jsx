@@ -1,13 +1,14 @@
 import { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useParams, Link } from 'react-router-dom'
-import { getChapterByNum } from '../data/mathContent'
+import { getChapterByNum, getLessonFirstExercise } from '../data/mathContent'
 import MathBlock from '../components/MathBlock'
 import FormulaAnimation, {
   PerimeterExamplesSection,
   CompositePerimeterSection,
 } from '../components/FormulaAnimations'
 import PerimeterLessonLive from '../components/PerimeterLessonLive'
+import ExerciseInline from '../components/ExerciseInline'
 
 function scrollToSubtopic(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -51,6 +52,7 @@ export default function ChapterLesson() {
   const isSlideMode = lesson.slideMode === true
   const [activeSlideIndex, setActiveSlideIndex] = useState(0)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [slideModeTab, setSlideModeTab] = useState('learn') // 'learn' | 'practice'
 
   // Extract exercises from subtopic content for sidebar nav
   const exercises = []
@@ -126,88 +128,142 @@ export default function ChapterLesson() {
           isFullScreen ? 'h-screen overflow-y-auto md:overflow-hidden' : 'min-h-[calc(100vh-12rem)]'
         }`}
       >
-        <Link
-          to="/chapters"
-          className={`inline-flex items-center gap-2 p-2.5 md:px-4 md:py-2.5 rounded-xl font-medium transition-colors z-50 self-start ${
-            isFullScreen
-              ? 'fixed top-4 left-4 bg-ink-900/90 dark:bg-ink-100/90 text-white dark:text-ink-900 hover:bg-ink-900 dark:hover:bg-ink-100 shadow-lg'
-              : 'text-sipyaya-600 hover:bg-sipyaya-50 mt-4 ml-4'
-          }`}
-          aria-label="පාඩම් වෙත ආපසු"
-        >
-          <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          <span className="hidden md:inline">පාඩම් වෙත ආපසු</span>
-        </Link>
-
-        {/* Top center: Subtopic dropdown */}
-        <div className={`flex-1 flex flex-col items-center w-full min-h-0 ${isFullScreen ? 'pt-14 pb-2' : 'pt-8'}`}>
-          <div className="relative">
+        {/* Header: back icon + title + lesson topic + Learn/Practice toggle */}
+        <header className="shrink-0 w-full flex flex-col gap-2 md:flex-row md:items-center px-3 py-2 md:px-4 md:py-3 bg-gradient-to-r from-blue-700 to-indigo-800 text-white shadow-md">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <Link
+              to="/chapters"
+              className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/20 hover:bg-white/30 transition-colors shrink-0"
+              aria-label="පාඩම් වෙත ආපසු"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+            </Link>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-base md:text-lg font-bold truncate">පරිමිතිය සජීවිකරණ මගින් ඉගෙනිමු</h1>
+              <p className="text-blue-100 text-xs md:text-sm truncate">{section.label} — {lesson.title}</p>
+            </div>
+          </div>
+          <div className="flex gap-2 shrink-0">
             <button
               type="button"
-              onClick={() => setDropdownOpen((o) => !o)}
-              className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-lg shadow-sm hover:border-sipyaya-400 transition-colors min-w-[280px] justify-between"
+              onClick={() => setSlideModeTab('learn')}
+              className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+                slideModeTab === 'learn'
+                  ? 'bg-white text-blue-800'
+                  : 'bg-white/20 hover:bg-white/30'
+              }`}
             >
-              <span className="font-medium text-ink-900 dark:text-ink-100">{activeSubtopic?.title}</span>
-              <svg
-                className={`w-5 h-5 text-ink-500 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
+              ඉගෙන ගන්න
             </button>
-
-            {dropdownOpen && (
-              <>
-                <div
-                  className="fixed inset-0 z-40"
-                  onClick={() => setDropdownOpen(false)}
-                  aria-hidden="true"
-                />
-                <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-lg shadow-xl overflow-hidden min-w-[280px]">
-                  {subtopics.map((st, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => {
-                        setActiveSlideIndex(idx)
-                        setDropdownOpen(false)
-                      }}
-                      className={`block w-full text-left px-6 py-3 hover:bg-sipyaya-50 dark:hover:bg-sipyaya-900/30 transition-colors ${
-                        idx === activeSlideIndex ? 'bg-sipyaya-100 dark:bg-sipyaya-900/50 text-sipyaya-700 dark:text-sipyaya-300 font-medium' : 'text-ink-700 dark:text-ink-300'
-                      }`}
-                    >
-                      {st.title}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
+            <button
+              type="button"
+              onClick={() => setSlideModeTab('practice')}
+              className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+                slideModeTab === 'practice'
+                  ? 'bg-white text-blue-800'
+                  : 'bg-white/20 hover:bg-white/30'
+              }`}
+            >
+              ප්‍රශ්න විසඳන්න
+            </button>
           </div>
+        </header>
 
-          {/* Slide content - white box with border */}
-          <div className="flex-1 w-full max-w-5xl mx-4 mt-4 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-xl shadow-lg overflow-y-auto md:overflow-hidden min-h-0 flex flex-col">
-            {activeSubtopic?.content?.length > 0 ? (
-              <div className="flex-1 flex flex-col min-h-0 w-full overflow-hidden">
-                {activeSubtopic.content.map((block, i) => (
-                  <div key={i}>
-                    {block.type === 'slideShapes' && block.shapes && (
-                      <div className="flex-1 flex flex-col min-h-0 w-full overflow-hidden">
-                        <PerimeterLessonLive />
-                      </div>
-                    )}
-                    {block.type === 'text' && <p className="text-ink-700 dark:text-ink-300 leading-loose text-lg text-center">{block.value}</p>}
-                    {block.type === 'math' && <div className="flex justify-center"><MathBlock value={block.value} /></div>}
-                  </div>
-                ))}
+        {/* Content: Learn (subtopic + shapes) or Practice (questions) */}
+        <div className="flex-1 flex flex-col items-center w-full min-h-0 pt-3 pb-2">
+          {slideModeTab === 'learn' ? (
+            <>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setDropdownOpen((o) => !o)}
+                  className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-lg shadow-sm hover:border-sipyaya-400 transition-colors min-w-[280px] justify-between"
+                >
+                  <span className="font-medium text-ink-900 dark:text-ink-100">{activeSubtopic?.title}</span>
+                  <svg
+                    className={`w-5 h-5 text-ink-500 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {dropdownOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setDropdownOpen(false)}
+                      aria-hidden="true"
+                    />
+                    <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-lg shadow-xl overflow-hidden min-w-[280px]">
+                      {subtopics.map((st, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => {
+                            setActiveSlideIndex(idx)
+                            setDropdownOpen(false)
+                          }}
+                          className={`block w-full text-left px-6 py-3 hover:bg-sipyaya-50 dark:hover:bg-sipyaya-900/30 transition-colors ${
+                            idx === activeSlideIndex ? 'bg-sipyaya-100 dark:bg-sipyaya-900/50 text-sipyaya-700 dark:text-sipyaya-300 font-medium' : 'text-ink-700 dark:text-ink-300'
+                          }`}
+                        >
+                          {st.title}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
-            ) : (
-              <p className="text-ink-500 dark:text-ink-400 text-lg">මෙම අනුමාතෘකාවේ අන්තර්ගතය ඉක්මනින් එකතු කරනු ලැබේ.</p>
-            )}
-          </div>
+
+              {/* Slide content - white box with border */}
+              <div className="flex-1 w-full max-w-5xl mx-4 mt-4 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-xl shadow-lg overflow-y-auto md:overflow-hidden min-h-0 flex flex-col">
+                {activeSubtopic?.content?.length > 0 ? (
+                  <div className="flex-1 flex flex-col min-h-0 w-full overflow-hidden">
+                    {activeSubtopic.content.map((block, i) => (
+                      <div key={i}>
+                        {block.type === 'slideShapes' && block.shapes && (
+                          <div className="flex-1 flex flex-col min-h-0 w-full overflow-hidden">
+                            <PerimeterLessonLive />
+                          </div>
+                        )}
+                        {block.type === 'text' && <p className="text-ink-700 dark:text-ink-300 leading-loose text-lg text-center p-4">{block.value}</p>}
+                        {block.type === 'math' && <div className="flex justify-center p-4"><MathBlock value={block.value} /></div>}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-ink-500 dark:text-ink-400 text-lg p-8">මෙම අනුමාතෘකාවේ අන්තර්ගතය ඉක්මනින් එකතු කරනු ලැබේ.</p>
+                )}
+              </div>
+            </>
+          ) : (
+            /* Practice mode: show exercise questions */
+            <div className="flex-1 w-full max-w-2xl mx-4 mt-2 bg-white dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-600 rounded-xl shadow-lg overflow-y-auto min-h-0">
+              {(() => {
+                const exerciseResult = getLessonFirstExercise(chapterNum)
+                if (!exerciseResult) {
+                  return (
+                    <p className="text-ink-500 dark:text-ink-400 text-center py-12 px-4">
+                      මෙම පාඩමට අභ්‍යාස ප්‍රශ්න ඉක්මනින් එකතු කරනු ලැබේ.
+                    </p>
+                  )
+                }
+                const { exercise } = exerciseResult
+                return (
+                  <ExerciseInline
+                    exercise={exercise}
+                    chapterNum={chapterNum}
+                    exerciseId={exercise.exerciseId}
+                  />
+                )
+              })()}
+            </div>
+          )}
         </div>
       </div>
     )

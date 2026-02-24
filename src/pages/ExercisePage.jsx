@@ -1,128 +1,14 @@
 import { useState, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getExercise } from '../data/mathContent'
-import { LShapeDiagram, TShapeDiagramAnimated, UShapeDiagramAnimated } from '../components/FormulaAnimations'
+import {
+  ShortAnswerQuestion,
+  MCQQuestion,
+  MatchingQuestion,
+  checkQuestion,
+} from '../components/QuestionTypes'
 import { useAuth } from '../context/AuthContext'
 import { saveExerciseScore } from '../services/scoreService'
-
-/** අභ්‍යාස ප්‍රශ්නයකට රූපසටහන — shape type සහ අගයන් අනුව */
-function ExerciseDiagram({ question }) {
-  const cx = 140
-  const cy = 95
-  const { shape } = question
-
-  if (shape === 'rectangle') {
-    const { lengthVal, widthVal } = question
-    const l = 140
-    const w = 90
-    return (
-      <svg viewBox="0 0 280 180" className="w-full max-w-xs drop-shadow-lg">
-        <rect x={cx - l / 2} y={cy - w / 2} width={l} height={w} fill="white" stroke="#16a34a" strokeWidth="2" />
-        <text x={cx} y={cy - w / 2 - 12} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">
-          දිග {lengthVal}cm
-        </text>
-        <text
-          x={cx - l / 2 - 28}
-          y={cy}
-          textAnchor="middle"
-          transform={`rotate(-90 ${cx - l / 2 - 28} ${cy})`}
-          className="fill-ink-700 text-sm font-semibold"
-        >
-          පළල {widthVal}cm
-        </text>
-      </svg>
-    )
-  }
-  if (shape === 'square') {
-    const { sideVal } = question
-    const s = 80
-    return (
-      <svg viewBox="0 0 280 180" className="w-full max-w-xs drop-shadow-lg">
-        <rect x={cx - s / 2} y={cy - s / 2} width={s} height={s} fill="white" stroke="#16a34a" strokeWidth="2" />
-        <text x={cx} y={cy - s / 2 - 12} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">
-          පැත්ත {sideVal}cm
-        </text>
-      </svg>
-    )
-  }
-  if (shape === 'triangle') {
-    const { a, b, c } = question
-    const pts = [
-      [70, 75],
-      [70, 180],
-      [210, 180],
-    ]
-    return (
-      <svg viewBox="0 0 280 220" className="w-full max-w-xs drop-shadow-lg">
-        <polygon points={pts.flat().join(' ')} fill="white" stroke="#16a34a" strokeWidth="2" />
-        <text x={62} y={127} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">
-          {a}cm
-        </text>
-        <text x={140} y={178} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">
-          {b}cm
-        </text>
-        <text x={148} y={120} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">
-          {c}cm
-        </text>
-      </svg>
-    )
-  }
-  if (shape === 'circle') {
-    const { radiusVal } = question
-    const r = 60
-    return (
-      <svg viewBox="0 0 280 180" className="w-full max-w-xs drop-shadow-lg">
-        <circle cx={cx} cy={cy} r={r} fill="white" stroke="#16a34a" strokeWidth="2" />
-        <line x1={cx} y1={cy} x2={cx + r} y2={cy} stroke="#16a34a" strokeWidth="2" strokeDasharray="4" />
-        <text x={cx + r / 2 + 8} y={cy - 10} textAnchor="middle" className="fill-ink-700 text-sm font-semibold">
-          r = {radiusVal} cm
-        </text>
-      </svg>
-    )
-  }
-  if (shape === 'l-shape') {
-    const { dims } = question
-    return (
-      <div className="w-full max-w-[240px]">
-        <LShapeDiagram dims={dims} />
-      </div>
-    )
-  }
-  if (shape === 't-shape') {
-    const { dims } = question
-    return (
-      <div className="w-full max-w-[240px]">
-        <TShapeDiagramAnimated dims={dims} highlightedEdgeCount={0} />
-      </div>
-    )
-  }
-  if (shape === 'u-shape') {
-    const { dims } = question
-    return (
-      <div className="w-full max-w-[240px]">
-        <UShapeDiagramAnimated dims={dims} highlightedEdgeCount={0} />
-      </div>
-    )
-  }
-  return null
-}
-
-function normalizeAnswer(input) {
-  return String(input || '')
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, '')
-    .replace(/cm|සෙ\.මී\.?/gi, '')
-}
-
-function checkAnswer(userInput, correctAnswer) {
-  const u = normalizeAnswer(userInput)
-  const c = normalizeAnswer(correctAnswer)
-  if (u === c) return true
-  const uNum = parseFloat(u.replace(/[^\d.-]/g, ''))
-  const cNum = parseFloat(c.replace(/[^\d.-]/g, ''))
-  return !isNaN(uNum) && !isNaN(cNum) && Math.abs(uNum - cNum) < 0.01
-}
 
 export default function ExercisePage() {
   const { chapterNum, exerciseId } = useParams()
@@ -159,7 +45,7 @@ export default function ExercisePage() {
   const handleCheckAll = async () => {
     const newChecked = {}
     questions.forEach((q, idx) => {
-      newChecked[idx] = checkAnswer(answers[idx], q.answer)
+      newChecked[idx] = checkQuestion(q, answers[idx])
     })
     setChecked(newChecked)
 
@@ -195,6 +81,59 @@ export default function ExercisePage() {
 
   const showResultsList = questions.length > 0 && questions.every((_, i) => checked[i] === true || checked[i] === false)
 
+  function renderQuestion(q, idx) {
+    const type = q.type || 'shortAnswer'
+    const value = answers[idx]
+    const isChecked = checked[idx]
+
+    if (type === 'mcq') {
+      return (
+        <MCQQuestion
+          question={q}
+          idx={idx}
+          value={value}
+          onChange={(v) => handleAnswerChange(idx, v)}
+          checked={isChecked}
+        />
+      )
+    }
+
+    if (type === 'matching') {
+      return (
+        <MatchingQuestion
+          question={q}
+          idx={idx}
+          value={value}
+          onChange={(v) => handleAnswerChange(idx, v)}
+          checked={isChecked}
+        />
+      )
+    }
+
+    return (
+      <ShortAnswerQuestion
+        question={q}
+        idx={idx}
+        value={value}
+        onChange={(v) => handleAnswerChange(idx, v)}
+        checked={isChecked}
+        unit={q.unit || unit}
+      />
+    )
+  }
+
+  function getCorrectAnswerDisplay(q) {
+    const type = q.type || 'shortAnswer'
+    if (type === 'mcq') {
+      const opt = q.options?.find((o) => o.value === q.answer)
+      return opt?.label || q.answer
+    }
+    if (type === 'matching') {
+      return q.pairs?.map((p) => `${p.left} → ${p.right}`).join(', ') || ''
+    }
+    return q.answer
+  }
+
   return (
     <div className="max-w-2xl mx-auto animate-fade-in-up">
       <nav className="mb-6 flex items-center gap-2 text-sm text-ink-500 dark:text-ink-400 flex-wrap">
@@ -216,7 +155,7 @@ export default function ExercisePage() {
           </span>
           <h1 className="text-2xl md:text-3xl font-bold text-ink-900 dark:text-ink-100">{exercise.title}</h1>
           <p className="text-ink-600 dark:text-ink-400 mt-1">
-            පහත රූපවල පරිමිතිය සොයා උත්තරය {unit} ඒකකයෙන් ලියන්න.
+            පහත ප්‍රශ්න විසඳන්න. එක් එක් ආකාරයේ ගැටලු තියෙනවා.
           </p>
         </header>
 
@@ -232,32 +171,7 @@ export default function ExercisePage() {
                     : 'border-sipyaya-200/80 dark:border-ink-600 bg-white dark:bg-ink-900/50'
               }`}
             >
-              <div className="flex flex-col sm:flex-row gap-6 items-start">
-                {!q.hideDiagram && (
-                  <div className="flex-shrink-0 w-full sm:w-48 flex justify-center">
-                    <ExerciseDiagram question={q} />
-                  </div>
-                )}
-                <div className="flex-1 min-w-0 space-y-4">
-                  <p className="font-medium text-ink-700 dark:text-ink-300">
-                    {idx + 1}. {q.prompt}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <input
-                      type="text"
-                      value={answers[idx] ?? ''}
-                      onChange={(e) => handleAnswerChange(idx, e.target.value)}
-                      placeholder={`උත්තරය (${unit})`}
-                      className="flex-1 min-w-[140px] px-4 py-3 rounded-xl border-2 border-ink-200 dark:border-ink-600 dark:bg-ink-900/50 dark:text-ink-100 focus:border-sipyaya-500 focus:ring-2 focus:ring-sipyaya-200 dark:focus:border-sipyaya-400 outline-none transition-all text-lg"
-                    />
-                  </div>
-                  {checked[idx] === true && (
-                    <p className="text-emerald-700 font-medium flex items-center gap-2">
-                      <span className="text-xl">✓</span> නිවැරදියි!
-                    </p>
-                  )}
-                </div>
-              </div>
+              {renderQuestion(q, idx)}
             </div>
           ))}
 
@@ -305,17 +219,17 @@ export default function ExercisePage() {
                         checked[idx] ? 'bg-emerald-50 dark:bg-emerald-900/20' : 'bg-amber-50 dark:bg-amber-900/20'
                       }`}
                     >
-                      <span className={`text-lg font-bold ${checked[idx] ? 'text-emerald-600' : 'text-amber-600'}`}>
+                      <span className={`text-lg font-bold shrink-0 ${checked[idx] ? 'text-emerald-600' : 'text-amber-600'}`}>
                         {checked[idx] ? '✓' : '✗'}
                       </span>
-                      <span className="flex-1 text-ink-700 dark:text-ink-300">
+                      <span className="flex-1 text-ink-700 dark:text-ink-300 min-w-0">
                         {idx + 1}. {q.prompt}
                       </span>
                       {checked[idx] ? (
-                        <span className="text-emerald-700 dark:text-emerald-400 font-medium">හරි</span>
+                        <span className="text-emerald-700 dark:text-emerald-400 font-medium shrink-0">හරි</span>
                       ) : (
-                        <span className="text-amber-700 dark:text-amber-400">
-                          වැරදි — ඔබේ උත්තර: {answers[idx] || '—'}, නිවැරදි: {q.answer}
+                        <span className="text-amber-700 dark:text-amber-400 text-sm shrink-0">
+                          නිවැරදි: {getCorrectAnswerDisplay(q)}
                         </span>
                       )}
                     </li>
